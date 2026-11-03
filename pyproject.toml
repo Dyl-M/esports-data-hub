@@ -1,0 +1,123 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "esports-data-hub"
+version = "0.1.0"
+description = "A repository containing projects related to esports and data."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.13"
+authors = [
+    { name = "Dylan \"Dyl-M\" Monfret", email = "dyl_m.dev@proton.me" }
+]
+keywords = ["esports", "rocket-league", "liquipedia", "league-play", "scenarios"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "liquipydia>=0.1.2,<1",
+]
+
+[project.urls]
+Repository = "https://github.com/Dyl-M/esports-data-hub"
+
+[dependency-groups]
+dev = [
+    { include-group = "test" },
+    "mypy==2.4.0",
+    "ruff==0.17.0",
+]
+test = [
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["edh"]
+
+# --- Ruff ---
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+extend-exclude = ["*.ipynb", "*.md"] # ruff >= 0.16 formats Markdown code fences; docs are not code
+
+[tool.ruff.lint]
+select = [
+    "F", # pyflakes
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "I", # isort
+    "UP", # pyupgrade
+    "B", # flake8-bugbear
+    "SIM", # flake8-simplify
+    "RUF", # ruff-specific rules
+    "D", # pydocstyle
+    "N", # pep8-naming
+    "ANN", # flake8-annotations
+    "S", # flake8-bandit (security)
+    "T20", # flake8-print
+    "PT", # flake8-pytest-style
+    "RET", # flake8-return
+    "TCH", # flake8-type-checking
+    "PLR", # pylint refactor (catches useless-return and similar)
+]
+ignore = [
+    "D104", # missing docstring in public package (re-export __init__ files)
+    "RUF022", # __all__ uses intentional comment-grouped ordering, not alphabetical
+    "PLR2004", # magic values in comparisons (small literals) are clear in context
+]
+
+[tool.ruff.lint.per-file-ignores]
+"_tests/**" = ["ANN", "S101"] # tests: no annotations required, assert is expected
+"_scripts/**" = ["T20"] # maintenance scripts print progress to the console
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+known-first-party = ["edh"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+# --- Mypy ---
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+warn_no_return = true
+warn_unreachable = true
+strict_optional = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+
+# --- Pytest ---
+
+[tool.pytest.ini_options]
+testpaths = ["_tests"]
+addopts = "-v --strict-markers --tb=short"
+markers = [
+    "integration: opt-in tests that hit the live Liquipedia API (requires an LPDB API key)",
+]
+
+# --- Coverage ---
+
+[tool.coverage.run]
+source = ["edh"]
+omit = ["_tests/*"]
+
+[tool.coverage.report]
+show_missing = true
