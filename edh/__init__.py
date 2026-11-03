@@ -1,6 +1,6 @@
 """Esports Data Hub (EDH) - Esports data projects, starting with league play scenarios."""
 
-__version__ = '0.1.0'
+__version__ = '2026.11.0'
 __author__ = 'Dylan "dyl-m" Monfret'
 
 __all__ = [
