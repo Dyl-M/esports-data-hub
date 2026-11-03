@@ -1,0 +1,9 @@
+# yamllint configuration for CI workflow validation.
+
+# Intentionally minimal: the goal is to catch YAML that GitHub Actions cannot
+# parse (e.g. an unquoted scalar containing ': ' read as a mapping key, which
+# previously made an entire workflow file invalid and silently broke the daily
+# run). yamllint's syntax check is always active regardless of enabled rules, so
+# every cosmetic/style rule is left disabled to avoid false CI failures.
+rules:
+  key-duplicates: enable
