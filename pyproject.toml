@@ -75,14 +75,11 @@ select = [
     "PLR", # pylint refactor (catches useless-return and similar)
 ]
 ignore = [
-    "D104", # missing docstring in public package (re-export __init__ files)
-    "RUF022", # __all__ uses intentional comment-grouped ordering, not alphabetical
     "PLR2004", # magic values in comparisons (small literals) are clear in context
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "_tests/**" = ["ANN", "S101"] # tests: no annotations required, assert is expected
-"_scripts/**" = ["T20"] # maintenance scripts print progress to the console
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

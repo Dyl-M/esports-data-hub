@@ -141,7 +141,7 @@ def read_outlook(path: Path) -> ScenarioReport:
         )
     except FileNotFoundError as error:
         raise DataSourceError(f'Outlook file not found: {path} (evaluate the league first)') from error
-    except (KeyError, TypeError, ValueError, AttributeError) as error:  # ValueError covers json.JSONDecodeError
+    except (KeyError, TypeError, ValueError, AttributeError) as error:
         raise DataSourceError(f'Invalid outlook file {path}: {error!r}') from error
 
 
