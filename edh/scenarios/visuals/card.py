@@ -12,6 +12,7 @@ import base64
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
+from typing import TypedDict
 
 # Third-party
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateNotFound
@@ -73,6 +74,32 @@ class CardRow:
     cells: tuple[StripCell, ...]
 
 
+class CardContext(TypedDict):
+    """Values the card template displays (see `card_context`)."""
+
+    format: str
+    width: int
+    height: int
+    theme: Theme
+    font_uri: str
+    avatar_uri: str
+    brand_name: str
+    socials: list[tuple[str, str]]
+    eyebrow: str
+    league: str
+    slot: str
+    remaining: int
+    scenarios: str
+    scenario_unit: str
+    format_rule: str
+    exact: bool
+    organizers: str
+    credit: str
+    ranks: int
+    strip_columns: str
+    rows: list[CardRow]
+
+
 def render_card(report: ScenarioReport, config: LeagueConfig, event: EventInfo, *, fmt: str, as_of: date) -> str:
     """Render the outlook card as a standalone HTML page sized to the format.
 
@@ -105,7 +132,7 @@ def render_card(report: ScenarioReport, config: LeagueConfig, event: EventInfo, 
 
 def card_context(
     report: ScenarioReport, config: LeagueConfig, event: EventInfo, *, fmt: str, as_of: date
-) -> dict[str, object]:
+) -> CardContext:
     """Build the values the card template displays.
 
     Args:
