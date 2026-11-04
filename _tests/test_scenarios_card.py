@@ -47,6 +47,7 @@ def test_context_header():
     assert context['eyebrow'] == 'Rocket League · League Play · 4 Nov 2026'
     assert (context['league'], context['slot'], context['remaining']) == ('Test League', 'Top', 1)
     assert (context['scenarios'], context['scenario_unit'], context['exact']) == ('6', 'scenarios', True)
+    assert (context['method'], context['method_note']) == ('Exhaustive', 'every combination of the remaining results')
     assert context['format_rule'] == 'Bo5 · Top 1 → Top'
     assert (context['width'], context['height'], context['organizers']) == (1080, 1350, 'NEO')
 
@@ -79,7 +80,7 @@ def test_context_monte_carlo_never_claims_certainty():
     league = _league()
     series = [make_series(1, 'A', 'B', 3, 0), make_series(2, 'A', 'C', 3, 0), make_series(3, 'B', 'C')]
     context = _context(league, _report(league, series, method='montecarlo'))
-    assert (context['scenario_unit'], context['exact']) == ('simulations', False)
+    assert (context['scenario_unit'], context['exact'], context['method']) == ('simulations', False, 'Monte Carlo')
     assert not any(row.badge for row in context['rows'])
     assert context['rows'][0].share == '100%'
 
@@ -163,3 +164,9 @@ def test_primary_slot_errors():
         primary_slot(_report(_league()), make_league())
     with pytest.raises(VisualError, match="no 'Playoffs' shares"):
         primary_slot(_report(_league()), _league(qualification={'Playoffs': (1, 2)}))
+
+
+def test_context_names_the_semi_exhaustive_method():
+    """Test that a winners-first report is labelled semi-exhaustive, and still exact."""
+    context = _context(report=_report(_league(), method='winnersfirst'))
+    assert (context['method'], context['exact'], context['scenario_unit']) == ('Semi-exhaustive', True, 'scenarios')

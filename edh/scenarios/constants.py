@@ -75,5 +75,11 @@ CARD_FORMATS: dict[str, tuple[int, int]] = {
 }
 HEAT_FULL_SHARE = 0.6  # rank share drawn with the full heat color in the rank strip (lower shares fade out)
 STAGE_LABEL = 'League Play'
+# Method shown in the card footer: name, short description
+METHOD_LABELS = {
+    METHOD_EXHAUSTIVE: ('Exhaustive', 'every combination of the remaining results'),
+    METHOD_WINNERS_FIRST: ('Semi-exhaustive', 'every series winner, scores only where teams tie (exact)'),
+    METHOD_MONTE_CARLO: ('Monte Carlo', 'random samples, every remaining score equally likely'),
+}
 DATA_CREDIT = 'Liquipedia API / LPDB v3'
 GAME_NAMES = {'rocketleague': 'Rocket League'}  # Liquipedia wiki -> game name (the wiki itself otherwise)
