@@ -118,7 +118,8 @@ def test_main_visual_renders_the_evaluated_report(league_folder, monkeypatch):
     recorder = CardRecorder()
     monkeypatch.setattr(run, 'export_cards', recorder)
     assert run.main(['test_league', '--source', 'csv', '--samples', '100', '--seed', '1', '--visual']) == 0
-    [call] = recorder.calls
+    assert len(recorder.calls) == 1
+    call = recorder.calls[0]
     assert (call['folder'], call['as_of']) == (league_folder / 'outlook', date.today())
     assert call['report'] == read_outlook(league_folder / 'outlook' / 'outlook.json')
     assert call['event'] == EventInfo()  # csv source without an event snapshot
@@ -132,7 +133,8 @@ def test_main_visual_only_uses_saved_outlook(league_folder, monkeypatch):
     recorder = CardRecorder()
     monkeypatch.setattr(run, 'export_cards', recorder)
     assert run.main(['test_league', '--visual-only']) == 0
-    [call] = recorder.calls
+    assert len(recorder.calls) == 1
+    call = recorder.calls[0]
     assert call['event'] == NEO
     assert call['report'].scenarios == 100
     assert call['as_of'] == date.today()

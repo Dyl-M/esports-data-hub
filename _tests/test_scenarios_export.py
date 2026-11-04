@@ -49,7 +49,8 @@ class FakePage:
         """Record scripts run in the page."""
         self.evaluated.append(script)
 
-    def screenshot(self, path):
+    @staticmethod
+    def screenshot(path):
         """Write a placeholder file where the PNG would go."""
         path.write_bytes(b'png')
 

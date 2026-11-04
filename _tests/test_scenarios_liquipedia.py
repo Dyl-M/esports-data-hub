@@ -178,7 +178,8 @@ def test_fetch_opens_and_closes_its_own_client(cdf, monkeypatch):
     monkeypatch.setattr(liquipedia, 'LiquipediaClient', open_client)
     series = LiquipediaSource().fetch(cdf)
     assert len(series) == 30
-    [call] = calls
+    assert len(calls) == 1
+    call = calls[0]
     assert (call['app_name'], call['api_key'], call['client'].closed) == ('esports-data-hub', 'env-key', True)
 
 
