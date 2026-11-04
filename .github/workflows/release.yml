@@ -1,7 +1,7 @@
 name: Release
 
 # Tag main with the next year.month.patch version and open a draft release. The package version is read from that
-# tag (hatch-vcs), so no version bump commit is needed. Polish the draft's notes, then publish it.
+# tag (hatch-vcs). Polish the draft's notes, then publish it.
 on:
   workflow_dispatch:
 

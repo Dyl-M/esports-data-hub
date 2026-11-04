@@ -14,7 +14,8 @@ from pathlib import Path
 from ...exceptions import DataSourceError
 from ..config import league_dir
 from ..constants import NO_GOALS, RESULTS_COLUMNS, RESULTS_CSV
-from ..models import LeagueConfig, Series
+from ..models import EventInfo, LeagueConfig, Series
+from .event import event_path, read_event
 
 
 def results_path(config: LeagueConfig) -> Path:
@@ -62,6 +63,21 @@ class CsvSource:
                 return [_parse_row(row, line) for line, row in enumerate(reader, start=2)]
         except FileNotFoundError as error:
             raise DataSourceError(f'Results file not found: {path}') from error
+
+    @staticmethod
+    def fetch_event(config: LeagueConfig) -> EventInfo:
+        """Return the event details saved by the last Liquipedia run (`event_path`), whatever file `path` is.
+
+        Args:
+            config: League format, locating its snapshot.
+
+        Returns:
+            The event details, empty when no snapshot exists.
+
+        Raises:
+            DataSourceError: If the snapshot is invalid.
+        """
+        return read_event(event_path(config))
 
 
 def write_results(series: Iterable[Series], path: Path) -> None:

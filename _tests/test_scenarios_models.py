@@ -4,7 +4,16 @@
 import pytest
 
 # Local
-from edh.scenarios.models import QualificationSlot, RankGroup, ScenarioReport, Series, TeamOutlook, Tiebreaker
+from edh.scenarios.models import (
+    EventInfo,
+    QualificationSlot,
+    RankGroup,
+    ScenarioReport,
+    Series,
+    TeamOutlook,
+    Theme,
+    Tiebreaker,
+)
 
 from .conftest import make_league
 
@@ -119,3 +128,24 @@ def test_team_outlook_expected_rank():
 def test_scenario_report_exact(method, exact):
     """Test that only exhaustive reports are exact."""
     assert ScenarioReport('League', method, 1, 0, ()).exact is exact
+
+
+# === Event and theme ===
+
+
+def test_event_info_defaults_to_unknown_organizers():
+    """Test that event details default to no organizers."""
+    assert EventInfo().organizers == ()
+
+
+@pytest.mark.parametrize('color', ['#0443c8', '#0443C861', '#ABCDEF'])
+def test_theme_accepts_hex_colors(color):
+    """Test that themes take #rrggbb and #rrggbbaa colors."""
+    assert Theme(background=color).background == color
+
+
+@pytest.mark.parametrize('color', ['blue', '#fff', '#0443c8a', 'rgb(4, 67, 200)', '#0443c8 '])
+def test_theme_rejects_other_colors(color):
+    """Test that themes reject named, short and functional colors."""
+    with pytest.raises(ValueError, match='theme color glow'):
+        Theme(glow=color)

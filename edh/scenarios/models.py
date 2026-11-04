@@ -1,11 +1,14 @@
 """Data models for league play scenarios."""
 
 # Standard library
-from dataclasses import dataclass, field, replace
+import re
+from dataclasses import asdict, dataclass, field, replace
 from typing import Self
 
 # Local
 from .constants import CONTEXT_FULL, CONTEXT_MINI_LEAGUE, CONTEXTS, METHOD_EXHAUSTIVE, TIEBREAKER_MANUAL, TIEBREAKERS
+
+HEX_COLOR = re.compile(r'#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{8})')
 
 # === Results ===
 
@@ -58,6 +61,54 @@ class Series:
             The series with current team names.
         """
         return replace(self, team_1=aliases.get(self.team_1, self.team_1), team_2=aliases.get(self.team_2, self.team_2))
+
+
+# === Event ===
+
+
+@dataclass(frozen=True)
+class EventInfo:
+    """Event details shown on visuals, beyond the league format.
+
+    Attributes:
+        organizers: Tournament organizers, in Liquipedia order (empty when unknown).
+    """
+
+    organizers: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class Theme:
+    """Colors of the outlook card, tuned per competition (league.json `theme`); the neutral palette by default.
+
+    Qualified / eliminated / tiebreak colors are fixed across themes. Every color is `#rrggbb`, or `#rrggbbaa` for
+    a translucent one.
+
+    Attributes:
+        background: Card background.
+        surface: Empty rank cells and bar tracks.
+        line: Row separators.
+        text: Main text.
+        muted: Labels and secondary text.
+        heat: Rank strip color (probability of a rank).
+        accent: Title highlight.
+        glow: Radial glow in the top right corner (usually translucent).
+    """
+
+    background: str = '#11141b'
+    surface: str = '#1a1e28'
+    line: str = '#2a3040'
+    text: str = '#eceff5'
+    muted: str = '#8a93a6'
+    heat: str = '#6f8cff'
+    accent: str = '#6f8cff'
+    glow: str = '#6f8cff1a'
+
+    def __post_init__(self) -> None:
+        """Validate the colors."""
+        for name, value in asdict(self).items():
+            if not HEX_COLOR.fullmatch(value):
+                raise ValueError(f'theme color {name} must be #rrggbb or #rrggbbaa, got {value!r}')
 
 
 # === League format ===
@@ -139,6 +190,7 @@ class LeagueConfig:
         walkover_games: Games credited to the winner of a walkover.
         team_aliases: Old team name to current name.
         manual_tiebreakers: Manual tiebreak points per team (higher ranks first), 0 when absent.
+        theme: Colors of the league's outlook card.
     """
 
     slug: str
@@ -151,6 +203,7 @@ class LeagueConfig:
     walkover_games: int = 0
     team_aliases: dict[str, str] = field(default_factory=dict)
     manual_tiebreakers: dict[str, int] = field(default_factory=dict)
+    theme: Theme = field(default_factory=Theme)
 
     def __post_init__(self) -> None:
         """Validate the league format."""

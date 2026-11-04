@@ -227,6 +227,10 @@ __marimo__/
 _drafts/
 _data/*/outlook/
 
+# Visual design kept local: brand files (avatar, font, icons) and card templates
+edh/assets/
+edh/scenarios/visuals/templates/
+
 # Claude Code & Claude personal Config
 .claude/
 CLAUDE.md

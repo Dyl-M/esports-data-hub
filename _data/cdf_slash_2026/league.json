@@ -9,5 +9,15 @@
   },
   "walkover_games": 3,
   "team_aliases": {},
-  "manual_tiebreakers": {}
+  "manual_tiebreakers": {},
+  "theme": {
+    "background": "#061533",
+    "surface": "#0c2456",
+    "line": "#173473",
+    "text": "#f0f4fa",
+    "muted": "#8ea7d4",
+    "heat": "#2f86e0",
+    "accent": "#4f9cf0",
+    "glow": "#0443c861"
+  }
 }

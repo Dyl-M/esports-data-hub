@@ -12,8 +12,9 @@ from liquipydia import ApiResponse, LiquipediaError, Match
 from edh import paths
 from edh.exceptions import ConfigurationError, DataSourceError
 from edh.scenarios.config import load_league
+from edh.scenarios.models import EventInfo
 from edh.scenarios.sources import liquipedia
-from edh.scenarios.sources.liquipedia import LiquipediaSource, load_api_key, to_series
+from edh.scenarios.sources.liquipedia import LiquipediaSource, load_api_key, parse_organizers, to_series
 
 from .conftest import FIXTURES_DIR, make_league
 
@@ -59,13 +60,31 @@ class FakeMatches:
         return iter(self.matches)
 
 
+class FakeTournaments:
+    """Recorded `/tournament` responses, matching the source's `LpdbTournaments` protocol."""
+
+    def __init__(self, tournaments, error):
+        """Serve `tournaments`, or raise `error` when set; queries are recorded in `queries`."""
+        self.tournaments = tournaments
+        self.error = error
+        self.queries = []
+
+    def list(self, wiki, *, pagename, query=None):
+        """Record the query, then return one response holding the recorded tournaments."""
+        self.queries.append({'wiki': wiki, 'pagename': pagename, 'query': query})
+        if self.error:
+            raise self.error
+        return ApiResponse(result=self.tournaments, warnings=[])
+
+
 class FakeClient:
     """Stand-in for LiquipediaClient serving recorded payloads, matching the source's `LpdbClient` protocol."""
 
-    def __init__(self, tables=None, matches=None, error=None):
-        """Serve `tables` and `matches` (the recorded CdF payloads by default), or raise `error` on any query."""
+    def __init__(self, tables=None, matches=None, error=None, tournaments=None):
+        """Serve `tables`, `matches` and `tournaments` (recorded CdF payloads by default), or raise `error`."""
         self.standings_tables = FakeStandingsTables(_load('standingstable') if tables is None else tables, error)
         self.matches = FakeMatches(_load('match') if matches is None else matches, error)
+        self.tournaments = FakeTournaments(_load('tournament') if tournaments is None else tournaments, error)
         self.closed = False
 
     def __enter__(self):
@@ -159,8 +178,69 @@ def test_fetch_opens_and_closes_its_own_client(cdf, monkeypatch):
     monkeypatch.setattr(liquipedia, 'LiquipediaClient', open_client)
     series = LiquipediaSource().fetch(cdf)
     assert len(series) == 30
-    [call] = calls
+    assert len(calls) == 1
+    call = calls[0]
     assert (call['app_name'], call['api_key'], call['client'].closed) == ('esports-data-hub', 'env-key', True)
+
+
+# === fetch_event ===
+
+
+def test_fetch_event_cdf(cdf):
+    """Test that the organizers come from the league page's tournament record."""
+    client = FakeClient()
+    assert LiquipediaSource(client).fetch_event(cdf) == EventInfo(organizers=('NEO',))
+    assert client.tournaments.queries == [
+        {'wiki': 'rocketleague', 'pagename': 'NEO/Coupe_de_France_Slash/2026', 'query': 'pagename,organizers'}
+    ]
+
+
+def test_fetch_event_without_tournament_record(cdf, caplog):
+    """Test that a page without a tournament record gives unknown organizers, with a warning."""
+    with caplog.at_level(logging.WARNING):
+        assert LiquipediaSource(FakeClient(tournaments=[])).fetch_event(cdf) == EventInfo()
+    assert 'organizers unknown' in caplog.text
+
+
+def test_fetch_event_api_error(cdf):
+    """Test that an API failure is a data source error."""
+    with pytest.raises(DataSourceError, match='request failed'):
+        LiquipediaSource(FakeClient(error=LiquipediaError('boom'))).fetch_event(cdf)
+
+
+def test_fetch_event_opens_its_own_client(cdf, monkeypatch):
+    """Test that without an injected client, fetch_event opens one with the configured key and closes it afterwards."""
+    calls = []
+
+    def open_client(app_name, *, api_key):
+        """Stand in for the LiquipediaClient constructor, recording how it was called."""
+        client = FakeClient()
+        calls.append({'app_name': app_name, 'api_key': api_key, 'client': client})
+        return client
+
+    monkeypatch.setenv('LPDB_API_KEY', 'env-key')
+    monkeypatch.setattr(liquipedia, 'LiquipediaClient', open_client)
+    assert LiquipediaSource().fetch_event(cdf).organizers == ('NEO',)
+    assert len(calls) == 1
+    call = calls[0]
+    assert (call['app_name'], call['api_key'], call['client'].closed) == ('esports-data-hub', 'env-key', True)
+
+
+@pytest.mark.parametrize(
+    ('text', 'organizers'),
+    [
+        ('{"organizer1":"NEO"}', ('NEO',)),
+        ('{"organizer10":"J","organizer2":"B","organizer1":"A"}', ('A', 'B', 'J')),
+        ('{"organizer1":"A","organizer2":""}', ('A',)),
+        ('', ()),
+        (None, ()),
+        ('[]', ()),
+        ('{not json', ()),
+    ],
+)
+def test_parse_organizers(text, organizers):
+    """Test that organizers are read in numeric key order, empty or unreadable values giving none."""
+    assert parse_organizers(text) == organizers
 
 
 # === to_series ===

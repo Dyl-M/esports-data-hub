@@ -30,3 +30,8 @@ def test_cdf_slash_2026_live():
     assert len({team for item in series for team in item.teams}) == 6
     report = evaluate(league, series, method='montecarlo', samples=500, seed=0)
     assert len(report.teams) == 6
+
+
+def test_cdf_slash_2026_organizers_live():
+    """Test that the live tournament record names the Coupe de France Slash 2026 organizer."""
+    assert LiquipediaSource().fetch_event(load_league('cdf_slash_2026')).organizers == ('NEO',)
