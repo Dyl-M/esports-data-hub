@@ -25,3 +25,7 @@ class DataSourceError(EsportsDataHubError):
 
 class ScenarioError(EsportsDataHubError):
     """Raised when scenarios cannot be evaluated (no series, impossible score, unknown or oversized method)."""
+
+
+class VisualError(EsportsDataHubError):
+    """Raised when a visual cannot be built or rendered (no qualification slot, browser missing or failing)."""

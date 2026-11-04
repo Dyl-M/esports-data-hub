@@ -4,10 +4,10 @@
 import pytest
 
 # Local
-from edh.exceptions import ConfigurationError, DataSourceError, EsportsDataHubError, ScenarioError
+from edh.exceptions import ConfigurationError, DataSourceError, EsportsDataHubError, ScenarioError, VisualError
 
 
-@pytest.mark.parametrize('error_cls', [ConfigurationError, DataSourceError, ScenarioError])
+@pytest.mark.parametrize('error_cls', [ConfigurationError, DataSourceError, ScenarioError, VisualError])
 def test_errors_derive_from_base(error_cls):
     """Every project error can be caught through the base exception."""
     with pytest.raises(EsportsDataHubError, match='boom'):

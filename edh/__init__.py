@@ -8,6 +8,7 @@ __version__ = version('esports-data-hub')
 __author__ = 'Dylan "dyl-m" Monfret'
 
 __all__ = [
+    'brand',
     'exceptions',
     'paths',
     'scenarios',

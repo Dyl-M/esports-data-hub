@@ -9,10 +9,12 @@ import pytest
 # Local
 from edh import paths
 from edh.scenarios.models import LeagueConfig, QualificationSlot, Series, Tiebreaker
+from edh.scenarios.visuals import card
 
 # Test data directory
 FIXTURES_DIR = Path(__file__).parent / 'fixtures'
 CDF_DAY2_CSV = FIXTURES_DIR / 'cdf_slash_2026_day2.csv'
+VISUALS_DIR = FIXTURES_DIR / 'visuals'  # placeholder brand files (assets/) and card template (templates/)
 
 
 def make_series(round_, team_1, team_2, score_1=0, score_2=0, **kwargs):
@@ -41,6 +43,14 @@ def data_dir(tmp_path, monkeypatch):
     """Redirect paths.DATA_DIR to a temporary folder."""
     monkeypatch.setattr(paths, 'DATA_DIR', tmp_path)
     return tmp_path
+
+
+@pytest.fixture
+def visual_files(monkeypatch):
+    """Use the placeholder brand files and card template: the real ones are kept out of git."""
+    monkeypatch.setattr(paths, 'ASSETS_DIR', VISUALS_DIR / 'assets')
+    monkeypatch.setattr(card, 'TEMPLATES_DIR', VISUALS_DIR / 'templates')
+    return VISUALS_DIR
 
 
 @pytest.fixture

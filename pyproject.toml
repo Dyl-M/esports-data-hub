@@ -21,8 +21,10 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
+    "jinja2>=3.1,<4",
     "liquipydia>=0.1.2,<1",
     "numpy>=2.5,<3",
+    "playwright>=1.64,<2", # PNG export; needs `uv run playwright install chromium` once
 ]
 
 [project.urls]
@@ -115,6 +117,7 @@ testpaths = ["_tests"]
 addopts = "-v --strict-markers --tb=short"
 markers = [
     "integration: opt-in tests that hit the live Liquipedia API (requires an LPDB API key)",
+    "browser: tests that render with Playwright's Chromium (requires `uv run playwright install chromium`)",
 ]
 
 # --- Coverage ---
