@@ -9,6 +9,7 @@ METHODS = (METHOD_AUTO, METHOD_EXHAUSTIVE, METHOD_MONTE_CARLO)
 
 MAX_EXHAUSTIVE_SCENARIOS = 1_000_000  # above this, 'auto' falls back to Monte Carlo
 DEFAULT_SAMPLES = 100_000  # Monte Carlo sample count
+SAMPLE_BATCH = 10_000  # Monte Carlo samples drawn per numpy call (bounds memory)
 
 # === Tiebreakers ===
 # Identifiers follow Liquipedia's GroupStandings `tiebreakers` parameter (Module:Standings/Tiebreaker).

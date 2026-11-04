@@ -3,7 +3,6 @@
 # Standard library
 import json
 from pathlib import Path
-from typing import Any
 
 # Local
 from .. import paths
@@ -48,7 +47,7 @@ def load_league(slug: str) -> LeagueConfig:
     return parse_league(slug, data, file_path=str(file_path))
 
 
-def parse_league(slug: str, data: Any, *, file_path: str | None = None) -> LeagueConfig:  # noqa: ANN401 - raw JSON
+def parse_league(slug: str, data: object, *, file_path: str | None = None) -> LeagueConfig:
     """Build a league format from its JSON content.
 
     Args:

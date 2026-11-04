@@ -6,10 +6,12 @@ Every reachable final score of a remaining series is equally likely (a Bo5 at 0-
 
 # Standard library
 import math
-import random
 from collections.abc import Iterator, Sequence
 from dataclasses import replace
 from itertools import product
+
+# Third-party
+import numpy as np
 
 # Local
 from ..exceptions import ScenarioError
@@ -20,6 +22,7 @@ from .constants import (
     METHOD_EXHAUSTIVE,
     METHOD_MONTE_CARLO,
     METHODS,
+    SAMPLE_BATCH,
 )
 from .models import LeagueConfig, QualificationSlot, RankGroup, ScenarioReport, Series, TeamOutlook
 from .outcomes import reachable_scores
@@ -203,9 +206,13 @@ def _scenarios(
     if method == METHOD_EXHAUSTIVE:
         yield from product(*endings)
         return
-    rng = random.Random(seed)  # noqa: S311 - simulation sampling, not cryptography
-    for _ in range(samples):
-        yield tuple(rng.choice(options) for options in endings)
+    rng = np.random.default_rng(seed)
+    counts = np.array([len(options) for options in endings], dtype=np.int64)
+    for start in range(0, samples, SAMPLE_BATCH):
+        # One draw per (sample, pending series): an index into that series' equally likely endings
+        picks = rng.integers(0, counts, size=(min(SAMPLE_BATCH, samples - start), len(endings)))
+        for row in picks.tolist():
+            yield tuple(options[index] for options, index in zip(endings, row, strict=True))
 
 
 def _complete(series: Series, score: tuple[int, int]) -> Series:
