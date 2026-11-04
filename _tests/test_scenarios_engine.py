@@ -89,8 +89,8 @@ def test_evaluate_monte_carlo_is_seeded(one_series_left):
     second = evaluate(make_league(), one_series_left, method='montecarlo', samples=3000, seed=7)
     assert first == second
     assert (first.method, first.scenarios, first.exact) == ('montecarlo', 3000, False)
-    leader = next(item for item in first.teams if item.team == 'A')
-    assert leader.rank_shares[0] == pytest.approx(5 / 6 + 1 / 18, abs=0.03)
+    outlook = {item.team: item for item in first.teams}
+    assert outlook['A'].rank_shares[0] == pytest.approx(5 / 6 + 1 / 18, abs=0.03)
 
 
 def test_evaluate_applies_aliases():
@@ -149,3 +149,18 @@ def test_evaluate_orders_teams_by_projected_rank(one_series_left):
     """Test that every team gets a distinct projected rank and the report follows it."""
     report = evaluate(make_league(), one_series_left)
     assert [(item.team, item.projected_rank) for item in report.teams] == [('A', 1), ('B', 2), ('C', 3)]
+
+
+def test_evaluate_monte_carlo_batches(one_series_left, monkeypatch):
+    """Test that sampling in batches yields exactly the requested sample count, including a partial last batch."""
+    monkeypatch.setattr(engine, 'SAMPLE_BATCH', 10)
+    report = evaluate(make_league(), one_series_left, method='montecarlo', samples=25, seed=1)
+    assert report.scenarios == 25
+    assert all(sum(item.rank_shares) == pytest.approx(1) for item in report.teams)
+
+
+def test_evaluate_monte_carlo_without_pending_series():
+    """Test that sampling a finished league repeats its only scenario."""
+    report = evaluate(make_league(), [make_series(1, 'A', 'B', 3, 0)], method='montecarlo', samples=5, seed=1)
+    assert (report.scenarios, report.remaining) == (5, 0)
+    assert report.teams[0].rank_shares == (1.0, 0.0)

@@ -38,11 +38,13 @@ class FakeClient:
         self.matches = SimpleNamespace(paginate=self._paginate)
 
     def _list_tables(self, wiki, **kwargs):
+        """Mimic `client.standings_tables.list`: one response holding the recorded tables."""
         if self.error:
             raise self.error
         return ApiResponse(result=self.tables, warnings=[])
 
     def _paginate(self, wiki, **kwargs):
+        """Mimic `client.matches.paginate`: iterate over the recorded matches."""
         if self.error:
             raise self.error
         return iter(self.matches_payload)
@@ -56,7 +58,8 @@ def cdf():
 
 def _match(match_id):
     """Return a recorded match by id."""
-    return Match.model_validate(next(item for item in _load('match') if item['match2id'] == match_id))
+    matches = {item['match2id']: item for item in _load('match')}
+    return Match.model_validate(matches[match_id])
 
 
 # === fetch ===

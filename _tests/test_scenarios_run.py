@@ -23,6 +23,18 @@ LEAGUE = {
 }
 
 
+class StaticSource:
+    """Result source serving a fixed list of series, standing in for Liquipedia."""
+
+    def __init__(self, series):
+        """Serve `series` on every fetch."""
+        self.series = series
+
+    def fetch(self, config):
+        """Return the stored series, whatever the league."""
+        return self.series
+
+
 @pytest.fixture
 def league_folder(data_dir):
     """Create a test league with the CDF snapshot as its results."""
@@ -52,12 +64,7 @@ def test_main_csv_source(league_folder, capsys):
 def test_main_liquipedia_source_saves_snapshot(league_folder, monkeypatch):
     """Test that fetched Liquipedia results are saved as the CSV snapshot."""
     fetched = [make_series(1, 'A', 'B', 3, 0), make_series(2, 'A', 'B')]
-
-    class FakeSource:
-        def fetch(self, config):
-            return fetched
-
-    monkeypatch.setattr(run, 'build_source', lambda name, config: FakeSource())
+    monkeypatch.setattr(run, 'build_source', lambda name, config: StaticSource(fetched))
     assert run.main(['test_league']) == 0
     assert CsvSource(league_folder / 'results.csv').fetch(None) == fetched
 
