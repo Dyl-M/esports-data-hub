@@ -29,7 +29,7 @@ It succeeds [`league-play-scenarios`](https://github.com/Dyl-M/league-play-scena
 ### How it works
 
 - **Format**: each league has a `_data/<league>/league.json` (series length, ordered tiebreakers, qualification
-  spots, Liquipedia page), written from its Liquipedia page.
+  spots, Liquipedia page), written from its Liquipedia page, plus optional `theme` colors for its outlook card.
 - **Scenarios**: every reachable final score of a remaining series is equally likely (a Bo5 at 0-0 ends 3-0, 3-1,
   3-2, 0-3, 1-3 or 2-3); a series in progress continues from its current score. Up to 10^6 scenarios are enumerated
   exactly, larger counts are sampled (Monte Carlo).
@@ -46,26 +46,45 @@ variable or from the `lpdb` field of `.tokens/local_keys.json` (gitignored).
 uv run python -m edh.scenarios.run cdf_slash_2026                    # fetch from Liquipedia, then evaluate
 uv run python -m edh.scenarios.run cdf_slash_2026 --source csv       # offline, from the saved results.csv
 uv run python -m edh.scenarios.run cdf_slash_2026 --method montecarlo --samples 200000 --seed 1
+uv run python -m edh.scenarios.run cdf_slash_2026 --visual           # evaluate, then render the outlook card
+uv run python -m edh.scenarios.run cdf_slash_2026 --visual-only      # render the card from the saved outlook
 ```
 
 Each run prints, per team, the share of scenarios ending at each rank and qualifying, and saves it to
 `_data/<league>/outlook/` (`outlook.csv` / `outlook.json`, gitignored). A Liquipedia run also saves the results to
-`_data/<league>/results.csv`.
+`_data/<league>/results.csv` and the event organizers to `_data/<league>/event.json`.
 
 Teams are listed in **projected standings** order: each rank goes to one team, taking team / rank pairings from the
 most to the least likely (a team losing its most likely rank to a likelier team falls back to its next most likely free
 rank).
+
+### Outlook card
+
+`--visual` turns the outlook into a card to share on social media, saved as `card_portrait.png` (1080×1350),
+`card_square.png` (1080×1080) and `card_landscape.png` (1200×675) in `_data/<league>/outlook/`. Each team row shows its
+share of scenarios reaching the league's first qualification slot and its share of each final rank. The footer names
+the evaluation method and credits the event organizers for the results (read from Liquipedia). The card is an HTML
+template rendered by a headless Chromium through [Playwright](https://playwright.dev/python/), installed once with:
+
+```bash
+uv run playwright install chromium
+```
+
+The card template (`edh/scenarios/visuals/templates/`) and the brand files it embeds (`edh/assets/`: profile picture,
+font, social icons) are kept out of git, so cards can only be rendered where those files exist locally; without them,
+`--visual` stops with an error naming the missing file.
 
 ## Repository structure
 
 ```
 esports-data-hub/
 ├── .github          # GitHub Actions workflows (tests & coverage, license year), Dependabot config, CODEOWNERS
-├── _data            # One folder per league: league.json (format) and results.csv (results snapshot)
-├── _tests           # Pytest test suite, CSV and recorded Liquipedia fixtures, shared configuration
-└── edh              # Main application package: exceptions, paths
+├── _data            # One folder per league: league.json (format), results.csv and event.json (Liquipedia snapshots)
+├── _tests           # Pytest test suite, CSV / recorded Liquipedia / placeholder visual fixtures, shared configuration
+└── edh              # Main application package: exceptions, paths, brand
     └── scenarios    # League play scenarios: models, config, standings / tiebreakers, engine, report, run.py (CLI)
-        └── sources  # Result sources: Liquipedia (through liquipydia) and CSV
+        ├── sources  # Result sources: Liquipedia (through liquipydia) and CSV, event details snapshot
+        └── visuals  # Outlook card: HTML rendering (Jinja2) and PNG export (Playwright)
 ```
 
 ## Development
@@ -73,11 +92,14 @@ esports-data-hub/
 The project uses [uv](https://docs.astral.sh/uv/) and Python 3.13.
 
 ```bash
-uv sync                              # install dependencies (dev tools included)
-uv run pytest -m "not integration"   # tests (the integration ones call the live Liquipedia API)
-uv run ruff check .                  # lint
-uv run ruff format --check .         # format check
-uv run mypy edh                      # type check
+uv sync                                              # install dependencies (dev tools included)
+uv run pytest -m "not integration and not browser"   # tests run by CI (see below)
+uv run ruff check .                                  # lint
+uv run ruff format --check .                         # format check
+uv run mypy edh                                      # type check
 ```
+
+Two opt-in test markers stay out of CI: `integration` calls the live Liquipedia API (needs an LPDB API key), `browser`
+renders cards with Playwright's Chromium.
 
 Code is reviewed by the [DeepSource](https://deepsource.io/) bot.
