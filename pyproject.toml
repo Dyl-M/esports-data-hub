@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "esports-data-hub"
-version = "2026.11.0"
+version = "2026.11.1"
 description = "A repository containing projects related to esports and data."
 readme = "README.md"
 license = "MIT"
