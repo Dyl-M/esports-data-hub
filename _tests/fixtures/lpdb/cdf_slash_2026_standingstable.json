@@ -1,0 +1,179 @@
+[
+ {
+  "pageid": 174741,
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "namespace": 0,
+  "objectname": "174741_standingsTable_0",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "standingsindex": 0,
+  "title": "",
+  "tournament": "Coupe de France Slash 2026",
+  "section": "League Play",
+  "type": "league",
+  "matches": [
+   "dprh3EmctD_0001",
+   "dprh3EmctD_0002",
+   "dprh3EmctD_0003",
+   "dprh3EmctD_0004",
+   "dprh3EmctD_0005",
+   "S2gxo05PHv_0001",
+   "S2gxo05PHv_0002",
+   "S2gxo05PHv_0003",
+   "S2gxo05PHv_0004",
+   "S2gxo05PHv_0005",
+   "KYsrR25uHZ_0001",
+   "KYsrR25uHZ_0002",
+   "KYsrR25uHZ_0003",
+   "KYsrR25uHZ_0004",
+   "KYsrR25uHZ_0005",
+   "eVYCuk2PYV_0001",
+   "eVYCuk2PYV_0002",
+   "eVYCuk2PYV_0003",
+   "eVYCuk2PYV_0004",
+   "eVYCuk2PYV_0005",
+   "PrQ4121CGd_0001",
+   "PrQ4121CGd_0002",
+   "PrQ4121CGd_0003",
+   "PrQ4121CGd_0004",
+   "PrQ4121CGd_0005",
+   "rO8mtD9NUQ_0001",
+   "rO8mtD9NUQ_0002",
+   "rO8mtD9NUQ_0003",
+   "rO8mtD9NUQ_0004",
+   "rO8mtD9NUQ_0005"
+  ],
+  "config": {
+   "haspoints": true,
+   "hasdraws": false,
+   "hasovertime": false
+  },
+  "extradata": {
+   "hasdraw": false,
+   "finished": false,
+   "hasovertime": false,
+   "stagename": "League Play",
+   "rounds": {
+    "1": {
+     "roundNumber": 1,
+     "finished": true,
+     "title": "Day 1",
+     "started": true,
+     "matches": {
+      "1": "dprh3EmctD_0001",
+      "2": "dprh3EmctD_0002",
+      "3": "dprh3EmctD_0003",
+      "4": "dprh3EmctD_0004",
+      "5": "dprh3EmctD_0005"
+     }
+    },
+    "2": {
+     "roundNumber": 2,
+     "finished": false,
+     "title": "Day 2",
+     "started": true,
+     "matches": {
+      "1": "S2gxo05PHv_0001",
+      "2": "S2gxo05PHv_0002",
+      "3": "S2gxo05PHv_0003",
+      "4": "S2gxo05PHv_0004",
+      "5": "S2gxo05PHv_0005"
+     }
+    },
+    "3": {
+     "roundNumber": 3,
+     "finished": false,
+     "title": "Day 3",
+     "started": false,
+     "matches": {
+      "1": "KYsrR25uHZ_0001",
+      "2": "KYsrR25uHZ_0002",
+      "3": "KYsrR25uHZ_0003",
+      "4": "KYsrR25uHZ_0004",
+      "5": "KYsrR25uHZ_0005"
+     }
+    },
+    "4": {
+     "roundNumber": 4,
+     "finished": false,
+     "title": "Day 4",
+     "started": false,
+     "matches": {
+      "1": "eVYCuk2PYV_0001",
+      "2": "eVYCuk2PYV_0002",
+      "3": "eVYCuk2PYV_0003",
+      "4": "eVYCuk2PYV_0004",
+      "5": "eVYCuk2PYV_0005"
+     }
+    },
+    "5": {
+     "roundNumber": 5,
+     "finished": false,
+     "title": "Day 5",
+     "started": false,
+     "matches": {
+      "1": "PrQ4121CGd_0001",
+      "2": "PrQ4121CGd_0002",
+      "3": "PrQ4121CGd_0003",
+      "4": "PrQ4121CGd_0004",
+      "5": "PrQ4121CGd_0005"
+     }
+    },
+    "6": {
+     "roundNumber": 6,
+     "finished": false,
+     "title": "Day 6",
+     "started": false,
+     "matches": {
+      "1": "rO8mtD9NUQ_0001",
+      "2": "rO8mtD9NUQ_0002",
+      "3": "rO8mtD9NUQ_0003",
+      "4": "rO8mtD9NUQ_0004",
+      "5": "rO8mtD9NUQ_0005"
+     }
+    }
+   },
+   "additionalStats": {
+    "1": {
+     "id": "full.matchscore",
+     "title": "Match"
+    },
+    "2": {
+     "id": "full.gamescore",
+     "title": "Game"
+    },
+    "3": {
+     "id": "full.disqualified",
+     "tiebreaker": true
+    },
+    "4": {
+     "id": "full.matchscore",
+     "title": "Match",
+     "tiebreaker": true
+    },
+    "5": {
+     "id": "full.gamediff",
+     "title": "GD",
+     "tiebreaker": true
+    },
+    "6": {
+     "id": "ml.gamediff",
+     "tiebreaker": true
+    },
+    "7": {
+     "id": "ml.rounddiff",
+     "tiebreaker": true
+    },
+    "8": {
+     "id": "full.manual",
+     "tiebreaker": true
+    },
+    "9": {
+     "id": "full.manual",
+     "tiebreaker": true
+    }
+   },
+   "roundcount": 6
+  },
+  "wiki": "rocketleague"
+ }
+]
