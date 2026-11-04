@@ -1,7 +1,7 @@
 {# Test placeholder for the local-only card template: prints every context value the real template uses. #}
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><style>@font-face { font-family: 'Test'; src: url({{ font_uri }}); }</style></head>
+<head><meta charset="utf-8"><title>{{ league }} · {{ slot }} outlook</title><style>@font-face { font-family: 'Test'; src: url({{ font_uri }}); }</style></head>
 <body style="margin: 0; background: {{ theme.background }}">
 <div class="frame {{ format }}" style="width: {{ width }}px; height: {{ height }}px; --c-bg: {{ theme.background }}; --c-glow: {{ theme.glow }}; --c-fg: {{ theme.text }}">
 <p class="header">{{ eyebrow }} | {{ league }} | {{ slot }} | {{ remaining }} | {{ scenarios }} {{ scenario_unit }} | {{ format_rule }} | exact={{ exact }}</p>

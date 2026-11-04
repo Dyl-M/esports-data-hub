@@ -209,18 +209,21 @@ def test_fetch_event_api_error(cdf):
 
 
 def test_fetch_event_opens_its_own_client(cdf, monkeypatch):
-    """Test that without an injected client, fetch_event opens one and closes it afterwards."""
-    clients = []
+    """Test that without an injected client, fetch_event opens one with the configured key and closes it afterwards."""
+    calls = []
 
     def open_client(app_name, *, api_key):
-        """Stand in for the LiquipediaClient constructor."""
-        clients.append(FakeClient())
-        return clients[-1]
+        """Stand in for the LiquipediaClient constructor, recording how it was called."""
+        client = FakeClient()
+        calls.append({'app_name': app_name, 'api_key': api_key, 'client': client})
+        return client
 
     monkeypatch.setenv('LPDB_API_KEY', 'env-key')
     monkeypatch.setattr(liquipedia, 'LiquipediaClient', open_client)
     assert LiquipediaSource().fetch_event(cdf).organizers == ('NEO',)
-    assert clients[0].closed
+    assert len(calls) == 1
+    call = calls[0]
+    assert (call['app_name'], call['api_key'], call['client'].closed) == ('esports-data-hub', 'env-key', True)
 
 
 @pytest.mark.parametrize(

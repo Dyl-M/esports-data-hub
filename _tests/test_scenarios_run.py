@@ -35,10 +35,11 @@ class StaticSource:
     """Result source serving a fixed list of series and event details, standing in for Liquipedia."""
 
     def __init__(self, series, event=NEO):
-        """Serve `series` and `event` on every fetch; the leagues asked for are recorded in `configs`."""
+        """Serve `series` and `event`; the leagues asked for are recorded in `configs` / `event_configs`."""
         self.series = series
         self.event = event
         self.configs = []
+        self.event_configs = []
 
     def fetch(self, config):
         """Record the league asked for, then return the stored series."""
@@ -46,20 +47,24 @@ class StaticSource:
         return self.series
 
     def fetch_event(self, config):
-        """Return the stored event details."""
+        """Record the league asked for, then return the stored event details."""
+        self.event_configs.append(config)
         return self.event
 
 
 class CardRecorder:
     """Stands in for `export_cards`, recording its calls instead of starting a browser."""
 
-    def __init__(self):
-        """Start with no call."""
+    def __init__(self, error=None):
+        """Start with no call; raise `error` on every call when set."""
         self.calls = []
+        self.error = error
 
     def __call__(self, report, config, event, folder, *, as_of):
-        """Record the call and return the paths a real export would write."""
+        """Record the call, then fail with the error or return the paths a real export would write."""
         self.calls.append({'report': report, 'config': config, 'event': event, 'folder': folder, 'as_of': as_of})
+        if self.error:
+            raise self.error
         return [folder / 'card_portrait.png']
 
 
@@ -98,7 +103,7 @@ def test_main_liquipedia_source_saves_snapshot(league_folder, monkeypatch):
     monkeypatch.setattr(run, 'export_cards', recorder)
     assert run.main(['test_league']) == 0
     league = run.load_league('test_league')
-    assert source.configs == [league]
+    assert source.configs == source.event_configs == [league]
     assert CsvSource().fetch(league) == fetched
     assert CsvSource.fetch_event(league) == NEO
     assert not recorder.calls
@@ -147,13 +152,10 @@ def test_main_visual_only_without_outlook(league_folder):
 
 def test_main_visual_error_exits_with_code_1(league_folder, monkeypatch):
     """Test that a rendering failure exits with code 1 after the outlook is saved."""
-
-    def fail(*args, **kwargs):
-        """Fail like a missing browser."""
-        raise VisualError('no browser')
-
-    monkeypatch.setattr(run, 'export_cards', fail)
+    recorder = CardRecorder(error=VisualError('no browser'))
+    monkeypatch.setattr(run, 'export_cards', recorder)
     assert run.main(['test_league', '--source', 'csv', '--samples', '100', '--visual']) == 1
+    assert len(recorder.calls) == 1
     assert (league_folder / 'outlook' / 'outlook.json').is_file()
 
 
