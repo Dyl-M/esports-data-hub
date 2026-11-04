@@ -221,6 +221,23 @@ class _ComparisonGrid:
 
 
 @dataclass(frozen=True)
+class _TiedCase:
+    """A tied group whose series winners are fixed, as its margins are resolved.
+
+    Attributes:
+        group: Tied teams.
+        internal: Remaining series between two of them.
+        offsets: State slot of the games won / lost by each ordered pair of them in their internal series.
+        matches: Every team's series won / lost, the winners being fixed.
+    """
+
+    group: Group
+    internal: tuple[_Outcome, ...]
+    offsets: dict[tuple[str, str], int]
+    matches: dict[str, list[int]]
+
+
+@dataclass(frozen=True)
 class _Read:
     """Node of the split cache: the resolver reads the mini-league records of `subgroup` next."""
 
@@ -319,6 +336,7 @@ class WinnersFirst:
             full[outcome.loser].match_losses += 1
 
         def mini(group: Group) -> Mapping[str, TeamRecord]:
+            """Return the series records of `group` over the series between its teams."""
             records = {
                 team: TeamRecord(record.match_wins, record.match_losses)
                 for team, record in self._played_between(group).items()
@@ -370,51 +388,63 @@ class WinnersFirst:
         per team, and only how the teams' full-league statistics then compare matters (`_ComparisonGrid`).
         """
         index = {team: position for position, team in enumerate(group)}
-        internal = [outcome for outcome in involved if outcome.winner in index and outcome.loser in index]
+        internal = tuple(outcome for outcome in involved if outcome.winner in index and outcome.loser in index)
         offsets: dict[tuple[str, str], int] = {}
         for outcome in internal:
             for pair in ((outcome.winner, outcome.loser), (outcome.loser, outcome.winner)):
                 offsets.setdefault(pair, 2 * len(group) + 2 * len(offsets))
-
         states: dict[State, float] = {(0,) * (2 * len(group) + 2 * len(offsets)): 1.0}
         for outcome in internal:
-            moves = [self._move(outcome, score, index, offsets) for score in outcome.scores]
-            states = _spread(states, moves)
-        external = self._external(index, involved)
+            states = _spread(states, [self._move(outcome, score, index, offsets) for score in outcome.scores])
 
-        matches = {team: [record.match_wins, record.match_losses] for team, record in self.base.items()}
-        for outcome in involved:
-            matches[outcome.winner][0] += 1
-            matches[outcome.loser][1] += 1
-
+        case = _TiedCase(group, internal, offsets, self._series_records(involved))
+        grid = _ComparisonGrid(self.keep_full, self._external(index, involved))
         # The external series only see the full-league part of an internal state: group the states by it
         by_full: defaultdict[State, list[tuple[State, float]]] = defaultdict(list)
         for state, weight in states.items():
             by_full[state[: 2 * len(group)]].append((state, weight))
-
-        grid = _ComparisonGrid(self.keep_full, external)
-        group_matches = tuple(tuple(matches[team]) for team in group)
         resolutions: defaultdict[Resolution, float] = defaultdict(float)
         for full_part, variants in by_full.items():
-            bases = [
-                (
-                    self.base[team].game_wins + full_part[2 * position],
-                    self.base[team].game_losses + full_part[2 * position + 1],
-                )
-                for position, team in enumerate(group)
-            ]
-            total = sum(weight for _, weight in variants)
-            for pattern, totals, share in grid.classes(bases):
-                full = self._full_records(group, totals, matches)
-                root = (group, group_matches, pattern)
-                node = self._splits.get(root)
-                if node is not None and not isinstance(node, _Read):
-                    resolutions[node] += total * share  # no `ml.` tiebreaker read: same split for every variant
-                    continue
-                for state, weight in variants:
-                    split = self._cached_split(group, root, full, self._mini_records(state, internal, offsets))
-                    resolutions[split] += weight * share
+            self._resolve_variants(case, grid, full_part, variants, resolutions)
         return list(resolutions.items())
+
+    def _series_records(self, involved: Sequence[_Outcome]) -> dict[str, list[int]]:
+        """Return every team's series won / lost, the winners of the series involving a tied group being fixed."""
+        matches = {team: [record.match_wins, record.match_losses] for team, record in self.base.items()}
+        for outcome in involved:
+            matches[outcome.winner][0] += 1
+            matches[outcome.loser][1] += 1
+        return matches
+
+    def _resolve_variants(
+        self,
+        case: _TiedCase,
+        grid: _ComparisonGrid,
+        full_part: State,
+        variants: Sequence[tuple[State, float]],
+        resolutions: defaultdict[Resolution, float],
+    ) -> None:
+        """Add the splits of the internal states sharing one full-league part, over every external outcome."""
+        group = case.group
+        bases = [
+            (
+                self.base[team].game_wins + full_part[2 * position],
+                self.base[team].game_losses + full_part[2 * position + 1],
+            )
+            for position, team in enumerate(group)
+        ]
+        total = sum(weight for _, weight in variants)
+        group_matches = tuple(tuple(case.matches[team]) for team in group)
+        for pattern, totals, share in grid.classes(bases):
+            full = self._full_records(group, totals, case.matches)
+            root = (group, group_matches, pattern)
+            node = self._splits.get(root)
+            if node is not None and not isinstance(node, _Read):
+                resolutions[node] += total * share  # no `ml.` tiebreaker read: same split for every variant
+                continue
+            for state, weight in variants:
+                split = self._cached_split(group, root, full, self._mini_records(state, case.internal, case.offsets))
+                resolutions[split] += weight * share
 
     def _external(self, index: Mapping[str, int], involved: Sequence[_Outcome]) -> list[dict[State, float]]:
         """Return, per team of a tied group, the distribution of games won / lost (as kept) in its external series."""
@@ -458,6 +488,7 @@ class WinnersFirst:
         reads: list[tuple[Group, tuple[object, ...]]] = []
 
         def watched(subgroup: Group) -> Mapping[str, TeamRecord]:
+            """Return the mini-league records of `subgroup`, noting that the resolver read them."""
             records = mini(subgroup)
             reads.append((subgroup, _fingerprint(records)))
             return records
@@ -511,6 +542,7 @@ class WinnersFirst:
         """Build the mini-league records provider of one state."""
 
         def records(subgroup: Group) -> Mapping[str, TeamRecord]:
+            """Return the records of `subgroup` over the series between its teams, played and simulated."""
             members = set(subgroup)
             result = {}
             for team, base in self._played_between(subgroup).items():

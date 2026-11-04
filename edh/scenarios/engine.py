@@ -225,43 +225,58 @@ def evaluate(
     options = options or EvaluationOptions()
     if not series:
         raise ScenarioError('No series to evaluate')
+    job = _prepare(config, series, options.method)
+    chunks, workers = _plan(job, options)
+    accumulator = _Accumulator(job.teams, config.qualification)
+    for result in _run_chunks(chunks, workers):
+        accumulator.merge(result)
 
+    return ScenarioReport(
+        league=config.name,
+        method=job.method,
+        scenarios=options.samples if job.method == METHOD_MONTE_CARLO else job.scenarios,
+        remaining=len(job.pending),
+        teams=accumulator.outlooks(),
+    )
+
+
+def _prepare(config: LeagueConfig, series: Sequence[Series], method: str) -> '_Job':
+    """Apply the team aliases (manual tiebreakers included), split played / pending series and resolve the method."""
     aliases = config.team_aliases
     current = [item.renamed(aliases) for item in series]
-    manual = {aliases.get(team, team): points for team, points in config.manual_tiebreakers.items()}
-    teams = sorted({team for item in current for team in item.teams})
-    played = tuple(item for item in current if item.finished)
     pending = tuple(item for item in current if not item.finished)
     scenarios = count_scenarios(pending, config.wins_needed)
     combinations = (
         count_winner_combinations(pending, config.wins_needed) if margin_free_prefix(config.tiebreakers) else None
     )
-    resolved_method = choose_method(options.method, scenarios, combinations)
+    return _Job(
+        config=config,
+        teams=tuple(sorted({team for item in current for team in item.teams})),
+        played=tuple(item for item in current if item.finished),
+        pending=pending,
+        manual={aliases.get(team, team): points for team, points in config.manual_tiebreakers.items()},
+        method=choose_method(method, scenarios, combinations),
+        scenarios=scenarios,
+        combinations=combinations,
+    )
 
-    job = _Job(config, tuple(teams), played, pending, manual, resolved_method)
-    if resolved_method == METHOD_MONTE_CARLO:
+
+def _plan(job: '_Job', options: EvaluationOptions) -> tuple[list['_Chunk'], int]:
+    """Cut the evaluation into chunks and pick the worker count (1, i.e. in-process, for small evaluations)."""
+    if job.method == METHOD_MONTE_CARLO:
         chunks = _sample_chunks(job, options.samples, options.seed)
         work = options.samples
     else:
         chunks = _prefix_chunks(job)
-        work = scenarios if resolved_method == METHOD_EXHAUSTIVE else (combinations or 0) * PARALLEL_WINNERS_COST
-    small = work < PARALLEL_MIN_WORK or len(chunks) == 1
-    accumulator = _Accumulator(teams, config.qualification)
-    for result in _run_chunks(chunks, 1 if small else (options.workers or os.cpu_count() or 1)):
-        accumulator.merge(result)
-
-    return ScenarioReport(
-        league=config.name,
-        method=resolved_method,
-        scenarios=options.samples if resolved_method == METHOD_MONTE_CARLO else scenarios,
-        remaining=len(pending),
-        teams=accumulator.outlooks(),
-    )
+        work = job.scenarios if job.method == METHOD_EXHAUSTIVE else (job.combinations or 0) * PARALLEL_WINNERS_COST
+    if work < PARALLEL_MIN_WORK or len(chunks) == 1:
+        return chunks, 1
+    return chunks, options.workers or os.cpu_count() or 1
 
 
 @dataclass(frozen=True)
 class _Job:
-    """What every chunk of an evaluation shares (team aliases applied)."""
+    """What every chunk of an evaluation shares (team aliases applied, method resolved)."""
 
     config: LeagueConfig
     teams: tuple[str, ...]
@@ -269,6 +284,8 @@ class _Job:
     pending: tuple[Series, ...]
     manual: dict[str, int]
     method: str
+    scenarios: int = 0  # scenarios left
+    combinations: int | None = None  # winner combinations left (None: winners-first doesn't apply)
 
 
 @dataclass(frozen=True)
