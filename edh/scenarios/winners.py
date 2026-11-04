@@ -281,10 +281,11 @@ class WinnersFirst:
         Raises:
             ScenarioError: If the first tiebreaker depends on game or goal margins.
         """
-        self.prefix = margin_free_prefix(config.tiebreakers)
-        if not self.prefix:
+        prefix = margin_free_prefix(config.tiebreakers)
+        if not prefix:
             names = ', '.join(str(item) for item in config.tiebreakers) or 'none'
             raise ScenarioError(f'The winners-first method needs a first tiebreaker on series winners (got: {names})')
+        self.prefix = prefix
         self.teams = tuple(sorted({team for item in [*played, *pending] for team in item.teams}))
         self.tiebreakers = config.tiebreakers
         self.manual = manual_tiebreakers
@@ -292,7 +293,7 @@ class WinnersFirst:
         self.outcomes = [_outcomes(item, config.wins_needed) for item in pending]
         self.base = tally(self.played, self.teams)
         self.simulated = {team for item in pending for team in item.teams}  # their goals become unknown
-        rest = self.tiebreakers[self.prefix :]
+        rest = self.tiebreakers[prefix:]
         self.keep_full = _keep({item.name for item in rest if item.context == CONTEXT_FULL})
         self.keep_mini = _keep({item.name for item in rest if item.context != CONTEXT_FULL})
         self._involved: dict[Group, tuple[int, ...]] = {}
@@ -313,7 +314,8 @@ class WinnersFirst:
         Yields:
             `(probability, [(rank group, probability), ...])` per winner combination.
         """
-        choices = [(pick,) for pick in prefix] + [range(len(options)) for options in self.outcomes[len(prefix) :]]
+        fixed = len(prefix)
+        choices = [(pick,) for pick in prefix] + [range(len(options)) for options in self.outcomes[fixed:]]
         for picks in product(*choices):
             chosen = [options[pick] for options, pick in zip(self.outcomes, picks, strict=True)]
             probability = math.prod(outcome.probability for outcome in chosen)
@@ -341,10 +343,10 @@ class WinnersFirst:
                 team: TeamRecord(record.match_wins, record.match_losses)
                 for team, record in self._played_between(group).items()
             }
-            for outcome in chosen:
-                if outcome.winner in records and outcome.loser in records:
-                    records[outcome.winner].match_wins += 1
-                    records[outcome.loser].match_losses += 1
+            for decided in chosen:
+                if decided.winner in records and decided.loser in records:
+                    records[decided.winner].match_wins += 1
+                    records[decided.loser].match_losses += 1
             return records
 
         return TieResolver(self.tiebreakers[: self.prefix], self.manual, full, mini).resolve(self.teams, 0)
@@ -487,10 +489,10 @@ class WinnersFirst:
 
         reads: list[tuple[Group, tuple[object, ...]]] = []
 
-        def watched(subgroup: Group) -> Mapping[str, TeamRecord]:
-            """Return the mini-league records of `subgroup`, noting that the resolver read them."""
-            records = mini(subgroup)
-            reads.append((subgroup, _fingerprint(records)))
+        def watched(asked: Group) -> Mapping[str, TeamRecord]:
+            """Return the mini-league records of the `asked` subgroup, noting that the resolver read them."""
+            records = mini(asked)
+            reads.append((asked, _fingerprint(records)))
             return records
 
         split = tuple(TieResolver(self.tiebreakers, self.manual, full, watched).resolve(group, self.prefix))

@@ -347,8 +347,9 @@ def _run_chunk(chunk: _Chunk) -> _Accumulator:
     # Every way each pending series can end, built once: scenarios only pick among them
     endings = [[_complete(item, score) for score in reachable_scores(item, config.wins_needed)] for item in job.pending]
     if job.method == METHOD_EXHAUSTIVE:
-        fixed = [[endings[position][index]] for position, index in enumerate(chunk.prefix)]
-        scenarios: Iterable[Sequence[Series]] = product(*fixed, *endings[len(chunk.prefix) :])
+        fixed = len(chunk.prefix)
+        decided = [[endings[position][index]] for position, index in enumerate(chunk.prefix)]
+        scenarios: Iterable[Sequence[Series]] = product(*decided, *endings[fixed:])
     else:
         scenarios = _samples(endings, chunk.samples, np.random.default_rng(chunk.seed))
     for completed in scenarios:

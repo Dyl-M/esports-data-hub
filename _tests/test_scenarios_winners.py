@@ -139,10 +139,10 @@ def test_matches_exhaustive_on_cdf_snapshot():
     assert_same_outlook(report, expected)
 
 
-@pytest.mark.parametrize('chain', CHAINS)
-def test_matches_exhaustive_on_random_leagues(chain):
+@pytest.mark.parametrize(('seed', 'chain'), list(enumerate(CHAINS)))
+def test_matches_exhaustive_on_random_leagues(seed, chain):
     """Test that winners-first gives the exhaustive shares on random leagues, for each tiebreaker chain."""
-    rng = np.random.default_rng(CHAINS.index(chain))
+    rng = np.random.default_rng(seed)
     for _ in range(8):
         league, series = random_league(rng, chain)
         assert_same_outlook(
