@@ -45,9 +45,24 @@ STATUS_WALKOVERS = STATUS_WALKOVER_LOSSES | {STATUS_WALKOVER_WIN}
 
 LEAGUE_JSON = 'league.json'  # league format, in _data/<league>/
 RESULTS_CSV = 'results.csv'  # results snapshot (offline source)
+EVENT_JSON = 'event.json'  # event details snapshot (organizers), rewritten by each Liquipedia run
 OUTLOOK_DIR = 'outlook'  # computed per-team outlook, in _data/<league>/outlook/ (gitignored)
 OUTLOOK_CSV = 'outlook.csv'
 OUTLOOK_JSON = 'outlook.json'
 
 RESULTS_COLUMNS = ('round', 'team_1', 'team_2', 'score_1', 'score_2', 'finished', 'goals')
 NO_GOALS = '-'  # `goals` cell of a series known to have no goals (a walkover); empty means unknown
+CARD_PNG = 'card_{format}.png'  # outlook card per format, in _data/<league>/outlook/
+
+# === Visuals ===
+
+# Social media formats of the outlook card: name -> (width, height) in pixels
+CARD_FORMATS: dict[str, tuple[int, int]] = {
+    'portrait': (1080, 1350),  # Instagram / LinkedIn feed
+    'square': (1080, 1080),
+    'landscape': (1200, 675),  # X / Bluesky timeline
+}
+HEAT_FULL_SHARE = 0.6  # rank share drawn with the full heat color in the rank strip (lower shares fade out)
+STAGE_LABEL = 'League Play'
+DATA_CREDIT = 'Liquipedia API / LPDB v3'
+GAME_NAMES = {'rocketleague': 'Rocket League'}  # Liquipedia wiki -> game name (the wiki itself otherwise)

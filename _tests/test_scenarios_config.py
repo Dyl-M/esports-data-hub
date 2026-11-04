@@ -10,6 +10,7 @@ import pytest
 # Local
 from edh.exceptions import ConfigurationError
 from edh.scenarios.config import league_dir, load_league, parse_league
+from edh.scenarios.models import Theme
 
 VALID = {
     'name': 'Test League',
@@ -62,10 +63,18 @@ def test_load_league_invalid_json(data_dir):
 
 
 def test_parse_league_minimal():
-    """Test that optional keys default to empty values."""
+    """Test that optional keys default to empty values, and the theme to the neutral palette."""
     required = {key: VALID[key] for key in ('name', 'wiki', 'pagename', 'best_of', 'tiebreakers')}
     league = parse_league('x', required)
     assert (league.qualification, league.walkover_games, league.team_aliases) == ((), 0, {})
+    assert league.theme == Theme()
+
+
+def test_parse_league_partial_theme():
+    """Test that a theme overrides the colors it gives and keeps the neutral value of the others."""
+    league = parse_league('x', VALID | {'theme': {'background': '#061533', 'glow': '#0443c861'}})
+    assert (league.theme.background, league.theme.glow) == ('#061533', '#0443c861')
+    assert league.theme.text == Theme().text
 
 
 @pytest.mark.parametrize(
@@ -87,6 +96,10 @@ def test_parse_league_minimal():
         (VALID | {'qualification': []}, 'qualification must be an object'),
         (VALID | {'team_aliases': {'Old': 1}}, 'Old must be a string'),
         (VALID | {'manual_tiebreakers': ['A']}, 'manual_tiebreakers must be an object'),
+        (VALID | {'theme': ['#000000']}, 'theme must be an object'),
+        (VALID | {'theme': {'backdrop': '#000000'}}, 'unknown theme colors: backdrop'),
+        (VALID | {'theme': {'text': 'white'}}, 'theme color text must be #rrggbb'),
+        (VALID | {'theme': {'text': 255}}, 'theme.text must be a string'),
     ],
 )
 def test_parse_league_invalid(data, message):
@@ -124,3 +137,4 @@ def test_cdf_slash_2026_league_file():
         'ml.rounddiff',
         'manual',
     ]
+    assert league.theme.background == '#061533'  # from the event banner

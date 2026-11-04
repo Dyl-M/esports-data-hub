@@ -3,18 +3,20 @@
 The league's standings table (`/standingstable`) lists its match ids per round, which keeps other stages (e.g.
 playoffs on the same page) out. The matches themselves come from `/match`: series score per opponent (-1 until
 played), per-game goals in `match2games`. The table also records the tiebreakers Liquipedia applies; a mismatch with
-`league.json` is logged, since `league.json` stays the reference.
+`league.json` is logged, since `league.json` stays the reference. The page's tournament record (`/tournament`) gives the
+event details shown on visuals (organizers).
 """
 
 # Standard library
 import json
 import logging
 import os
+import re
 from collections.abc import Iterator
 from typing import Any, Protocol
 
 # Third-party
-from liquipydia import ApiResponse, LiquipediaClient, LiquipediaError, Match, StandingsTable
+from liquipydia import ApiResponse, LiquipediaClient, LiquipediaError, Match, StandingsTable, Tournament
 
 # Local
 from ... import paths
@@ -30,7 +32,7 @@ from ..constants import (
     STATUS_WALKOVERS,
     TIEBREAKER_DISQUALIFIED,
 )
-from ..models import LeagueConfig, Series
+from ..models import EventInfo, LeagueConfig, Series
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +55,14 @@ class LpdbMatches(Protocol):
         ...
 
 
+class LpdbTournaments(Protocol):
+    """The `/tournament` queries the source needs (liquipydia's `client.tournaments`)."""
+
+    def list(self, wiki: str, *, pagename: str, query: str | None = None) -> ApiResponse:
+        """Return the tournament stored on pagename."""
+        ...
+
+
 class LpdbClient(Protocol):
     """The part of an LPDB client the source uses; `liquipydia.LiquipediaClient` satisfies it."""
 
@@ -64,6 +74,11 @@ class LpdbClient(Protocol):
     @property
     def matches(self) -> LpdbMatches:
         """Match queries."""
+        ...
+
+    @property
+    def tournaments(self) -> LpdbTournaments:
+        """Tournament queries."""
         ...
 
 
@@ -121,6 +136,57 @@ class LiquipediaSource:
             return _fetch(self.client, config)
         with LiquipediaClient(LPDB_APP_NAME, api_key=load_api_key()) as client:
             return _fetch(client, config)
+
+    def fetch_event(self, config: LeagueConfig) -> EventInfo:
+        """Return the event details from the league page's tournament record.
+
+        Args:
+            config: League format (`wiki` and `pagename` locate the tournament).
+
+        Returns:
+            The event details, empty when the page holds no tournament record.
+
+        Raises:
+            DataSourceError: If the API fails.
+            ConfigurationError: If no API key is available.
+        """
+        if self.client is not None:
+            return _fetch_event(self.client, config)
+        with LiquipediaClient(LPDB_APP_NAME, api_key=load_api_key()) as client:
+            return _fetch_event(client, config)
+
+
+def _fetch_event(client: LpdbClient, config: LeagueConfig) -> EventInfo:
+    """Query the tournament record of the league page, translating liquipydia errors into DataSourceError."""
+    try:
+        response = client.tournaments.list(config.wiki, pagename=config.pagename, query='pagename,organizers')
+    except LiquipediaError as error:
+        raise DataSourceError(f'Liquipedia request failed for {config.pagename}: {error}') from error
+    if not response.result:
+        logger.warning('No tournament record on %s: organizers unknown', config.pagename)
+        return EventInfo()
+    tournament = Tournament.model_validate(response.result[0])
+    return EventInfo(organizers=parse_organizers(tournament.organizers))
+
+
+def parse_organizers(text: str | None) -> tuple[str, ...]:
+    """Parse the `organizers` field of an LPDB tournament, a JSON object such as `{"organizer1": "NEO"}`.
+
+    Args:
+        text: Raw field value (None or empty when unset).
+
+    Returns:
+        The organizer names in key order (`organizer1`, `organizer2`, ...); empty when unset or unreadable.
+    """
+    try:
+        data = json.loads(text or '{}')
+    except json.JSONDecodeError:
+        logger.warning('Unreadable tournament organizers: %r', text)
+        return ()
+    if not isinstance(data, dict):
+        return ()
+    numbered = sorted(data.items(), key=lambda item: int(re.sub(r'\D', '', str(item[0])) or 0))
+    return tuple(str(name) for _, name in numbered if name)
 
 
 def _fetch(client: LpdbClient, config: LeagueConfig) -> list[Series]:

@@ -2,13 +2,14 @@
 
 # Standard library
 import json
+from dataclasses import fields
 from pathlib import Path
 
 # Local
 from .. import paths
 from ..exceptions import ConfigurationError
 from .constants import LEAGUE_JSON
-from .models import LeagueConfig, QualificationSlot, Tiebreaker
+from .models import LeagueConfig, QualificationSlot, Theme, Tiebreaker
 
 REQUIRED_KEYS = ('name', 'wiki', 'pagename', 'best_of', 'tiebreakers')
 
@@ -99,9 +100,18 @@ def parse_league(slug: str, data: object, *, file_path: str | None = None) -> Le
                 team: _integer(points, team)
                 for team, points in _mapping(data.get('manual_tiebreakers', {}), 'manual_tiebreakers').items()
             },
+            theme=_theme(_mapping(data.get('theme', {}), 'theme')),
         )
     except ValueError as error:
         raise ConfigurationError(f'Invalid league file: {error}', file_path=file_path) from error
+
+
+def _theme(colors: dict[str, object]) -> Theme:
+    """Build a card theme from the colors given (the others keep their neutral value), else raise ValueError."""
+    unknown = set(colors) - {item.name for item in fields(Theme)}
+    if unknown:
+        raise ValueError(f'unknown theme colors: {", ".join(sorted(unknown))}')
+    return Theme(**{name: _string(value, f'theme.{name}') for name, value in colors.items()})
 
 
 def _qualification_slot(label: str, value: object) -> QualificationSlot:

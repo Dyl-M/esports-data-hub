@@ -7,9 +7,11 @@ import json
 # Third-party
 import pytest
 
+from edh.exceptions import DataSourceError
+
 # Local
 from edh.scenarios.engine import evaluate
-from edh.scenarios.report import format_table, write_outlook
+from edh.scenarios.report import format_share, format_table, read_outlook, write_outlook
 
 from .conftest import make_league, make_series
 
@@ -65,3 +67,42 @@ def test_format_table_eliminated_team():
     assert rows['A'].split()[-2:] == ['IN', '-']
     assert 'OUT' in rows['B']
     assert 'OUT' in rows['C']
+
+
+@pytest.mark.parametrize(
+    ('share', 'text'),
+    [(0, '-'), (1, '100%'), (0.5, '50.0%'), (0.0001, '0.1%'), (0.99999, '99.9%')],
+)
+def test_format_share(share, text):
+    """Test that 0% and 100% are kept for exact values, and other shares clamped to 0.1%-99.9%."""
+    assert format_share(share) == text
+
+
+def test_read_outlook_round_trip(tmp_path):
+    """Test that an exported outlook reads back as the same report."""
+    report = _report('montecarlo')
+    _, json_path = write_outlook(report, tmp_path)
+    assert read_outlook(json_path) == report
+
+
+def test_read_outlook_missing_file(tmp_path):
+    """Test that a missing outlook says to evaluate the league first."""
+    with pytest.raises(DataSourceError, match='evaluate the league first'):
+        read_outlook(tmp_path / 'outlook.json')
+
+
+@pytest.mark.parametrize(
+    'content',
+    [
+        '{not json',
+        '[]',
+        '{"league": "x"}',
+        '{"league": "x", "method": "m", "scenarios": "many", "remaining": 1, "teams": []}',
+    ],
+)
+def test_read_outlook_invalid_file(tmp_path, content):
+    """Test that malformed outlooks are data source errors."""
+    path = tmp_path / 'outlook.json'
+    path.write_text(content, encoding='utf-8')
+    with pytest.raises(DataSourceError, match='Invalid outlook file'):
+        read_outlook(path)
