@@ -2,14 +2,16 @@
 
 # Standard library
 import json
+import runpy
 import shutil
+import sys
 
 # Third-party
 import pytest
 
 # Local
 from edh.scenarios import run
-from edh.scenarios.sources import CsvSource
+from edh.scenarios.sources import CsvSource, LiquipediaSource
 
 from .conftest import CDF_DAY2_CSV, make_series
 
@@ -84,3 +86,17 @@ def test_build_source_csv(league_folder):
     source = run.build_source('csv', run.load_league('test_league'))
     assert isinstance(source, CsvSource)
     assert source.path == league_folder / 'results.csv'
+
+
+def test_build_source_liquipedia(league_folder):
+    """Test that the default source is Liquipedia."""
+    assert isinstance(run.build_source('liquipedia', run.load_league('test_league')), LiquipediaSource)
+
+
+def test_module_entry_point(league_folder, monkeypatch):
+    """Test that `python -m edh.scenarios.run` exits with main's code (1 for an unknown league)."""
+    monkeypatch.setattr(sys, 'argv', ['run', 'absent'])
+    monkeypatch.delitem(sys.modules, 'edh.scenarios.run')  # run a fresh copy as __main__, not the imported one
+    with pytest.raises(SystemExit) as exit_info:
+        runpy.run_module('edh.scenarios.run', run_name='__main__')
+    assert exit_info.value.code == 1

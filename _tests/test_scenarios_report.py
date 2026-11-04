@@ -45,7 +45,7 @@ def test_format_table_estimated():
 def test_write_outlook(tmp_path):
     """Test the CSV and JSON exports."""
     csv_path, json_path = write_outlook(_report(), tmp_path / 'out')
-    rows = list(csv.DictReader(csv_path.open(encoding='utf-8')))
+    rows = list(csv.DictReader(csv_path.read_text(encoding='utf-8').splitlines()))
     assert [row['team'] for row in rows] == ['A', 'B', 'C']
     assert {'projected_rank', 'rank_1', 'rank_3', 'Top_qualified', 'Top_undecided', 'unresolved'} <= set(rows[0])
     assert not {'likely_rank', 'avg_rank_position'} & set(rows[0])
@@ -55,3 +55,13 @@ def test_write_outlook(tmp_path):
     first = data['teams'][0]
     assert first['projected_rank'] == 1
     assert first['expected_rank'] == pytest.approx(7 / 6)
+
+
+def test_format_table_eliminated_team():
+    """Test that an exact report marks a team that can no longer reach a slot as OUT."""
+    series = [make_series(1, 'A', 'B', 3, 0), make_series(2, 'A', 'C', 3, 0), make_series(3, 'B', 'C')]
+    report = evaluate(make_league(qualification={'Top': (1, 1)}), series)
+    rows = {line.split()[0]: line for line in format_table(report).splitlines()[3:6]}
+    assert rows['A'].split()[-2:] == ['IN', '-']
+    assert 'OUT' in rows['B']
+    assert 'OUT' in rows['C']

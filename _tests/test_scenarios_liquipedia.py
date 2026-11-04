@@ -5,15 +5,15 @@ import json
 import logging
 from types import SimpleNamespace
 
-import pytest
-
 # Third-party
+import pytest
 from liquipydia import ApiResponse, LiquipediaError, Match
 
 # Local
 from edh import paths
 from edh.exceptions import ConfigurationError, DataSourceError
 from edh.scenarios.config import load_league
+from edh.scenarios.sources import liquipedia
 from edh.scenarios.sources.liquipedia import LiquipediaSource, load_api_key, to_series
 
 from .conftest import FIXTURES_DIR, make_league
@@ -34,8 +34,17 @@ class FakeClient:
         self.tables = _load('standingstable') if tables is None else tables
         self.matches_payload = _load('match') if matches is None else matches
         self.error = error
+        self.closed = False
         self.standings_tables = SimpleNamespace(list=self._list_tables)
         self.matches = SimpleNamespace(paginate=self._paginate)
+
+    def __enter__(self):
+        """Mimic the client context manager."""
+        return self
+
+    def __exit__(self, *exc_info):
+        """Record that the client was closed."""
+        self.closed = True
 
     def _list_tables(self, wiki, **kwargs):
         """Mimic `client.standings_tables.list`: one response holding the recorded tables."""
@@ -102,6 +111,23 @@ def test_fetch_table_without_rounds(cdf):
     table = _load('standingstable')[0] | {'extradata': {}}
     with pytest.raises(DataSourceError, match='no rounds'):
         LiquipediaSource(FakeClient(tables=[table])).fetch(cdf)
+
+
+def test_fetch_opens_and_closes_its_own_client(cdf, monkeypatch):
+    """Test that without an injected client, fetch opens one with the configured key and closes it afterwards."""
+    opened = []
+
+    def open_client(app_name, *, api_key):
+        client = FakeClient()
+        opened.append((app_name, api_key, client))
+        return client
+
+    monkeypatch.setenv('LPDB_API_KEY', 'env-key')
+    monkeypatch.setattr(liquipedia, 'LiquipediaClient', open_client)
+    series = LiquipediaSource().fetch(cdf)
+    assert len(series) == 30
+    [(app_name, api_key, client)] = opened
+    assert (app_name, api_key, client.closed) == ('esports-data-hub', 'env-key', True)
 
 
 # === to_series ===
