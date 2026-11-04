@@ -21,3 +21,7 @@ class ConfigurationError(EsportsDataHubError):
 
 class DataSourceError(EsportsDataHubError):
     """Raised when match results cannot be retrieved from a data source (Liquipedia, CSV, etc.)."""
+
+
+class ScenarioError(EsportsDataHubError):
+    """Raised when scenarios cannot be evaluated (no series, impossible score, unknown or oversized method)."""

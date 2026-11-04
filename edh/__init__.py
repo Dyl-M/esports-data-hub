@@ -6,4 +6,5 @@ __author__ = 'Dylan "dyl-m" Monfret'
 __all__ = [
     'exceptions',
     'paths',
+    'scenarios',
 ]
