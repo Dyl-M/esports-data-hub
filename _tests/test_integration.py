@@ -7,6 +7,7 @@ import pytest
 from edh.exceptions import ConfigurationError
 from edh.scenarios.config import load_league
 from edh.scenarios.engine import evaluate
+from edh.scenarios.models import EvaluationOptions
 from edh.scenarios.sources.liquipedia import LiquipediaSource, load_api_key
 
 
@@ -28,7 +29,7 @@ def test_cdf_slash_2026_live():
     series = LiquipediaSource().fetch(league)
     assert len(series) == 30
     assert len({team for item in series for team in item.teams}) == 6
-    report = evaluate(league, series, method='montecarlo', samples=500, seed=0)
+    report = evaluate(league, series, EvaluationOptions(method='montecarlo', samples=500, seed=0))
     assert len(report.teams) == 6
 
 

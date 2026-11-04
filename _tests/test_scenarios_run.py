@@ -82,6 +82,8 @@ def test_parse_args_defaults():
     """Test the default command line options."""
     args = run.parse_args(['cdf_slash_2026'])
     assert (args.league, args.source, args.method, args.seed) == ('cdf_slash_2026', 'liquipedia', 'auto', None)
+    assert args.workers is None
+    assert run.parse_args(['cdf_slash_2026', '--workers', '4']).workers == 4
 
 
 def test_main_csv_source(league_folder, capsys):

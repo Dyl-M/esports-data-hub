@@ -20,7 +20,7 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateNotFo
 # Local
 from ... import brand, paths
 from ...exceptions import VisualError
-from ..constants import CARD_FORMATS, DATA_CREDIT, GAME_NAMES, HEAT_FULL_SHARE, STAGE_LABEL
+from ..constants import CARD_FORMATS, DATA_CREDIT, GAME_NAMES, HEAT_FULL_SHARE, METHOD_LABELS, STAGE_LABEL
 from ..models import EventInfo, LeagueConfig, QualificationSlot, ScenarioReport, TeamOutlook, Theme
 from ..report import format_share
 
@@ -93,6 +93,8 @@ class CardContext(TypedDict):
     scenario_unit: str
     format_rule: str
     exact: bool
+    method: str
+    method_note: str
     organizers: str
     credit: str
     ranks: int
@@ -172,6 +174,8 @@ def card_context(
         'scenario_unit': 'scenarios' if report.exact else 'simulations',
         'format_rule': f'Bo{config.best_of} · {_slot_range(slot)} → {slot.label}',
         'exact': report.exact,
+        'method': METHOD_LABELS[report.method][0],
+        'method_note': METHOD_LABELS[report.method][1],
         'organizers': ', '.join(event.organizers),
         'credit': DATA_CREDIT,
         'ranks': ranks,

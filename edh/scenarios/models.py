@@ -6,7 +6,17 @@ from dataclasses import asdict, dataclass, field, replace
 from typing import Self
 
 # Local
-from .constants import CONTEXT_FULL, CONTEXT_MINI_LEAGUE, CONTEXTS, METHOD_EXHAUSTIVE, TIEBREAKER_MANUAL, TIEBREAKERS
+from ..exceptions import ScenarioError
+from .constants import (
+    CONTEXT_FULL,
+    CONTEXT_MINI_LEAGUE,
+    CONTEXTS,
+    DEFAULT_SAMPLES,
+    EXACT_METHODS,
+    METHOD_AUTO,
+    TIEBREAKER_MANUAL,
+    TIEBREAKERS,
+)
 
 HEX_COLOR = re.compile(r'#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{8})')
 
@@ -224,6 +234,30 @@ class LeagueConfig:
 
 
 @dataclass(frozen=True)
+class EvaluationOptions:
+    """How to evaluate the scenarios.
+
+    Attributes:
+        method: `auto`, `exhaustive`, `winnersfirst` or `montecarlo` (checked when the method is chosen).
+        samples: Monte Carlo sample count.
+        seed: Monte Carlo random seed, for reproducible runs.
+        workers: Worker processes (None: one per CPU; 1: evaluate in the calling process).
+    """
+
+    method: str = METHOD_AUTO
+    samples: int = DEFAULT_SAMPLES
+    seed: int | None = None
+    workers: int | None = None
+
+    def __post_init__(self) -> None:
+        """Validate the counts."""
+        if self.samples < 1:
+            raise ScenarioError(f'samples must be >= 1, got {self.samples}')
+        if self.workers is not None and self.workers < 1:
+            raise ScenarioError(f'workers must be >= 1, got {self.workers}')
+
+
+@dataclass(frozen=True)
 class RankGroup:
     """Teams sharing a position after the tiebreakers.
 
@@ -282,8 +316,8 @@ class ScenarioReport:
 
     Attributes:
         league: League display name.
-        method: `exhaustive` or `montecarlo`.
-        scenarios: Number of scenarios evaluated (all of them, or the samples).
+        method: `exhaustive`, `winnersfirst` or `montecarlo`.
+        scenarios: Number of scenarios covered (all of them for exact methods, or the samples).
         remaining: Number of series left to play (in progress included).
         teams: Per-team outlook, in projected standings order.
     """
@@ -297,7 +331,7 @@ class ScenarioReport:
     @property
     def exact(self) -> bool:
         """Whether shares are exact (every scenario evaluated) rather than estimated."""
-        return self.method == METHOD_EXHAUSTIVE
+        return self.method in EXACT_METHODS
 
     @property
     def slot_labels(self) -> list[str]:

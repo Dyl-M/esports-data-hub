@@ -43,6 +43,9 @@ class TeamRecord:
     rounds_known: bool = True
 
 
+RecordsProvider = Callable[[tuple[str, ...]], Mapping[str, TeamRecord]]
+
+
 def tally(series: Iterable[Series], teams: Collection[str]) -> dict[str, TeamRecord]:
     """Compute the record of each team over the finished series among `teams`.
 
@@ -112,30 +115,72 @@ def rank(
     Returns:
         Groups of teams in ranking order; a group of several teams is a tie the tiebreakers cannot settle.
     """
-    resolver = _TieResolver(series, teams, tiebreakers, manual_tiebreakers or {})
-    groups: list[RankGroup] = []
-    position = 1
-    for group in resolver.resolve(tuple(sorted(teams)), 0):
-        groups.append(RankGroup(rank=position, teams=group))
+    resolver = TieResolver(tiebreakers, manual_tiebreakers or {}, tally(series, teams), mini_league_records(series))
+    return rank_groups(resolver.resolve(tuple(sorted(teams)), 0))
+
+
+def rank_groups(groups: Iterable[tuple[str, ...]], first: int = 1) -> list[RankGroup]:
+    """Number consecutive groups of teams with their ranks.
+
+    Args:
+        groups: Groups of teams in ranking order.
+        first: Rank of the first group.
+
+    Returns:
+        The groups with their first rank; a group of k teams covers k ranks.
+    """
+    ranked: list[RankGroup] = []
+    position = first
+    for group in groups:
+        ranked.append(RankGroup(rank=position, teams=group))
         position += len(group)
-    return groups
+    return ranked
 
 
-class _TieResolver:
-    """Split tied groups with the tiebreakers, following Liquipedia's resolution order."""
+def mini_league_records(series: Sequence[Series]) -> RecordsProvider:
+    """Build the mini-league records provider of a set of series.
+
+    Args:
+        series: League series; only finished ones count.
+
+    Returns:
+        A function giving, for a group of teams, their records over the series played between them only.
+    """
+
+    def records(group: tuple[str, ...]) -> Mapping[str, TeamRecord]:
+        """Return the records of `group` over the series between its teams."""
+        members = set(group)
+        return tally((item for item in series if item.team_1 in members and item.team_2 in members), group)
+
+    return records
+
+
+class TieResolver:
+    """Split tied groups with the tiebreakers, following Liquipedia's resolution order.
+
+    Records are given rather than tallied here, so that callers can build them from partial information (e.g.
+    series winners only, or game statistics shared by many scenarios at once).
+    """
 
     def __init__(
         self,
-        series: Sequence[Series],
-        teams: Collection[str],
         tiebreakers: Sequence[Tiebreaker],
         manual_tiebreakers: Mapping[str, int],
+        full_records: Mapping[str, TeamRecord],
+        mini_records: RecordsProvider,
     ) -> None:
-        """Prepare the full-league records once; mini-league records are computed per group."""
-        self.series = series
+        """Store the tiebreakers and the records they are computed on.
+
+        Args:
+            tiebreakers: Ordered tiebreakers.
+            manual_tiebreakers: Manual tiebreak points per team (0 when absent).
+            full_records: Record of each team over the whole league.
+            mini_records: Records of a group's teams over the series between them only (`ml.` tiebreakers).
+        """
         self.tiebreakers = tiebreakers
         self.manual = manual_tiebreakers
-        self.full_records = tally(series, teams)
+        self.full_records = full_records
+        self.mini_records = mini_records
 
     def resolve(self, group: tuple[str, ...], index: int) -> list[tuple[str, ...]]:
         """Split `group` with the tiebreakers from `index` on, best subgroup first.
@@ -159,14 +204,10 @@ class _TieResolver:
 
     def _values(self, tiebreaker: Tiebreaker, group: tuple[str, ...]) -> dict[str, TiebreakValue] | None:
         """Return each team's tiebreaker value within `group`, or None when one of them needs unknown goals."""
-        records = self._records(tiebreaker, group)
+        if tiebreaker.context == CONTEXT_FULL or tiebreaker.name == TIEBREAKER_MANUAL:
+            records = self.full_records
+        else:
+            records = self.mini_records(group)
         values = {team: _value(tiebreaker, records[team], self.manual.get(team, 0)) for team in group}
         known = {team: value for team, value in values.items() if value is not None}
         return known if len(known) == len(values) else None
-
-    def _records(self, tiebreaker: Tiebreaker, group: tuple[str, ...]) -> dict[str, TeamRecord]:
-        """Return the records a tiebreaker is computed on: the whole league, or the series within `group` (`ml.`)."""
-        if tiebreaker.context == CONTEXT_FULL or tiebreaker.name == TIEBREAKER_MANUAL:
-            return self.full_records
-        members = set(group)
-        return tally((item for item in self.series if item.team_1 in members and item.team_2 in members), group)
