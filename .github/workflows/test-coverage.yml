@@ -2,9 +2,9 @@ name: Test & Coverage
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, dev ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -17,6 +17,8 @@ jobs:
           # On pull requests, test the PR head commit instead of GitHub's temporary merge commit, so the coverage
           # report reaches DeepSource on a commit it knows (push events keep github.sha)
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          # Full history with tags: the package version is derived from the latest git tag (hatch-vcs)
+          fetch-depth: 0
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v7

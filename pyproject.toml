@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "esports-data-hub"
-version = "2026.11.1"
+dynamic = ["version"] # read from the latest git tag (year.month.patch) by hatch-vcs
 description = "A repository containing projects related to esports and data."
 readme = "README.md"
 license = "MIT"
@@ -38,6 +38,9 @@ test = [
     "pytest==9.2.0",
     "pytest-cov==7.1.0",
 ]
+
+[tool.hatch.version]
+source = "vcs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["edh"]
