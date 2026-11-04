@@ -118,6 +118,7 @@ def test_fetch_opens_and_closes_its_own_client(cdf, monkeypatch):
     opened = []
 
     def open_client(app_name, *, api_key):
+        """Stand in for the LiquipediaClient constructor, recording how it was called."""
         client = FakeClient()
         opened.append((app_name, api_key, client))
         return client

@@ -148,25 +148,44 @@ def to_series(match: Match, round_number: int, config: LeagueConfig) -> Series:
     Raises:
         DataSourceError: If the match does not have two named opponents.
     """
+    first, second = _opponents(match)
+    finished = bool(match.finished)
+    statuses = (first.get('status') or '', second.get('status') or '')
+    if any(status in STATUS_WALKOVERS for status in statuses):
+        score_1, score_2 = _walkover_scores(statuses, config.walkover_games)
+        return Series(round_number, first['name'], second['name'], score_1, score_2, finished, ())
+
+    score_1, score_2 = _score(first), _score(second)
+    goals = _goals(match, expected_games=score_1 + score_2 if finished else None)
+    return Series(round_number, first['name'], second['name'], score_1, score_2, finished, goals)
+
+
+def _opponents(match: Match) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Return the two opponents of a match, raising DataSourceError unless both are named (not TBD)."""
     opponents: list[dict[str, Any]] = list(match.match2opponents or [])
     if len(opponents) != 2 or not all(opponent.get('name') for opponent in opponents):
         raise DataSourceError(f'Match {match.match2id} does not have two named opponents')
-    names = [str(opponent['name']) for opponent in opponents]
-    statuses = [opponent.get('status') or '' for opponent in opponents]
-    finished = bool(match.finished)
+    first, second = ({**opponent, 'name': str(opponent['name'])} for opponent in opponents)
+    return first, second
 
-    if any(status in STATUS_WALKOVERS for status in statuses):
-        first_wins = statuses[0] == STATUS_WALKOVER_WIN or statuses[1] in STATUS_WALKOVER_LOSSES
-        score_1, score_2 = (config.walkover_games, 0) if first_wins else (0, config.walkover_games)
-        return Series(round_number, names[0], names[1], score_1, score_2, finished, ())
 
-    score_1, score_2 = (max(int(opponent.get('score') or 0), 0) for opponent in opponents)
-    goals: tuple[tuple[int, int], ...] | None = tuple(
-        _game_goals(game) for game in match.match2games or [] if _is_decided(game)
-    )
-    if finished and goals is not None and len(goals) != score_1 + score_2:
-        goals = None
-    return Series(round_number, names[0], names[1], score_1, score_2, finished, goals)
+def _walkover_scores(statuses: tuple[str, str], walkover_games: int) -> tuple[int, int]:
+    """Series score of a walkover: `walkover_games` to the winner, 0 to the forfeiting team."""
+    first_wins = statuses[0] == STATUS_WALKOVER_WIN or statuses[1] in STATUS_WALKOVER_LOSSES
+    return (walkover_games, 0) if first_wins else (0, walkover_games)
+
+
+def _score(opponent: dict[str, Any]) -> int:
+    """Games won by an opponent; LPDB stores -1 until the series starts."""
+    return max(int(opponent.get('score') or 0), 0)
+
+
+def _goals(match: Match, *, expected_games: int | None) -> tuple[tuple[int, int], ...] | None:
+    """Goals of each decided game, or None when fewer games are scored than `expected_games` (partial data)."""
+    goals = tuple(_game_goals(game) for game in match.match2games or [] if _is_decided(game))
+    if expected_games is not None and len(goals) != expected_games:
+        return None
+    return goals
 
 
 def _is_decided(game: dict[str, Any]) -> bool:

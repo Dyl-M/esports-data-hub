@@ -112,30 +112,61 @@ def rank(
     Returns:
         Groups of teams in ranking order; a group of several teams is a tie the tiebreakers cannot settle.
     """
-    manual = manual_tiebreakers or {}
-    full_records = tally(series, teams)
-
-    def resolve(group: tuple[str, ...], index: int) -> list[tuple[str, ...]]:
-        if len(group) == 1 or index == len(tiebreakers):
-            return [group]
-        tiebreaker = tiebreakers[index]
-        if tiebreaker.context == CONTEXT_FULL or tiebreaker.name == TIEBREAKER_MANUAL:
-            records = full_records
-        else:
-            members = set(group)
-            records = tally((item for item in series if item.team_1 in members and item.team_2 in members), group)
-        values = {team: _value(tiebreaker, records[team], manual.get(team, 0)) for team in group}
-        known = {team: value for team, value in values.items() if value is not None}
-        if len(known) < len(values):
-            return [group]  # goals unknown: this tiebreaker (and the ones after it) cannot be applied yet
-        splits: list[tuple[str, ...]] = []
-        for value in sorted(set(known.values()), reverse=True):
-            splits.extend(resolve(tuple(team for team in group if known[team] == value), index + 1))
-        return splits
-
+    resolver = _TieResolver(series, teams, tiebreakers, manual_tiebreakers or {})
     groups: list[RankGroup] = []
     position = 1
-    for group in resolve(tuple(sorted(teams)), 0):
+    for group in resolver.resolve(tuple(sorted(teams)), 0):
         groups.append(RankGroup(rank=position, teams=group))
         position += len(group)
     return groups
+
+
+class _TieResolver:
+    """Split tied groups with the tiebreakers, following Liquipedia's resolution order."""
+
+    def __init__(
+        self,
+        series: Sequence[Series],
+        teams: Collection[str],
+        tiebreakers: Sequence[Tiebreaker],
+        manual_tiebreakers: Mapping[str, int],
+    ) -> None:
+        """Prepare the full-league records once; mini-league records are computed per group."""
+        self.series = series
+        self.tiebreakers = tiebreakers
+        self.manual = manual_tiebreakers
+        self.full_records = tally(series, teams)
+
+    def resolve(self, group: tuple[str, ...], index: int) -> list[tuple[str, ...]]:
+        """Split `group` with the tiebreakers from `index` on, best subgroup first.
+
+        Args:
+            group: Teams tied so far.
+            index: Position of the next tiebreaker to apply.
+
+        Returns:
+            Subgroups in ranking order; a subgroup of several teams is a tie the tiebreakers cannot settle.
+        """
+        if len(group) == 1 or index == len(self.tiebreakers):
+            return [group]
+        values = self._values(self.tiebreakers[index], group)
+        if values is None:
+            return [group]  # goals unknown: this tiebreaker (and the ones after it) cannot be applied yet
+        splits: list[tuple[str, ...]] = []
+        for value in sorted(set(values.values()), reverse=True):
+            splits.extend(self.resolve(tuple(team for team in group if values[team] == value), index + 1))
+        return splits
+
+    def _values(self, tiebreaker: Tiebreaker, group: tuple[str, ...]) -> dict[str, TiebreakValue] | None:
+        """Return each team's tiebreaker value within `group`, or None when one of them needs unknown goals."""
+        records = self._records(tiebreaker, group)
+        values = {team: _value(tiebreaker, records[team], self.manual.get(team, 0)) for team in group}
+        known = {team: value for team, value in values.items() if value is not None}
+        return known if len(known) == len(values) else None
+
+    def _records(self, tiebreaker: Tiebreaker, group: tuple[str, ...]) -> dict[str, TeamRecord]:
+        """Return the records a tiebreaker is computed on: the whole league, or the series within `group` (`ml.`)."""
+        if tiebreaker.context == CONTEXT_FULL or tiebreaker.name == TIEBREAKER_MANUAL:
+            return self.full_records
+        members = set(group)
+        return tally((item for item in self.series if item.team_1 in members and item.team_2 in members), group)
