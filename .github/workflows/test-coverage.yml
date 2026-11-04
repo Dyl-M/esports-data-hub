@@ -13,6 +13,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          # On pull requests, test the PR head commit instead of GitHub's temporary merge commit, so the coverage
+          # report reaches DeepSource on a commit it knows (push events keep github.sha)
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v7

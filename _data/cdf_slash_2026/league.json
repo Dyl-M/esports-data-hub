@@ -1,0 +1,13 @@
+{
+  "name": "Coupe de France Slash 2026",
+  "wiki": "rocketleague",
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "best_of": 5,
+  "tiebreakers": ["matchscore", "gamediff", "ml.gamediff", "ml.rounddiff", "manual"],
+  "qualification": {
+    "Playoffs": [1, 4]
+  },
+  "walkover_games": 3,
+  "team_aliases": {},
+  "manual_tiebreakers": {}
+}

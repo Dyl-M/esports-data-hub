@@ -11,7 +11,7 @@ BASE_DIR: Path = Path(__file__).parent.parent.resolve()
 
 # Directory paths
 DATA_DIR: Path = BASE_DIR / '_data'
-TOKENS_DIR: Path = BASE_DIR / '_tokens'
+TOKENS_DIR: Path = BASE_DIR / '.tokens'
 
-# Token files
-TOKENS_JSON: Path = TOKENS_DIR / 'tokens.json'
+# Token files ({"lpdb": "..."}, same layout as liquipedia-editing-toolkit)
+TOKENS_JSON: Path = TOKENS_DIR / 'local_keys.json'

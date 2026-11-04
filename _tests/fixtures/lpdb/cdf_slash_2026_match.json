@@ -1,0 +1,3102 @@
+[
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "dprh3EmctD_0001",
+  "match2bracketid": "dprh3EmctD",
+  "section": "Day 1",
+  "bestof": 0,
+  "finished": 1,
+  "status": "",
+  "date": "2026-11-02 18:30:00",
+  "winner": "1",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 1,
+   "type": "matchlist",
+   "title": "Day 1",
+   "next": "dprh3EmctD_0002",
+   "matchIndex": 1,
+   "bracketindex": 0,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Gentle Mates",
+    "template": "gentle mates 2026",
+    "score": 3,
+    "status": "S",
+    "placement": 1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Karmine Corp",
+    "template": "karmine corp 2024",
+    "score": 0,
+    "status": "S",
+    "placement": 2
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [
+     7,
+     2
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 7
+     },
+     {
+      "status": "S",
+      "score": 2
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [
+     2,
+     0
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 2
+     },
+     {
+      "status": "S",
+      "score": 0
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [
+     4,
+     1
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 4
+     },
+     {
+      "status": "S",
+      "score": 1
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "dprh3EmctD_0002",
+  "match2bracketid": "dprh3EmctD",
+  "section": "Day 1",
+  "bestof": 0,
+  "finished": 1,
+  "status": "",
+  "date": "2026-11-02 19:15:00",
+  "winner": "2",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 1,
+   "type": "matchlist",
+   "next": "dprh3EmctD_0003",
+   "matchIndex": 2,
+   "bracketindex": 0,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Team Vitality",
+    "template": "vitality 2023",
+    "score": 0,
+    "status": "S",
+    "placement": 2
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Ikkaku",
+    "template": "ikkaku",
+    "score": 3,
+    "status": "S",
+    "placement": 1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [
+     2,
+     3
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 2
+     },
+     {
+      "status": "S",
+      "score": 3
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [
+     2,
+     5
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 2
+     },
+     {
+      "status": "S",
+      "score": 5
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [
+     0,
+     2
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 0
+     },
+     {
+      "status": "S",
+      "score": 2
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "dprh3EmctD_0003",
+  "match2bracketid": "dprh3EmctD",
+  "section": "Day 1",
+  "bestof": 0,
+  "finished": 1,
+  "status": "",
+  "date": "2026-11-02 20:00:00",
+  "winner": "1",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 1,
+   "type": "matchlist",
+   "next": "dprh3EmctD_0004",
+   "matchIndex": 3,
+   "bracketindex": 0,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Karmine Corp",
+    "template": "karmine corp 2024",
+    "score": 3,
+    "status": "S",
+    "placement": 1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Geekay Esports",
+    "template": "geekay esports 2024",
+    "score": 0,
+    "status": "S",
+    "placement": 2
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [
+     3,
+     2
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 3
+     },
+     {
+      "status": "S",
+      "score": 2
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [
+     4,
+     1
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 4
+     },
+     {
+      "status": "S",
+      "score": 1
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [
+     2,
+     0
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 2
+     },
+     {
+      "status": "S",
+      "score": 0
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "dprh3EmctD_0004",
+  "match2bracketid": "dprh3EmctD",
+  "section": "Day 1",
+  "bestof": 0,
+  "finished": 1,
+  "status": "",
+  "date": "2026-11-02 20:40:00",
+  "winner": "1",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 1,
+   "type": "matchlist",
+   "next": "dprh3EmctD_0005",
+   "matchIndex": 4,
+   "bracketindex": 0,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Gentle Mates",
+    "template": "gentle mates 2026",
+    "score": 3,
+    "status": "S",
+    "placement": 1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Team Vitality",
+    "template": "vitality 2023",
+    "score": 1,
+    "status": "S",
+    "placement": 2
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [
+     8,
+     2
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 8
+     },
+     {
+      "status": "S",
+      "score": 2
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [
+     7,
+     1
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 7
+     },
+     {
+      "status": "S",
+      "score": 1
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [
+     3,
+     4
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 3
+     },
+     {
+      "status": "S",
+      "score": 4
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Utopia Coliseum (Dusk)",
+    "scores": [
+     4,
+     2
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 4
+     },
+     {
+      "status": "S",
+      "score": 2
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "dprh3EmctD_0005",
+  "match2bracketid": "dprh3EmctD",
+  "section": "Day 1",
+  "bestof": 0,
+  "finished": 1,
+  "status": "",
+  "date": "2026-11-02 21:30:00",
+  "winner": "2",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 1,
+   "type": "matchlist",
+   "matchIndex": 5,
+   "bracketindex": 0,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Geekay Esports",
+    "template": "geekay esports 2024",
+    "score": 2,
+    "status": "S",
+    "placement": 2
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "DUMORNAY GOAT",
+    "template": "dumornay goat",
+    "score": 3,
+    "status": "S",
+    "placement": 1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [
+     2,
+     5
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 2
+     },
+     {
+      "status": "S",
+      "score": 5
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [
+     1,
+     0
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 1
+     },
+     {
+      "status": "S",
+      "score": 0
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [
+     3,
+     2
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 3
+     },
+     {
+      "status": "S",
+      "score": 2
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Utopia Coliseum (Dusk)",
+    "scores": [
+     2,
+     3
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 2
+     },
+     {
+      "status": "S",
+      "score": 3
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Champions Field",
+    "scores": [
+     3,
+     4
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 3
+     },
+     {
+      "status": "S",
+      "score": 4
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "S2gxo05PHv_0001",
+  "match2bracketid": "S2gxo05PHv",
+  "section": "Day 2",
+  "bestof": 0,
+  "finished": 1,
+  "status": "",
+  "date": "2026-11-03 18:30:00",
+  "winner": "2",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 2,
+   "type": "matchlist",
+   "title": "Day 2",
+   "next": "S2gxo05PHv_0002",
+   "matchIndex": 1,
+   "bracketindex": 1,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Karmine Corp",
+    "template": "karmine corp 2024",
+    "score": 0,
+    "status": "S",
+    "placement": 2
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Team Vitality",
+    "template": "vitality 2023",
+    "score": 3,
+    "status": "S",
+    "placement": 1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [
+     0,
+     1
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 0
+     },
+     {
+      "status": "S",
+      "score": 1
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [
+     1,
+     2
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 1
+     },
+     {
+      "status": "S",
+      "score": 2
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [
+     2,
+     4
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 2
+     },
+     {
+      "status": "S",
+      "score": 4
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "S2gxo05PHv_0002",
+  "match2bracketid": "S2gxo05PHv",
+  "section": "Day 2",
+  "bestof": 0,
+  "finished": 1,
+  "status": "",
+  "date": "2026-11-03 19:05:00",
+  "winner": "1",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 2,
+   "type": "matchlist",
+   "next": "S2gxo05PHv_0003",
+   "matchIndex": 2,
+   "bracketindex": 1,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Gentle Mates",
+    "template": "gentle mates 2026",
+    "score": 3,
+    "status": "S",
+    "placement": 1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Ikkaku",
+    "template": "ikkaku",
+    "score": 1,
+    "status": "S",
+    "placement": 2
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [
+     6,
+     1
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 6
+     },
+     {
+      "status": "S",
+      "score": 1
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [
+     2,
+     3
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 2
+     },
+     {
+      "status": "S",
+      "score": 3
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [
+     2,
+     1
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 2
+     },
+     {
+      "status": "S",
+      "score": 1
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Utopia Coliseum (Dusk)",
+    "scores": [
+     4,
+     2
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 4
+     },
+     {
+      "status": "S",
+      "score": 2
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "S2gxo05PHv_0003",
+  "match2bracketid": "S2gxo05PHv",
+  "section": "Day 2",
+  "bestof": 0,
+  "finished": 1,
+  "status": "",
+  "date": "2026-11-03 20:00:00",
+  "winner": "2",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 2,
+   "type": "matchlist",
+   "next": "S2gxo05PHv_0004",
+   "matchIndex": 3,
+   "bracketindex": 1,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Karmine Corp",
+    "template": "karmine corp 2024",
+    "score": 1,
+    "status": "S",
+    "placement": 2
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "DUMORNAY GOAT",
+    "template": "dumornay goat",
+    "score": 3,
+    "status": "S",
+    "placement": 1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [
+     3,
+     2
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 3
+     },
+     {
+      "status": "S",
+      "score": 2
+     }
+    ],
+    "status": "",
+    "winner": "1",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [
+     0,
+     3
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 0
+     },
+     {
+      "status": "S",
+      "score": 3
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [
+     1,
+     2
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 1
+     },
+     {
+      "status": "S",
+      "score": 2
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Utopia Coliseum (Dusk)",
+    "scores": [
+     1,
+     4
+    ],
+    "opponents": [
+     {
+      "status": "S",
+      "score": 1
+     },
+     {
+      "status": "S",
+      "score": 4
+     }
+    ],
+    "status": "",
+    "winner": "2",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "S2gxo05PHv_0004",
+  "match2bracketid": "S2gxo05PHv",
+  "section": "Day 2",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-03 20:45:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 2,
+   "type": "matchlist",
+   "next": "S2gxo05PHv_0005",
+   "matchIndex": 4,
+   "bracketindex": 1,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Gentle Mates",
+    "template": "gentle mates 2026",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Geekay Esports",
+    "template": "geekay esports 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "S2gxo05PHv_0005",
+  "match2bracketid": "S2gxo05PHv",
+  "section": "Day 2",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-03 21:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 2,
+   "type": "matchlist",
+   "matchIndex": 5,
+   "bracketindex": 1,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Ikkaku",
+    "template": "ikkaku",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "DUMORNAY GOAT",
+    "template": "dumornay goat",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "KYsrR25uHZ_0001",
+  "match2bracketid": "KYsrR25uHZ",
+  "section": "Day 3",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-04 18:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 3,
+   "type": "matchlist",
+   "title": "Day 3",
+   "next": "KYsrR25uHZ_0002",
+   "matchIndex": 1,
+   "bracketindex": 2,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Geekay Esports",
+    "template": "geekay esports 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Ikkaku",
+    "template": "ikkaku",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "KYsrR25uHZ_0002",
+  "match2bracketid": "KYsrR25uHZ",
+  "section": "Day 3",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-04 19:15:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 3,
+   "type": "matchlist",
+   "next": "KYsrR25uHZ_0003",
+   "matchIndex": 2,
+   "bracketindex": 2,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Gentle Mates",
+    "template": "gentle mates 2026",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "DUMORNAY GOAT",
+    "template": "dumornay goat",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "KYsrR25uHZ_0003",
+  "match2bracketid": "KYsrR25uHZ",
+  "section": "Day 3",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-04 20:00:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 3,
+   "type": "matchlist",
+   "next": "KYsrR25uHZ_0004",
+   "matchIndex": 3,
+   "bracketindex": 2,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Team Vitality",
+    "template": "vitality 2023",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Geekay Esports",
+    "template": "geekay esports 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "KYsrR25uHZ_0004",
+  "match2bracketid": "KYsrR25uHZ",
+  "section": "Day 3",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-04 20:45:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 3,
+   "type": "matchlist",
+   "next": "KYsrR25uHZ_0005",
+   "matchIndex": 4,
+   "bracketindex": 2,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Karmine Corp",
+    "template": "karmine corp 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Ikkaku",
+    "template": "ikkaku",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "KYsrR25uHZ_0005",
+  "match2bracketid": "KYsrR25uHZ",
+  "section": "Day 3",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-04 21:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 3,
+   "type": "matchlist",
+   "matchIndex": 5,
+   "bracketindex": 2,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Team Vitality",
+    "template": "vitality 2023",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "DUMORNAY GOAT",
+    "template": "dumornay goat",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "eVYCuk2PYV_0001",
+  "match2bracketid": "eVYCuk2PYV",
+  "section": "Day 4",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-09 18:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 4,
+   "type": "matchlist",
+   "title": "Day 4",
+   "next": "eVYCuk2PYV_0002",
+   "matchIndex": 1,
+   "bracketindex": 3,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "DUMORNAY GOAT",
+    "template": "dumornay goat",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Geekay Esports",
+    "template": "geekay esports 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "eVYCuk2PYV_0002",
+  "match2bracketid": "eVYCuk2PYV",
+  "section": "Day 4",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-09 19:15:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 4,
+   "type": "matchlist",
+   "next": "eVYCuk2PYV_0003",
+   "matchIndex": 2,
+   "bracketindex": 3,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Team Vitality",
+    "template": "vitality 2023",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Gentle Mates",
+    "template": "gentle mates 2026",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "eVYCuk2PYV_0003",
+  "match2bracketid": "eVYCuk2PYV",
+  "section": "Day 4",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-09 20:00:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 4,
+   "type": "matchlist",
+   "next": "eVYCuk2PYV_0004",
+   "matchIndex": 3,
+   "bracketindex": 3,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Geekay Esports",
+    "template": "geekay esports 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Karmine Corp",
+    "template": "karmine corp 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "eVYCuk2PYV_0004",
+  "match2bracketid": "eVYCuk2PYV",
+  "section": "Day 4",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-09 20:45:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 4,
+   "type": "matchlist",
+   "next": "eVYCuk2PYV_0005",
+   "matchIndex": 4,
+   "bracketindex": 3,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Ikkaku",
+    "template": "ikkaku",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Team Vitality",
+    "template": "vitality 2023",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "eVYCuk2PYV_0005",
+  "match2bracketid": "eVYCuk2PYV",
+  "section": "Day 4",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-09 21:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 4,
+   "type": "matchlist",
+   "matchIndex": 5,
+   "bracketindex": 3,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Karmine Corp",
+    "template": "karmine corp 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Gentle Mates",
+    "template": "gentle mates 2026",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "PrQ4121CGd_0001",
+  "match2bracketid": "PrQ4121CGd",
+  "section": "Day 5",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-10 18:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 5,
+   "type": "matchlist",
+   "title": "Day 5",
+   "next": "PrQ4121CGd_0002",
+   "matchIndex": 1,
+   "bracketindex": 4,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "DUMORNAY GOAT",
+    "template": "dumornay goat",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Ikkaku",
+    "template": "ikkaku",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "PrQ4121CGd_0002",
+  "match2bracketid": "PrQ4121CGd",
+  "section": "Day 5",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-10 19:15:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 5,
+   "type": "matchlist",
+   "next": "PrQ4121CGd_0003",
+   "matchIndex": 2,
+   "bracketindex": 4,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Geekay Esports",
+    "template": "geekay esports 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Gentle Mates",
+    "template": "gentle mates 2026",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "PrQ4121CGd_0003",
+  "match2bracketid": "PrQ4121CGd",
+  "section": "Day 5",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-10 20:00:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 5,
+   "type": "matchlist",
+   "next": "PrQ4121CGd_0004",
+   "matchIndex": 3,
+   "bracketindex": 4,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "DUMORNAY GOAT",
+    "template": "dumornay goat",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Karmine Corp",
+    "template": "karmine corp 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "PrQ4121CGd_0004",
+  "match2bracketid": "PrQ4121CGd",
+  "section": "Day 5",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-10 20:45:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 5,
+   "type": "matchlist",
+   "next": "PrQ4121CGd_0005",
+   "matchIndex": 4,
+   "bracketindex": 4,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Ikkaku",
+    "template": "ikkaku",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Gentle Mates",
+    "template": "gentle mates 2026",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "PrQ4121CGd_0005",
+  "match2bracketid": "PrQ4121CGd",
+  "section": "Day 5",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-10 21:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 5,
+   "type": "matchlist",
+   "matchIndex": 5,
+   "bracketindex": 4,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Team Vitality",
+    "template": "vitality 2023",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Karmine Corp",
+    "template": "karmine corp 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "rO8mtD9NUQ_0001",
+  "match2bracketid": "rO8mtD9NUQ",
+  "section": "Day 6",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-11 18:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 6,
+   "type": "matchlist",
+   "title": "Day 6",
+   "next": "rO8mtD9NUQ_0002",
+   "matchIndex": 1,
+   "bracketindex": 5,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "DUMORNAY GOAT",
+    "template": "dumornay goat",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Team Vitality",
+    "template": "vitality 2023",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "rO8mtD9NUQ_0002",
+  "match2bracketid": "rO8mtD9NUQ",
+  "section": "Day 6",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-11 19:15:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 6,
+   "type": "matchlist",
+   "next": "rO8mtD9NUQ_0003",
+   "matchIndex": 2,
+   "bracketindex": 5,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Ikkaku",
+    "template": "ikkaku",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Karmine Corp",
+    "template": "karmine corp 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "rO8mtD9NUQ_0003",
+  "match2bracketid": "rO8mtD9NUQ",
+  "section": "Day 6",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-11 20:00:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 6,
+   "type": "matchlist",
+   "next": "rO8mtD9NUQ_0004",
+   "matchIndex": 3,
+   "bracketindex": 5,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Geekay Esports",
+    "template": "geekay esports 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Team Vitality",
+    "template": "vitality 2023",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "rO8mtD9NUQ_0004",
+  "match2bracketid": "rO8mtD9NUQ",
+  "section": "Day 6",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-11 20:45:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 6,
+   "type": "matchlist",
+   "next": "rO8mtD9NUQ_0005",
+   "matchIndex": 4,
+   "bracketindex": 5,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "DUMORNAY GOAT",
+    "template": "dumornay goat",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Gentle Mates",
+    "template": "gentle mates 2026",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "rO8mtD9NUQ_0005",
+  "match2bracketid": "rO8mtD9NUQ",
+  "section": "Day 6",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-11 21:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "groupRoundIndex": 6,
+   "type": "matchlist",
+   "matchIndex": 5,
+   "bracketindex": 5,
+   "sectionheader": "League Play"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "team",
+    "name": "Ikkaku",
+    "template": "ikkaku",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "team",
+    "name": "Geekay Esports",
+    "template": "geekay esports 2024",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "xsUsGxjSqt_R01-M001",
+  "match2bracketid": "xsUsGxjSqt",
+  "section": "Playoffs",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-12 18:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "loweredges": [],
+   "coordinates": {
+    "sectionIndex": 0,
+    "depthCount": 2,
+    "matchIndexInRound": 0,
+    "roundIndex": 0,
+    "rootIndex": 0,
+    "semanticDepth": 2,
+    "semanticRoundIndex": 0,
+    "depth": 1,
+    "roundCount": 2,
+    "sectionCount": 1
+   },
+   "bracketindex": 6,
+   "bracketsection": "upper",
+   "lowerMatchIds": [],
+   "toupper": "",
+   "thirdplace": "",
+   "type": "bracket",
+   "inheritedheader": "!r2!x",
+   "header": "!r2!x",
+   "sectionheader": "League Play",
+   "bracketreset": "",
+   "bracketType": "Bracket/4",
+   "tolower": "",
+   "upperMatchId": "xsUsGxjSqt_R02-M001"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "literal",
+    "name": "",
+    "template": "",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "literal",
+    "name": "",
+    "template": "",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Utopia Coliseum (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "xsUsGxjSqt_R01-M002",
+  "match2bracketid": "xsUsGxjSqt",
+  "section": "Playoffs",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-12 19:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "loweredges": [],
+   "coordinates": {
+    "sectionIndex": 0,
+    "depthCount": 2,
+    "matchIndexInRound": 1,
+    "roundIndex": 0,
+    "rootIndex": 0,
+    "semanticDepth": 2,
+    "semanticRoundIndex": 0,
+    "depth": 1,
+    "roundCount": 2,
+    "sectionCount": 1
+   },
+   "bracketsection": "upper",
+   "lowerMatchIds": [],
+   "toupper": "",
+   "bracketindex": 6,
+   "type": "bracket",
+   "inheritedheader": "!r2!x",
+   "thirdplace": "",
+   "sectionheader": "League Play",
+   "bracketreset": "",
+   "bracketType": "Bracket/4",
+   "tolower": "",
+   "upperMatchId": "xsUsGxjSqt_R02-M001"
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "literal",
+    "name": "",
+    "template": "",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "literal",
+    "name": "",
+    "template": "",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Utopia Coliseum (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ },
+ {
+  "pagename": "NEO/Coupe_de_France_Slash/2026",
+  "parent": "NEO/Coupe_de_France_Slash/2026",
+  "wiki": "rocketleague",
+  "match2id": "xsUsGxjSqt_R02-M001",
+  "match2bracketid": "xsUsGxjSqt",
+  "section": "Playoffs",
+  "bestof": 0,
+  "finished": 0,
+  "status": "",
+  "date": "2026-11-12 20:30:00",
+  "winner": "",
+  "walkover": "",
+  "resulttype": "",
+  "match2bracketdata": {
+   "loweredges": [
+    {
+     "opponentIndex": 0,
+     "lowerMatchIndex": 0
+    },
+    {
+     "opponentIndex": 1,
+     "lowerMatchIndex": 1
+    }
+   ],
+   "coordinates": {
+    "sectionIndex": 0,
+    "depthCount": 2,
+    "matchIndexInRound": 0,
+    "roundIndex": 1,
+    "rootIndex": 0,
+    "semanticDepth": 1,
+    "semanticRoundIndex": 1,
+    "depth": 0,
+    "roundCount": 2,
+    "sectionCount": 1
+   },
+   "bracketsection": "upper",
+   "lowerMatchIds": [
+    "xsUsGxjSqt_R01-M001",
+    "xsUsGxjSqt_R01-M002"
+   ],
+   "toupper": "xsUsGxjSqt_R01-M001",
+   "bracketindex": 6,
+   "sectionheader": "League Play",
+   "inheritedheader": "!r1!x",
+   "header": "!r1!x",
+   "type": "bracket",
+   "bracketreset": "",
+   "bracketType": "Bracket/4",
+   "tolower": "xsUsGxjSqt_R01-M002",
+   "thirdplace": ""
+  },
+  "match2opponents": [
+   {
+    "id": 1,
+    "type": "literal",
+    "name": "",
+    "template": "",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   },
+   {
+    "id": 2,
+    "type": "literal",
+    "name": "",
+    "template": "",
+    "score": -1,
+    "status": "",
+    "placement": -1
+   }
+  ],
+  "match2games": [
+   {
+    "map": "Parc de Paris",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Forbidden Temple",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Mannfield (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   },
+   {
+    "map": "Utopia Coliseum (Dusk)",
+    "scores": [],
+    "opponents": [
+     [],
+     []
+    ],
+    "status": "",
+    "winner": "",
+    "walkover": "",
+    "resulttype": ""
+   }
+  ]
+ }
+]
