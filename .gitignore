@@ -223,8 +223,9 @@ __marimo__/
 .idea/
 
 # Private & Drafts files
+.tokens/
 _drafts/
-_tokens/
+_data/*/outlook/
 
 # Claude Code & Claude personal Config
 .claude/
