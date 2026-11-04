@@ -19,15 +19,13 @@ from .constants import (
     METHOD_AUTO,
     METHODS,
     OUTLOOK_DIR,
-    RESULTS_CSV,
     SOURCE_CSV,
     SOURCE_LIQUIPEDIA,
     SOURCES,
 )
 from .engine import evaluate
-from .models import LeagueConfig
 from .report import format_table, write_outlook
-from .sources import CsvSource, LiquipediaSource, ResultSource, write_results
+from .sources import CsvSource, LiquipediaSource, ResultSource, results_path, write_results
 
 logger = logging.getLogger(__name__)
 
@@ -50,18 +48,17 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def build_source(name: str, config: LeagueConfig) -> ResultSource:
+def build_source(name: str) -> ResultSource:
     """Create the result source named on the command line.
 
     Args:
-        name: `liquipedia` or `csv`.
-        config: League format.
+        name: `liquipedia` or `csv` (both locate the league from the config passed to `fetch`).
 
     Returns:
         The result source.
     """
     if name == SOURCE_CSV:
-        return CsvSource(league_dir(config.slug) / RESULTS_CSV)
+        return CsvSource()
     return LiquipediaSource()
 
 
@@ -79,9 +76,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     logging.getLogger('httpx').setLevel(logging.WARNING)  # one INFO line per API request otherwise
     try:
         config = load_league(args.league)
-        series = build_source(args.source, config).fetch(config)
+        series = build_source(args.source).fetch(config)
         if args.source == SOURCE_LIQUIPEDIA:
-            write_results(series, league_dir(config.slug) / RESULTS_CSV)
+            write_results(series, results_path(config))
         report = evaluate(config, series, method=args.method, samples=args.samples, seed=args.seed)
     except EsportsDataHubError as error:
         logger.critical('%s', error)

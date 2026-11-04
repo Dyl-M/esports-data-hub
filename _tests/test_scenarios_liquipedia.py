@@ -3,7 +3,6 @@
 # Standard library
 import json
 import logging
-from types import SimpleNamespace
 
 # Third-party
 import pytest
@@ -26,17 +25,48 @@ def _load(name):
     return json.loads((LPDB_DIR / f'cdf_slash_2026_{name}.json').read_text(encoding='utf-8'))
 
 
+class FakeStandingsTables:
+    """Recorded `/standingstable` responses, matching the source's `LpdbStandingsTables` protocol."""
+
+    def __init__(self, tables, error):
+        """Serve `tables`, or raise `error` when set; queries are recorded in `queries`."""
+        self.tables = tables
+        self.error = error
+        self.queries = []
+
+    def list(self, wiki, *, pagename, order=None):
+        """Record the query, then return one response holding the recorded tables."""
+        self.queries.append({'wiki': wiki, 'pagename': pagename, 'order': order})
+        if self.error:
+            raise self.error
+        return ApiResponse(result=self.tables, warnings=[])
+
+
+class FakeMatches:
+    """Recorded `/match` responses, matching the source's `LpdbMatches` protocol."""
+
+    def __init__(self, matches, error):
+        """Serve `matches`, or raise `error` when set; queries are recorded in `queries`."""
+        self.matches = matches
+        self.error = error
+        self.queries = []
+
+    def paginate(self, wiki, *, pagename, order=None, page_size=50):
+        """Record the query, then iterate over the recorded matches."""
+        self.queries.append({'wiki': wiki, 'pagename': pagename, 'order': order, 'page_size': page_size})
+        if self.error:
+            raise self.error
+        return iter(self.matches)
+
+
 class FakeClient:
-    """Stand-in for LiquipediaClient serving recorded payloads."""
+    """Stand-in for LiquipediaClient serving recorded payloads, matching the source's `LpdbClient` protocol."""
 
     def __init__(self, tables=None, matches=None, error=None):
-        """Serve `tables` and `matches`, or raise `error` on any call."""
-        self.tables = _load('standingstable') if tables is None else tables
-        self.matches_payload = _load('match') if matches is None else matches
-        self.error = error
+        """Serve `tables` and `matches` (the recorded CdF payloads by default), or raise `error` on any query."""
+        self.standings_tables = FakeStandingsTables(_load('standingstable') if tables is None else tables, error)
+        self.matches = FakeMatches(_load('match') if matches is None else matches, error)
         self.closed = False
-        self.standings_tables = SimpleNamespace(list=self._list_tables)
-        self.matches = SimpleNamespace(paginate=self._paginate)
 
     def __enter__(self):
         """Mimic the client context manager."""
@@ -46,18 +76,6 @@ class FakeClient:
         """Record that the client was closed."""
         self.closed = True
 
-    def _list_tables(self, wiki, **kwargs):
-        """Mimic `client.standings_tables.list`: one response holding the recorded tables."""
-        if self.error:
-            raise self.error
-        return ApiResponse(result=self.tables, warnings=[])
-
-    def _paginate(self, wiki, **kwargs):
-        """Mimic `client.matches.paginate`: iterate over the recorded matches."""
-        if self.error:
-            raise self.error
-        return iter(self.matches_payload)
-
 
 @pytest.fixture
 def cdf():
@@ -65,10 +83,15 @@ def cdf():
     return load_league('cdf_slash_2026')
 
 
+def _match_payload(match_id):
+    """Return the raw recorded payload of a match, as a dict that tests can edit before validating it."""
+    matches = {item['match2id']: item for item in _load('match')}
+    return matches[match_id]
+
+
 def _match(match_id):
     """Return a recorded match by id."""
-    matches = {item['match2id']: item for item in _load('match')}
-    return Match.model_validate(matches[match_id])
+    return Match.model_validate(_match_payload(match_id))
 
 
 # === fetch ===
@@ -83,6 +106,15 @@ def test_fetch_cdf_league_play(cdf, caplog):
     assert sum(item.finished for item in series) == 8
     assert series[0].teams == ('Gentle Mates', 'Karmine Corp')
     assert not caplog.records
+
+
+def test_fetch_queries(cdf):
+    """Test that the source queries the league's page on its wiki: tables by index, matches by date, 100 per page."""
+    client = FakeClient()
+    LiquipediaSource(client).fetch(cdf)
+    page = {'wiki': 'rocketleague', 'pagename': 'NEO/Coupe_de_France_Slash/2026'}
+    assert client.standings_tables.queries == [page | {'order': 'standingsindex ASC'}]
+    assert client.matches.queries == [page | {'order': 'date ASC', 'page_size': 100}]
 
 
 def test_fetch_warns_on_tiebreaker_mismatch(caplog):
@@ -115,20 +147,20 @@ def test_fetch_table_without_rounds(cdf):
 
 def test_fetch_opens_and_closes_its_own_client(cdf, monkeypatch):
     """Test that without an injected client, fetch opens one with the configured key and closes it afterwards."""
-    opened = []
+    calls = []
 
     def open_client(app_name, *, api_key):
         """Stand in for the LiquipediaClient constructor, recording how it was called."""
         client = FakeClient()
-        opened.append((app_name, api_key, client))
+        calls.append({'app_name': app_name, 'api_key': api_key, 'client': client})
         return client
 
     monkeypatch.setenv('LPDB_API_KEY', 'env-key')
     monkeypatch.setattr(liquipedia, 'LiquipediaClient', open_client)
     series = LiquipediaSource().fetch(cdf)
     assert len(series) == 30
-    [(app_name, api_key, client)] = opened
-    assert (app_name, api_key, client.closed) == ('esports-data-hub', 'env-key', True)
+    [call] = calls
+    assert (call['app_name'], call['api_key'], call['client'].closed) == ('esports-data-hub', 'env-key', True)
 
 
 # === to_series ===
@@ -155,12 +187,21 @@ def test_to_series_upcoming(cdf):
 @pytest.mark.parametrize(('statuses', 'scores'), [(('W', 'FF'), (3, 0)), (('DQ', 'W'), (0, 3)), (('L', ''), (0, 3))])
 def test_to_series_walkover(cdf, statuses, scores):
     """Test that a walkover credits `walkover_games` to the winner, with no goals."""
-    match = _match('KYsrR25uHZ_0001')
+    payload = _match_payload('KYsrR25uHZ_0001')
     opponents = [
-        opponent | {'status': status} for opponent, status in zip(match.match2opponents, statuses, strict=True)
+        opponent | {'status': status} for opponent, status in zip(payload['match2opponents'], statuses, strict=True)
     ]
-    series = to_series(match.model_copy(update={'match2opponents': opponents, 'finished': 1}), 3, cdf)
+    series = to_series(Match.model_validate(payload | {'match2opponents': opponents, 'finished': 1}), 3, cdf)
     assert ((series.score_1, series.score_2), series.goals, series.finished) == (scores, (), True)
+
+
+def test_to_series_partial_goals_are_unknown(cdf):
+    """Test that a finished series with an unscored game has unknown goals instead of partial ones."""
+    payload = _match_payload('dprh3EmctD_0001')
+    games = [dict(game) for game in payload['match2games']]
+    games[1] |= {'opponents': [{'status': 'S', 'score': 2}, {'status': '', 'score': 0}]}
+    series = to_series(Match.model_validate(payload | {'match2games': games}), 1, cdf)
+    assert (series.score_1, series.score_2, series.goals) == (3, 0, None)
 
 
 def test_to_series_requires_named_opponents(cdf):
@@ -199,12 +240,3 @@ def test_load_api_key_errors(monkeypatch, tmp_path, content, message):
     monkeypatch.setattr(paths, 'TOKENS_JSON', tokens)
     with pytest.raises(ConfigurationError, match=message):
         load_api_key()
-
-
-def test_to_series_partial_goals_are_unknown(cdf):
-    """Test that a finished series with an unscored game has unknown goals instead of partial ones."""
-    match = _match('dprh3EmctD_0001')
-    games = [dict(game) for game in match.match2games]
-    games[1] |= {'opponents': [{'status': 'S', 'score': 2}, {'status': '', 'score': 0}]}
-    series = to_series(match.model_copy(update={'match2games': games}), 1, cdf)
-    assert (series.score_1, series.score_2, series.goals) == (3, 0, None)

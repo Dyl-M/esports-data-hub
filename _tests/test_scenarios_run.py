@@ -29,11 +29,13 @@ class StaticSource:
     """Result source serving a fixed list of series, standing in for Liquipedia."""
 
     def __init__(self, series):
-        """Serve `series` on every fetch."""
+        """Serve `series` on every fetch; the leagues asked for are recorded in `configs`."""
         self.series = series
+        self.configs = []
 
     def fetch(self, config):
-        """Return the stored series, whatever the league."""
+        """Record the league asked for, then return the stored series."""
+        self.configs.append(config)
         return self.series
 
 
@@ -66,9 +68,12 @@ def test_main_csv_source(league_folder, capsys):
 def test_main_liquipedia_source_saves_snapshot(league_folder, monkeypatch):
     """Test that fetched Liquipedia results are saved as the CSV snapshot."""
     fetched = [make_series(1, 'A', 'B', 3, 0), make_series(2, 'A', 'B')]
-    monkeypatch.setattr(run, 'build_source', lambda name, config: StaticSource(fetched))
+    source = StaticSource(fetched)
+    monkeypatch.setattr(run, 'build_source', lambda name: source)
     assert run.main(['test_league']) == 0
-    assert CsvSource(league_folder / 'results.csv').fetch(None) == fetched
+    league = run.load_league('test_league')
+    assert source.configs == [league]
+    assert CsvSource().fetch(league) == fetched
 
 
 @pytest.mark.parametrize(
@@ -77,20 +82,21 @@ def test_main_liquipedia_source_saves_snapshot(league_folder, monkeypatch):
 )
 def test_main_errors(league_folder, argv, monkeypatch):
     """Test that configuration, source and evaluation errors exit with code 1."""
-    monkeypatch.setattr(run, 'build_source', lambda name, config: CsvSource(league_folder / 'results.csv'))
+    monkeypatch.setattr(run, 'build_source', lambda name: CsvSource(league_folder / 'results.csv'))
     assert run.main(argv) == 1
 
 
 def test_build_source_csv(league_folder):
-    """Test that the csv source reads the league's results snapshot."""
-    source = run.build_source('csv', run.load_league('test_league'))
+    """Test that the csv source reads the league's own results snapshot."""
+    league = run.load_league('test_league')
+    source = run.build_source('csv')
     assert isinstance(source, CsvSource)
-    assert source.path == league_folder / 'results.csv'
+    assert source.fetch(league) == CsvSource(league_folder / 'results.csv').fetch(league)
 
 
-def test_build_source_liquipedia(league_folder):
+def test_build_source_liquipedia():
     """Test that the default source is Liquipedia."""
-    assert isinstance(run.build_source('liquipedia', run.load_league('test_league')), LiquipediaSource)
+    assert isinstance(run.build_source('liquipedia'), LiquipediaSource)
 
 
 def test_module_entry_point(league_folder, monkeypatch):

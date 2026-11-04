@@ -5,7 +5,7 @@ import pytest
 
 # Local
 from edh.exceptions import DataSourceError
-from edh.scenarios.sources import CsvSource, write_results
+from edh.scenarios.sources import CsvSource, results_path, write_results
 
 from .conftest import CDF_DAY2_CSV, make_league, make_series
 
@@ -63,3 +63,18 @@ def test_round_trip_keeps_known_empty_goals(tmp_path):
     write_results([walkover, unknown], path)
     assert path.read_text(encoding='utf-8').splitlines()[1:] == ['1,A,B,3,0,1,-', '2,A,B,3,0,1,']
     assert CsvSource(path).fetch(make_league()) == [walkover, unknown]
+
+
+def test_fetch_league_snapshot(data_dir):
+    """Test that without a file, the source reads the league's snapshot in _data/<league>/results.csv."""
+    league = make_league(slug='some_league')
+    series = [make_series(1, 'A', 'B', 3, 0), make_series(2, 'A', 'B')]
+    write_results(series, results_path(league))
+    assert results_path(league) == data_dir / 'some_league' / 'results.csv'
+    assert CsvSource().fetch(league) == series
+
+
+def test_fetch_missing_league_snapshot(data_dir):
+    """Test that a league without a snapshot is a data source error naming the expected file."""
+    with pytest.raises(DataSourceError, match=r'no_snapshot.results\.csv'):
+        CsvSource().fetch(make_league(slug='no_snapshot'))

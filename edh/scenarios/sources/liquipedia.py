@@ -10,10 +10,11 @@ played), per-game goals in `match2games`. The table also records the tiebreakers
 import json
 import logging
 import os
-from typing import Any
+from collections.abc import Iterator
+from typing import Any, Protocol
 
 # Third-party
-from liquipydia import LiquipediaClient, LiquipediaError, Match, StandingsTable
+from liquipydia import ApiResponse, LiquipediaClient, LiquipediaError, Match, StandingsTable
 
 # Local
 from ... import paths
@@ -32,6 +33,38 @@ from ..constants import (
 from ..models import LeagueConfig, Series
 
 logger = logging.getLogger(__name__)
+
+
+class LpdbStandingsTables(Protocol):
+    """The `/standingstable` queries the source needs (liquipydia's `client.standings_tables`)."""
+
+    def list(self, wiki: str, *, pagename: str, order: str | None = None) -> ApiResponse:
+        """Return one page of the standings tables stored on pagename."""
+        ...
+
+
+class LpdbMatches(Protocol):
+    """The `/match` queries the source needs (liquipydia's `client.matches`)."""
+
+    def paginate(
+        self, wiki: str, *, pagename: str, order: str | None = None, page_size: int = 50
+    ) -> Iterator[dict[str, Any]]:
+        """Iterate over every match stored on pagename, page by page."""
+        ...
+
+
+class LpdbClient(Protocol):
+    """The part of an LPDB client the source uses; `liquipydia.LiquipediaClient` satisfies it."""
+
+    @property
+    def standings_tables(self) -> LpdbStandingsTables:
+        """Standings table queries."""
+        ...
+
+    @property
+    def matches(self) -> LpdbMatches:
+        """Match queries."""
+        ...
 
 
 def load_api_key() -> str:
@@ -63,11 +96,11 @@ def load_api_key() -> str:
 class LiquipediaSource:
     """Fetch league series from Liquipedia."""
 
-    def __init__(self, client: LiquipediaClient | None = None) -> None:
+    def __init__(self, client: LpdbClient | None = None) -> None:
         """Use `client`, or create one from `load_api_key()` on each fetch.
 
         Args:
-            client: An open liquipydia client (tests pass a fake one).
+            client: An open LPDB client (tests pass a fake one); None to open a liquipydia client per fetch.
         """
         self.client = client
 
@@ -90,7 +123,7 @@ class LiquipediaSource:
             return _fetch(client, config)
 
 
-def _fetch(client: LiquipediaClient, config: LeagueConfig) -> list[Series]:
+def _fetch(client: LpdbClient, config: LeagueConfig) -> list[Series]:
     """Query the standings table and its matches, translating liquipydia errors into DataSourceError."""
     try:
         tables = client.standings_tables.list(config.wiki, pagename=config.pagename, order='standingsindex ASC')

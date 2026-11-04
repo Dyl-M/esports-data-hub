@@ -2,6 +2,7 @@
 
 # Standard library
 import json
+import re
 
 # Third-party
 import pytest
@@ -78,12 +79,38 @@ def test_parse_league_minimal():
         (VALID | {'qualification': {'Playoffs': [4, 1]}}, 'rank range'),
         (VALID | {'qualification': {'Playoffs': [1]}}, 'Invalid league file'),
         (VALID | {'manual_tiebreakers': {'A': 'high'}}, 'must be an integer'),
+        (VALID | {'name': 123}, 'name must be a string'),
+        (VALID | {'tiebreakers': 'matchscore'}, 'tiebreakers must be a list'),
+        (VALID | {'tiebreakers': ['matchscore', 1]}, 'tiebreakers must be a string'),
+        (VALID | {'qualification': {'Playoffs': [1, 2, 3]}}, r'\[first, last\] rank range'),
+        (VALID | {'qualification': {'Playoffs': 4}}, 'Playoffs must be a list'),
+        (VALID | {'qualification': []}, 'qualification must be an object'),
+        (VALID | {'team_aliases': {'Old': 1}}, 'Old must be a string'),
+        (VALID | {'manual_tiebreakers': ['A']}, 'manual_tiebreakers must be an object'),
     ],
 )
 def test_parse_league_invalid(data, message):
     """Test that invalid league files are configuration errors."""
     with pytest.raises(ConfigurationError, match=message):
         parse_league('x', data, file_path='league.json')
+
+
+@pytest.mark.parametrize(
+    ('field', 'value', 'described'),
+    [
+        ('best_of', True, 'best_of must be an integer, got a boolean (true / false)'),
+        ('best_of', 2.5, 'best_of must be an integer, got a decimal number'),
+        ('best_of', '5', 'best_of must be an integer, got a string'),
+        ('best_of', None, 'best_of must be an integer, got null'),
+        ('name', 5, 'name must be a string, got an integer number'),
+        ('name', ['x'], 'name must be a string, got a list (JSON array)'),
+        ('name', {'x': 1}, 'name must be a string, got an object (JSON key / value mapping)'),
+    ],
+)
+def test_parse_league_names_json_types(field, value, described):
+    """Test that type errors name the JSON type received rather than echoing the raw value."""
+    with pytest.raises(ConfigurationError, match=re.escape(described)):
+        parse_league('x', VALID | {field: value})
 
 
 def test_cdf_slash_2026_league_file():

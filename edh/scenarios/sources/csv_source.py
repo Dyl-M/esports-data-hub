@@ -12,18 +12,31 @@ from pathlib import Path
 
 # Local
 from ...exceptions import DataSourceError
-from ..constants import NO_GOALS, RESULTS_COLUMNS
+from ..config import league_dir
+from ..constants import NO_GOALS, RESULTS_COLUMNS, RESULTS_CSV
 from ..models import LeagueConfig, Series
 
 
-class CsvSource:
-    """Read league series from a CSV file."""
+def results_path(config: LeagueConfig) -> Path:
+    """Return the league's results snapshot, `_data/<league>/results.csv`.
 
-    def __init__(self, path: Path) -> None:
-        """Read results from `path`.
+    Args:
+        config: League format.
+
+    Returns:
+        The snapshot path (read from `paths` at call time).
+    """
+    return league_dir(config.slug) / RESULTS_CSV
+
+
+class CsvSource:
+    """Read league series from a CSV file: the league's results snapshot, or a given file."""
+
+    def __init__(self, path: Path | None = None) -> None:
+        """Read results from `path`, or from the league's snapshot (`results_path`) when None.
 
         Args:
-            path: CSV file.
+            path: CSV file (fixtures, manual input); None for the league's snapshot.
         """
         self.path = path
 
@@ -31,7 +44,7 @@ class CsvSource:
         """Return the series stored in the CSV file.
 
         Args:
-            config: League format (unused: the file only holds this league).
+            config: League format, locating its snapshot when no file was given.
 
         Returns:
             The series, in file order.
@@ -39,15 +52,16 @@ class CsvSource:
         Raises:
             DataSourceError: If the file is missing or a row is invalid.
         """
+        path = self.path or results_path(config)
         try:
-            with self.path.open(encoding='utf-8', newline='') as file:
+            with path.open(encoding='utf-8', newline='') as file:
                 reader = csv.DictReader(file)
                 missing = set(RESULTS_COLUMNS) - set(reader.fieldnames or ())
                 if missing:
-                    raise DataSourceError(f'{self.path}: missing columns {", ".join(sorted(missing))}')
+                    raise DataSourceError(f'{path}: missing columns {", ".join(sorted(missing))}')
                 return [_parse_row(row, line) for line, row in enumerate(reader, start=2)]
         except FileNotFoundError as error:
-            raise DataSourceError(f'Results file not found: {self.path}') from error
+            raise DataSourceError(f'Results file not found: {path}') from error
 
 
 def write_results(series: Iterable[Series], path: Path) -> None:
