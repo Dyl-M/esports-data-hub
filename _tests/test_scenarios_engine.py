@@ -7,7 +7,7 @@ import pytest
 from edh.exceptions import ScenarioError
 from edh.scenarios import engine
 from edh.scenarios.engine import choose_method, count_scenarios, evaluate, project_ranks
-from edh.scenarios.models import TeamOutlook
+from edh.scenarios.models import EvaluationOptions, TeamOutlook
 from edh.scenarios.sources import CsvSource
 
 from .conftest import CDF_DAY2_CSV, make_league, make_series
@@ -34,30 +34,43 @@ def test_count_scenarios_all_finished():
 
 
 @pytest.mark.parametrize(
-    ('method', 'scenarios', 'expected'),
+    ('method', 'scenarios', 'combinations', 'expected'),
     [
-        ('auto', 10, 'exhaustive'),
-        ('auto', 11, 'montecarlo'),
-        ('montecarlo', 1, 'montecarlo'),
-        ('exhaustive', 10, 'exhaustive'),
+        ('auto', 10, 4, 'exhaustive'),
+        ('auto', 11, 4, 'winnersfirst'),
+        ('auto', 11, 5, 'montecarlo'),
+        ('auto', 11, None, 'montecarlo'),
+        ('montecarlo', 1, 1, 'montecarlo'),
+        ('exhaustive', 10, None, 'exhaustive'),
+        ('winnersfirst', 1, 4, 'winnersfirst'),
     ],
 )
-def test_choose_method(method, scenarios, expected):
-    """Test that auto enumerates up to the limit and samples above it."""
-    assert choose_method(method, scenarios, 10) == expected
+def test_choose_method(method, scenarios, combinations, expected):
+    """Test that auto enumerates scenarios, then winners, up to their limits, and samples above them."""
+    assert choose_method(method, scenarios, combinations, max_exhaustive=10, max_combinations=4) == expected
 
 
-def test_choose_method_uses_module_limit(monkeypatch):
-    """Test that the default limit is read at call time."""
+def test_choose_method_uses_module_limits(monkeypatch):
+    """Test that the default limits are read at call time."""
     monkeypatch.setattr(engine, 'MAX_EXHAUSTIVE_SCENARIOS', 5)
-    assert choose_method('auto', 6) == 'montecarlo'
+    monkeypatch.setattr(engine, 'MAX_WINNER_COMBINATIONS', 2)
+    assert choose_method('auto', 6, 2) == 'winnersfirst'
+    assert choose_method('auto', 6, 3) == 'montecarlo'
 
 
-@pytest.mark.parametrize(('method', 'message'), [('exhaustive', 'exhaustive limit'), ('random', 'Unknown method')])
-def test_choose_method_errors(method, message):
-    """Test that unknown methods and oversized enumerations are rejected."""
+@pytest.mark.parametrize(
+    ('method', 'combinations', 'message'),
+    [
+        ('exhaustive', 1, 'exhaustive limit'),
+        ('winnersfirst', None, 'first tiebreaker on series winners'),
+        ('winnersfirst', 5, 'winners-first limit'),
+        ('random', 1, 'Unknown method'),
+    ],
+)
+def test_choose_method_errors(method, combinations, message):
+    """Test that unknown methods and exact methods out of reach are rejected."""
     with pytest.raises(ScenarioError, match=message):
-        choose_method(method, 11, 10)
+        choose_method(method, 11, combinations, max_exhaustive=10, max_combinations=4)
 
 
 def test_evaluate_exhaustive_shares(one_series_left):
@@ -85,8 +98,8 @@ def test_evaluate_rank_shares_sum_to_one(one_series_left):
 
 def test_evaluate_monte_carlo_is_seeded(one_series_left):
     """Test that a seeded Monte Carlo run is reproducible and close to the exact shares."""
-    first = evaluate(make_league(), one_series_left, method='montecarlo', samples=3000, seed=7)
-    second = evaluate(make_league(), one_series_left, method='montecarlo', samples=3000, seed=7)
+    first = evaluate(make_league(), one_series_left, EvaluationOptions(method='montecarlo', samples=3000, seed=7))
+    second = evaluate(make_league(), one_series_left, EvaluationOptions(method='montecarlo', samples=3000, seed=7))
     assert first == second
     assert (first.method, first.scenarios, first.exact) == ('montecarlo', 3000, False)
     outlook = {item.team: item for item in first.teams}
@@ -111,7 +124,11 @@ def test_evaluate_in_progress_series_is_conditioned():
 def test_evaluate_errors(series, samples, message):
     """Test that empty leagues and invalid sample counts are rejected."""
     with pytest.raises(ScenarioError, match=message):
-        evaluate(make_league(), series if series is not None else [make_series(1, 'A', 'B')], samples=samples)
+        evaluate(
+            make_league(),
+            series if series is not None else [make_series(1, 'A', 'B')],
+            EvaluationOptions(samples=samples),
+        )
 
 
 def test_evaluate_aliases_manual_tiebreakers():
@@ -154,13 +171,59 @@ def test_evaluate_orders_teams_by_projected_rank(one_series_left):
 def test_evaluate_monte_carlo_batches(one_series_left, monkeypatch):
     """Test that sampling in batches yields exactly the requested sample count, including a partial last batch."""
     monkeypatch.setattr(engine, 'SAMPLE_BATCH', 10)
-    report = evaluate(make_league(), one_series_left, method='montecarlo', samples=25, seed=1)
+    report = evaluate(make_league(), one_series_left, EvaluationOptions(method='montecarlo', samples=25, seed=1))
     assert report.scenarios == 25
     assert all(sum(item.rank_shares) == pytest.approx(1) for item in report.teams)
 
 
 def test_evaluate_monte_carlo_without_pending_series():
     """Test that sampling a finished league repeats its only scenario."""
-    report = evaluate(make_league(), [make_series(1, 'A', 'B', 3, 0)], method='montecarlo', samples=5, seed=1)
+    report = evaluate(
+        make_league(), [make_series(1, 'A', 'B', 3, 0)], EvaluationOptions(method='montecarlo', samples=5, seed=1)
+    )
     assert (report.scenarios, report.remaining) == (5, 0)
     assert report.teams[0].rank_shares == (1.0, 0.0)
+
+
+def test_evaluate_auto_falls_back_to_winners_first(one_series_left, monkeypatch):
+    """Test that auto switches to the winners-first method above the exhaustive limit, with the same shares."""
+    exhaustive = evaluate(make_league(qualification={'Top': (1, 1)}), one_series_left)
+    monkeypatch.setattr(engine, 'MAX_EXHAUSTIVE_SCENARIOS', 5)
+    report = evaluate(make_league(qualification={'Top': (1, 1)}), one_series_left)
+    assert (report.method, report.scenarios, report.exact) == ('winnersfirst', 6, True)
+    assert [item.team for item in report.teams] == [item.team for item in exhaustive.teams]
+    for item, expected in zip(report.teams, exhaustive.teams, strict=True):
+        assert item.rank_shares == pytest.approx(expected.rank_shares)
+        assert item.qualified == pytest.approx(expected.qualified)
+        assert item.undecided == pytest.approx(expected.undecided)
+        assert item.unresolved == pytest.approx(expected.unresolved)
+
+
+def test_evaluate_auto_skips_winners_first_on_margin_tiebreaker(one_series_left, monkeypatch):
+    """Test that auto samples when the first tiebreaker needs game margins."""
+    monkeypatch.setattr(engine, 'MAX_EXHAUSTIVE_SCENARIOS', 5)
+    report = evaluate(make_league(('gamediff', 'matchscore')), one_series_left, EvaluationOptions(samples=10, seed=1))
+    assert report.method == 'montecarlo'
+
+
+@pytest.mark.parametrize(('method', 'samples'), [('exhaustive', 1), ('winnersfirst', 1), ('montecarlo', 25)])
+def test_evaluate_in_worker_processes_matches_in_process(one_series_left, monkeypatch, method, samples):
+    """Test that a run split over worker processes gives exactly the in-process result (chunks merged in order)."""
+    monkeypatch.setattr(engine, 'PARALLEL_MIN_WORK', 0)
+    monkeypatch.setattr(engine, 'SAMPLE_BATCH', 10)
+    league = make_league(qualification={'Top': (1, 1)})
+    single = evaluate(league, one_series_left, EvaluationOptions(method=method, samples=samples, seed=3, workers=1))
+    pooled = evaluate(league, one_series_left, EvaluationOptions(method=method, samples=samples, seed=3, workers=2))
+    assert pooled == single
+    assert single.scenarios == (25 if method == 'montecarlo' else 6)
+
+
+def test_prefix_chunks_cover_every_scenario(monkeypatch):
+    """Test that exact runs are cut by the outcomes of the first series until there are enough chunks."""
+    monkeypatch.setattr(engine, 'PARALLEL_CHUNKS', 7)
+    series = [make_series(1, 'A', 'B'), make_series(1, 'C', 'D'), make_series(2, 'A', 'C')]
+    league = make_league()
+    job = engine._Job(league, ('A', 'B', 'C', 'D'), (), tuple(series), {}, 'exhaustive')
+    assert len(engine._prefix_chunks(job)) == 36  # 6 < 7, then 6 x 6
+    winners = engine._Job(league, ('A', 'B', 'C', 'D'), (), tuple(series), {}, 'winnersfirst')
+    assert len(engine._prefix_chunks(winners)) == 8  # 2, 4 < 7, then 2 x 2 x 2

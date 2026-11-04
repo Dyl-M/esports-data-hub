@@ -1,13 +1,16 @@
-"""Scenario evaluation: exhaustive enumeration or Monte Carlo sampling of the remaining series.
+"""Scenario evaluation: exhaustive enumeration, winners-first enumeration or Monte Carlo sampling.
 
 Every reachable final score of a remaining series is equally likely (a Bo5 at 0-0 ends 3-0, 3-1, 3-2, 0-3, 1-3 or
-2-3 with probability 1/6 each), so exhaustive shares are plain shares of scenarios and Monte Carlo estimates them.
+2-3 with probability 1/6 each), so exact shares are plain shares of scenarios and Monte Carlo estimates them. The
+winners-first method (`winners.py`) gives the exhaustive shares without enumerating every scenario.
 """
 
 # Standard library
 import math
-from collections.abc import Iterator, Sequence
-from dataclasses import replace
+import os
+from collections.abc import Iterable, Iterator, Sequence
+from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass, replace
 from itertools import product
 
 # Third-party
@@ -16,17 +19,23 @@ import numpy as np
 # Local
 from ..exceptions import ScenarioError
 from .constants import (
-    DEFAULT_SAMPLES,
     MAX_EXHAUSTIVE_SCENARIOS,
+    MAX_WINNER_COMBINATIONS,
     METHOD_AUTO,
     METHOD_EXHAUSTIVE,
     METHOD_MONTE_CARLO,
+    METHOD_WINNERS_FIRST,
     METHODS,
+    PARALLEL_CHUNKS,
+    PARALLEL_MIN_WORK,
+    PARALLEL_WINNERS_COST,
+    PROJECTION_DIGITS,
     SAMPLE_BATCH,
 )
-from .models import LeagueConfig, QualificationSlot, RankGroup, ScenarioReport, Series, TeamOutlook
+from .models import EvaluationOptions, LeagueConfig, QualificationSlot, RankGroup, ScenarioReport, Series, TeamOutlook
 from .outcomes import reachable_scores
 from .standings import rank
+from .winners import WeightedGroup, WinnersFirst, count_winner_combinations, margin_free_prefix
 
 
 def count_scenarios(series: Sequence[Series], wins_needed: int) -> int:
@@ -42,60 +51,109 @@ def count_scenarios(series: Sequence[Series], wins_needed: int) -> int:
     return math.prod(len(reachable_scores(item, wins_needed)) for item in series if not item.finished)
 
 
-def choose_method(method: str, scenarios: int, max_exhaustive: int | None = None) -> str:
+def choose_method(
+    method: str,
+    scenarios: int,
+    combinations: int | None = None,
+    *,
+    max_exhaustive: int | None = None,
+    max_combinations: int | None = None,
+) -> str:
     """Resolve the evaluation method.
 
+    `auto` picks the first method that fits: exhaustive, then winners-first, then Monte Carlo.
+
     Args:
-        method: `auto`, `exhaustive` or `montecarlo`.
+        method: `auto`, `exhaustive`, `winnersfirst` or `montecarlo`.
         scenarios: Number of scenarios left.
+        combinations: Number of winner combinations left, or None when the winners-first method doesn't apply (the
+            first tiebreaker depends on game or goal margins).
         max_exhaustive: Largest scenario count enumerated exhaustively (default: `MAX_EXHAUSTIVE_SCENARIOS`).
+        max_combinations: Largest winner combination count enumerated (default: `MAX_WINNER_COMBINATIONS`).
 
     Returns:
-        `exhaustive` or `montecarlo`.
+        `exhaustive`, `winnersfirst` or `montecarlo`.
 
     Raises:
-        ScenarioError: If the method is unknown, or exhaustive is requested above `max_exhaustive`.
+        ScenarioError: If the method is unknown, or an exact method is requested where it doesn't apply or above
+            its limit.
     """
     limit = MAX_EXHAUSTIVE_SCENARIOS if max_exhaustive is None else max_exhaustive
+    combination_limit = MAX_WINNER_COMBINATIONS if max_combinations is None else max_combinations
     if method not in METHODS:
         raise ScenarioError(f'Unknown method {method!r} (expected one of {", ".join(METHODS)})')
     if method == METHOD_AUTO:
-        return METHOD_EXHAUSTIVE if scenarios <= limit else METHOD_MONTE_CARLO
+        if scenarios <= limit:
+            return METHOD_EXHAUSTIVE
+        if combinations is not None and combinations <= combination_limit:
+            return METHOD_WINNERS_FIRST
+        return METHOD_MONTE_CARLO
     if method == METHOD_EXHAUSTIVE and scenarios > limit:
         raise ScenarioError(f'{scenarios:,} scenarios exceed the exhaustive limit ({limit:,}): use Monte Carlo')
+    if method == METHOD_WINNERS_FIRST:
+        if combinations is None:
+            raise ScenarioError('The winners-first method needs a first tiebreaker on series winners')
+        if combinations > combination_limit:
+            raise ScenarioError(
+                f'{combinations:,} winner combinations exceed the winners-first limit ({combination_limit:,}): '
+                'use Monte Carlo'
+            )
     return method
 
 
 class _Accumulator:
-    """Running totals of rank groups over the evaluated scenarios."""
+    """Running totals of rank groups over the evaluated scenarios, each group with its probability weight."""
 
     def __init__(self, teams: Sequence[str], slots: Sequence[QualificationSlot]) -> None:
         """Start empty totals for `teams` and qualification `slots`."""
         self.slots = slots
-        self.scenarios = 0
+        self.total = 0.0
         self.rank_shares = {team: [0.0] * len(teams) for team in teams}
-        self.qualified = {team: dict.fromkeys((slot.label for slot in slots), 0) for team in teams}
-        self.undecided = {team: dict.fromkeys((slot.label for slot in slots), 0) for team in teams}
-        self.unresolved = dict.fromkeys(teams, 0)
+        self.qualified = {team: dict.fromkeys((slot.label for slot in slots), 0.0) for team in teams}
+        self.undecided = {team: dict.fromkeys((slot.label for slot in slots), 0.0) for team in teams}
+        self.unresolved = dict.fromkeys(teams, 0.0)
+
+    def merge(self, other: '_Accumulator') -> None:
+        """Add the totals of another accumulator (same teams and slots), e.g. a chunk evaluated in a worker."""
+        self.total += other.total
+        for team, shares in other.rank_shares.items():
+            self.rank_shares[team] = [
+                mine + theirs for mine, theirs in zip(self.rank_shares[team], shares, strict=True)
+            ]
+            self.unresolved[team] += other.unresolved[team]
+            for label in self.qualified[team]:
+                self.qualified[team][label] += other.qualified[team][label]
+                self.undecided[team][label] += other.undecided[team][label]
 
     def add(self, groups: Sequence[RankGroup]) -> None:
         """Count one scenario's ranking."""
-        self.scenarios += 1
+        self.total += 1
         for group in groups:
-            share = 1 / len(group.teams)
-            for team in group.teams:
-                for position in range(group.rank, group.last + 1):
-                    self.rank_shares[team][position - 1] += share
-                self.unresolved[team] += not group.resolved
-                for slot in self.slots:
-                    if slot.first <= group.rank and group.last <= slot.last:
-                        self.qualified[team][slot.label] += 1
-                    elif group.rank <= slot.last and slot.first <= group.last:
-                        self.undecided[team][slot.label] += 1
+            self._add_group(group, 1)
+
+    def add_weighted(self, probability: float, groups: Sequence[WeightedGroup]) -> None:
+        """Count a set of scenarios of total `probability`, each rank group weighted by its own probability."""
+        self.total += probability
+        for group, weight in groups:
+            self._add_group(group, weight)
+
+    def _add_group(self, group: RankGroup, weight: float) -> None:
+        """Count one rank group with a weight."""
+        share = weight / len(group.teams)
+        for team in group.teams:
+            for position in range(group.rank, group.last + 1):
+                self.rank_shares[team][position - 1] += share
+            if not group.resolved:
+                self.unresolved[team] += weight
+            for slot in self.slots:
+                if slot.first <= group.rank and group.last <= slot.last:
+                    self.qualified[team][slot.label] += weight
+                elif group.rank <= slot.last and slot.first <= group.last:
+                    self.undecided[team][slot.label] += weight
 
     def outlooks(self) -> tuple[TeamOutlook, ...]:
         """Turn the totals into per-team shares, with projected ranks, in projected standings order."""
-        total = self.scenarios
+        total = self.total
         outlooks = [
             TeamOutlook(
                 team=team,
@@ -131,7 +189,7 @@ def project_ranks(outlooks: Sequence[TeamOutlook]) -> dict[str, int]:
     """
     pairings = sorted(
         (
-            (-share, position, outlook.expected_rank, outlook.team)
+            (-round(share, PROJECTION_DIGITS), position, round(outlook.expected_rank, PROJECTION_DIGITS), outlook.team)
             for outlook in outlooks
             for position, share in enumerate(outlook.rank_shares, start=1)
         )
@@ -146,73 +204,147 @@ def project_ranks(outlooks: Sequence[TeamOutlook]) -> dict[str, int]:
 
 
 def evaluate(
-    config: LeagueConfig,
-    series: Sequence[Series],
-    *,
-    method: str = METHOD_AUTO,
-    samples: int = DEFAULT_SAMPLES,
-    seed: int | None = None,
+    config: LeagueConfig, series: Sequence[Series], options: EvaluationOptions | None = None
 ) -> ScenarioReport:
     """Evaluate every scenario (or a sample of them) of the remaining series and aggregate the rankings.
+
+    The work is cut into fixed chunks (independent of the number of workers) evaluated in worker processes and merged
+    in order, so the result is the same whatever the number of workers. Small evaluations run in this process.
 
     Args:
         config: League format.
         series: League series, played and remaining; team aliases are applied here (manual tiebreakers included).
-        method: `auto`, `exhaustive` or `montecarlo`.
-        samples: Monte Carlo sample count.
-        seed: Monte Carlo random seed, for reproducible runs.
+        options: Method, Monte Carlo samples / seed and worker count (defaults: `EvaluationOptions()`).
 
     Returns:
         The per-team outlook.
 
     Raises:
-        ScenarioError: If there are no series, a score is impossible, the method is invalid, or `samples` is below 1.
+        ScenarioError: If there are no series, a score is impossible, or the method is invalid.
     """
+    options = options or EvaluationOptions()
     if not series:
         raise ScenarioError('No series to evaluate')
-    if samples < 1:
-        raise ScenarioError(f'samples must be >= 1, got {samples}')
 
     aliases = config.team_aliases
     current = [item.renamed(aliases) for item in series]
     manual = {aliases.get(team, team): points for team, points in config.manual_tiebreakers.items()}
     teams = sorted({team for item in current for team in item.teams})
-    played = [item for item in current if item.finished]
-    # Every way each pending series can end, built once: scenarios only pick among them
-    endings = [
-        [_complete(item, score) for score in reachable_scores(item, config.wins_needed)]
-        for item in current
-        if not item.finished
-    ]
-    resolved_method = choose_method(method, math.prod(map(len, endings)))
+    played = tuple(item for item in current if item.finished)
+    pending = tuple(item for item in current if not item.finished)
+    scenarios = count_scenarios(pending, config.wins_needed)
+    combinations = (
+        count_winner_combinations(pending, config.wins_needed) if margin_free_prefix(config.tiebreakers) else None
+    )
+    resolved_method = choose_method(options.method, scenarios, combinations)
 
+    job = _Job(config, tuple(teams), played, pending, manual, resolved_method)
+    if resolved_method == METHOD_MONTE_CARLO:
+        chunks = _sample_chunks(job, options.samples, options.seed)
+        work = options.samples
+    else:
+        chunks = _prefix_chunks(job)
+        work = scenarios if resolved_method == METHOD_EXHAUSTIVE else (combinations or 0) * PARALLEL_WINNERS_COST
+    small = work < PARALLEL_MIN_WORK or len(chunks) == 1
     accumulator = _Accumulator(teams, config.qualification)
-    for completed in _scenarios(endings, resolved_method, samples, seed):
-        accumulator.add(rank([*played, *completed], teams, config.tiebreakers, manual))
+    for result in _run_chunks(chunks, 1 if small else (options.workers or os.cpu_count() or 1)):
+        accumulator.merge(result)
 
     return ScenarioReport(
         league=config.name,
         method=resolved_method,
-        scenarios=accumulator.scenarios,
-        remaining=len(endings),
+        scenarios=options.samples if resolved_method == METHOD_MONTE_CARLO else scenarios,
+        remaining=len(pending),
         teams=accumulator.outlooks(),
     )
 
 
-def _scenarios(
-    endings: Sequence[Sequence[Series]], method: str, samples: int, seed: int | None
-) -> Iterator[tuple[Series, ...]]:
-    """Yield the completed pending series, one tuple per scenario."""
-    if method == METHOD_EXHAUSTIVE:
-        yield from product(*endings)
+@dataclass(frozen=True)
+class _Job:
+    """What every chunk of an evaluation shares (team aliases applied)."""
+
+    config: LeagueConfig
+    teams: tuple[str, ...]
+    played: tuple[Series, ...]
+    pending: tuple[Series, ...]
+    manual: dict[str, int]
+    method: str
+
+
+@dataclass(frozen=True)
+class _Chunk:
+    """An independent slice of an evaluation, evaluated in a worker process.
+
+    Attributes:
+        job: The evaluation.
+        prefix: Exhaustive: ending indices of the first pending series; winners-first: their winner indices.
+        samples: Monte Carlo: samples to draw.
+        seed: Monte Carlo: the chunk's own seed (spawned from the run's seed).
+    """
+
+    job: _Job
+    prefix: tuple[int, ...] = ()
+    samples: int = 0
+    seed: np.random.SeedSequence | None = None
+
+
+def _prefix_chunks(job: _Job) -> list[_Chunk]:
+    """Cut an exact enumeration by the outcomes of its first pending series, into about `PARALLEL_CHUNKS` chunks."""
+    wins_needed = job.config.wins_needed
+    if job.method == METHOD_WINNERS_FIRST:
+        counts = [count_winner_combinations([item], wins_needed) for item in job.pending]
+    else:
+        counts = [len(reachable_scores(item, wins_needed)) for item in job.pending]
+    fixed = 0
+    while fixed < len(counts) and math.prod(counts[:fixed]) < PARALLEL_CHUNKS:
+        fixed += 1
+    return [_Chunk(job, prefix) for prefix in product(*(range(count) for count in counts[:fixed]))]
+
+
+def _sample_chunks(job: _Job, samples: int, seed: int | None) -> list[_Chunk]:
+    """Cut a Monte Carlo run into chunks of `SAMPLE_BATCH` samples, each with its own seed spawned from `seed`."""
+    sizes = [min(SAMPLE_BATCH, samples - start) for start in range(0, samples, SAMPLE_BATCH)]
+    seeds = np.random.SeedSequence(seed).spawn(len(sizes))
+    return [_Chunk(job, samples=size, seed=chunk_seed) for size, chunk_seed in zip(sizes, seeds, strict=True)]
+
+
+def _run_chunks(chunks: Sequence[_Chunk], workers: int) -> Iterator[_Accumulator]:
+    """Evaluate chunks in this process (one worker) or in a process pool, yielding their totals in chunk order."""
+    if workers == 1:
+        yield from map(_run_chunk, chunks)
         return
-    rng = np.random.default_rng(seed)
+    with ProcessPoolExecutor(max_workers=min(workers, len(chunks))) as pool:
+        yield from pool.map(_run_chunk, chunks)
+
+
+def _run_chunk(chunk: _Chunk) -> _Accumulator:
+    """Evaluate one chunk (a module-level function, so that worker processes can import it)."""
+    job = chunk.job
+    config = job.config
+    accumulator = _Accumulator(job.teams, config.qualification)
+    if job.method == METHOD_WINNERS_FIRST:
+        winners = WinnersFirst(job.played, job.pending, config, job.manual)
+        for probability, groups in winners.combinations(chunk.prefix):
+            accumulator.add_weighted(probability, groups)
+        return accumulator
+    # Every way each pending series can end, built once: scenarios only pick among them
+    endings = [[_complete(item, score) for score in reachable_scores(item, config.wins_needed)] for item in job.pending]
+    if job.method == METHOD_EXHAUSTIVE:
+        fixed = [[endings[position][index]] for position, index in enumerate(chunk.prefix)]
+        scenarios: Iterable[Sequence[Series]] = product(*fixed, *endings[len(chunk.prefix) :])
+    else:
+        scenarios = _samples(endings, chunk.samples, np.random.default_rng(chunk.seed))
+    for completed in scenarios:
+        accumulator.add(rank([*job.played, *completed], job.teams, config.tiebreakers, job.manual))
+    return accumulator
+
+
+def _samples(endings: Sequence[Sequence[Series]], samples: int, rng: np.random.Generator) -> Iterator[list[Series]]:
+    """Yield `samples` random scenarios: one equally likely ending drawn per pending series."""
     counts = np.array([len(options) for options in endings], dtype=np.int64)
-    for start in range(0, samples, SAMPLE_BATCH):
-        # One draw per (sample, pending series): an index into that series' equally likely endings
-        picks = rng.integers(0, counts, size=(min(SAMPLE_BATCH, samples - start), len(endings)))
-        for row in picks.tolist():
-            yield tuple(options[index] for options, index in zip(endings, row, strict=True))
+    picks = rng.integers(0, counts, size=(samples, len(endings)))
+    for row in picks.tolist():
+        yield [options[index] for options, index in zip(endings, row, strict=True)]
 
 
 def _complete(series: Series, score: tuple[int, int]) -> Series:

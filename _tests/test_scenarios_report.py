@@ -7,10 +7,10 @@ import json
 # Third-party
 import pytest
 
-from edh.exceptions import DataSourceError
-
 # Local
+from edh.exceptions import DataSourceError
 from edh.scenarios.engine import evaluate
+from edh.scenarios.models import EvaluationOptions
 from edh.scenarios.report import format_share, format_table, read_outlook, write_outlook
 
 from .conftest import make_league, make_series
@@ -20,7 +20,7 @@ def _report(method='exhaustive'):
     """Evaluate a three-team league with one series left (C vs A)."""
     series = [make_series(1, 'A', 'B', 3, 0), make_series(2, 'B', 'C', 3, 0), make_series(3, 'C', 'A')]
     league = make_league(qualification={'Top': (1, 1), 'Top 3': (1, 3)})
-    return evaluate(league, series, method=method, samples=200, seed=1)
+    return evaluate(league, series, EvaluationOptions(method=method, samples=200, seed=1))
 
 
 def test_format_table_exact():

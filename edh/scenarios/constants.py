@@ -2,14 +2,24 @@
 
 # === Methods ===
 
-METHOD_AUTO = 'auto'  # exhaustive when the scenario count allows it, Monte Carlo otherwise
+METHOD_AUTO = 'auto'  # exhaustive when the scenario count allows it, then winners-first, then Monte Carlo
 METHOD_EXHAUSTIVE = 'exhaustive'
+METHOD_WINNERS_FIRST = 'winnersfirst'  # exact: series winners enumerated, margins only for teams tied on wins
 METHOD_MONTE_CARLO = 'montecarlo'
-METHODS = (METHOD_AUTO, METHOD_EXHAUSTIVE, METHOD_MONTE_CARLO)
+METHODS = (METHOD_AUTO, METHOD_EXHAUSTIVE, METHOD_WINNERS_FIRST, METHOD_MONTE_CARLO)
+EXACT_METHODS = frozenset({METHOD_EXHAUSTIVE, METHOD_WINNERS_FIRST})
 
-MAX_EXHAUSTIVE_SCENARIOS = 1_000_000  # above this, 'auto' falls back to Monte Carlo
+MAX_EXHAUSTIVE_SCENARIOS = 1_000_000  # above this, 'auto' tries winners-first
+# 2^15: above this, 'auto' falls back to Monte Carlo. Time is driven by large ties on wins, whose margins are still
+# enumerated, so it depends on the standings: CDF Slash at 15 left (Nov 2026) took ~4 min on 16 cores, while random
+# standings allowing many 6-way ties already took ~5 min single-core at 13 left
+MAX_WINNER_COMBINATIONS = 32_768
 DEFAULT_SAMPLES = 100_000  # Monte Carlo sample count
-SAMPLE_BATCH = 10_000  # Monte Carlo samples drawn per numpy call (bounds memory)
+SAMPLE_BATCH = 10_000  # Monte Carlo samples per chunk (one numpy draw each, bounds memory)
+PARALLEL_CHUNKS = 64  # exact enumerations are cut into at least this many chunks (when the league allows it)
+PARALLEL_MIN_WORK = 50_000  # below this many scenarios / samples, evaluate in-process (starting workers costs ~1 s)
+PARALLEL_WINNERS_COST = 200  # a winner combination weighs about this many scenarios against PARALLEL_MIN_WORK
+PROJECTION_DIGITS = 12  # shares equal to this many decimals tie when projecting ranks (float sums differ per method)
 
 # === Tiebreakers ===
 # Identifiers follow Liquipedia's GroupStandings `tiebreakers` parameter (Module:Standings/Tiebreaker).
@@ -23,6 +33,7 @@ MATCH_TIEBREAKERS = frozenset({'matchscore', 'matchdiff', 'matchwins'})
 GAME_TIEBREAKERS = frozenset({'gamediff', 'gamescore', 'gamewins'})
 ROUND_TIEBREAKERS = frozenset({'rounddiff', 'roundwins'})  # rounds = goals in Rocket League
 TIEBREAKERS = MATCH_TIEBREAKERS | GAME_TIEBREAKERS | ROUND_TIEBREAKERS | {TIEBREAKER_MANUAL}
+MARGIN_FREE_TIEBREAKERS = MATCH_TIEBREAKERS | {TIEBREAKER_MANUAL}  # set by series winners only (winners-first)
 TIEBREAKER_DISQUALIFIED = 'disqualified'  # always applied first by Liquipedia; no disqualifications are modelled
 
 # === Sources ===

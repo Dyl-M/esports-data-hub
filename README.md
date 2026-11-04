@@ -25,7 +25,8 @@ League play scenarios is the first of them; more projects will follow.
 
 This project computes ranking and qualification scenarios for teams during the league play stage of an esports
 event: given the results already played, it works out how each team can finish once the remaining matches are played,
-either by enumerating every possible outcome or by Monte Carlo sampling. Match data comes from
+either exactly (enumerating every possible outcome, or every series winner first) or by Monte Carlo sampling. Match
+data comes from
 [Liquipedia](https://liquipedia.net/) through [`liquipydia`](https://github.com/Dyl-M/liquipydia).
 
 Primary targets (Rocket League):
@@ -41,7 +42,9 @@ It succeeds [`league-play-scenarios`](https://github.com/Dyl-M/league-play-scena
   spots, Liquipedia page), written from its Liquipedia page, plus optional `theme` colors for its outlook card.
 - **Scenarios**: every reachable final score of a remaining series is equally likely (a Bo5 at 0-0 ends 3-0, 3-1,
   3-2, 0-3, 1-3 or 2-3); a series in progress continues from its current score. Up to 10^6 scenarios are enumerated
-  exactly, larger counts are sampled (Monte Carlo).
+  exactly. Beyond that, when the first tiebreaker is series wins, the **winners-first** method still gives exact
+  shares: it enumerates who wins each series (2 options instead of 6) and only looks at game margins for teams tied
+  on wins (up to 2^15 winner combinations, i.e. 15 series left; a run can take minutes). Larger counts are sampled (Monte Carlo).
 - **Tiebreakers** follow Liquipedia's standings rules, including mini-league (`ml.`) tiebreakers computed on the
   series between the tied teams only. Goal difference is unknown for series not played yet, so a tie only goals can
   settle is reported as such instead of guessed.
@@ -55,6 +58,7 @@ variable or from the `lpdb` field of `.tokens/local_keys.json` (gitignored).
 uv run python -m edh.scenarios.run cdf_slash_2026                    # fetch from Liquipedia, then evaluate
 uv run python -m edh.scenarios.run cdf_slash_2026 --source csv       # offline, from the saved results.csv
 uv run python -m edh.scenarios.run cdf_slash_2026 --method montecarlo --samples 200000 --seed 1
+uv run python -m edh.scenarios.run cdf_slash_2026 --workers 4        # cap worker processes (default: all CPUs)
 uv run python -m edh.scenarios.run cdf_slash_2026 --visual           # evaluate, then render the outlook card
 uv run python -m edh.scenarios.run cdf_slash_2026 --visual-only      # render the card from the saved outlook
 ```

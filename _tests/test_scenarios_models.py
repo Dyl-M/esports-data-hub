@@ -4,7 +4,9 @@
 import pytest
 
 # Local
+from edh.exceptions import ScenarioError
 from edh.scenarios.models import (
+    EvaluationOptions,
     EventInfo,
     QualificationSlot,
     RankGroup,
@@ -124,9 +126,9 @@ def test_team_outlook_expected_rank():
     assert outlook.expected_rank == pytest.approx(1.5)
 
 
-@pytest.mark.parametrize(('method', 'exact'), [('exhaustive', True), ('montecarlo', False)])
+@pytest.mark.parametrize(('method', 'exact'), [('exhaustive', True), ('winnersfirst', True), ('montecarlo', False)])
 def test_scenario_report_exact(method, exact):
-    """Test that only exhaustive reports are exact."""
+    """Test that exhaustive and winners-first reports are exact, Monte Carlo ones estimated."""
     assert ScenarioReport('League', method, 1, 0, ()).exact is exact
 
 
@@ -149,3 +151,10 @@ def test_theme_rejects_other_colors(color):
     """Test that themes reject named, short and functional colors."""
     with pytest.raises(ValueError, match='theme color glow'):
         Theme(glow=color)
+
+
+@pytest.mark.parametrize(('kwargs', 'message'), [({'samples': 0}, 'samples'), ({'workers': 0}, 'workers')])
+def test_evaluation_options_validation(kwargs, message):
+    """Test that sample and worker counts below 1 are rejected."""
+    with pytest.raises(ScenarioError, match=message):
+        EvaluationOptions(**kwargs)

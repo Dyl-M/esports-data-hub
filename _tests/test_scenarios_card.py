@@ -12,7 +12,7 @@ import pytest
 from edh import paths
 from edh.exceptions import VisualError
 from edh.scenarios.engine import evaluate
-from edh.scenarios.models import EventInfo, Theme
+from edh.scenarios.models import EvaluationOptions, EventInfo, Theme
 from edh.scenarios.visuals import card
 from edh.scenarios.visuals.card import card_context, primary_slot, render_card
 
@@ -32,7 +32,7 @@ def _league(**kwargs):
 def _report(league, series=None, method='exhaustive'):
     """Evaluate the league with one series left (C vs A) unless other series are given."""
     series = series or [make_series(1, 'A', 'B', 3, 0), make_series(2, 'B', 'C', 3, 0), make_series(3, 'C', 'A')]
-    return evaluate(league, series, method=method, samples=300, seed=1)
+    return evaluate(league, series, EvaluationOptions(method=method, samples=300, seed=1))
 
 
 def _context(league=None, report=None, event=NEO, fmt='portrait'):

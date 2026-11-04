@@ -27,7 +27,7 @@ from .constants import (
     SOURCES,
 )
 from .engine import evaluate
-from .models import EventInfo, LeagueConfig, ScenarioReport
+from .models import EvaluationOptions, EventInfo, LeagueConfig, ScenarioReport
 from .report import format_table, read_outlook, write_outlook
 from .sources import CsvSource, LiquipediaSource, ResultSource, event_path, results_path, write_event, write_results
 from .visuals.export import export_cards
@@ -50,6 +50,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument('--method', choices=METHODS, default=METHOD_AUTO, help='evaluation method')
     parser.add_argument('--samples', type=int, default=DEFAULT_SAMPLES, help='Monte Carlo sample count')
     parser.add_argument('--seed', type=int, default=None, help='Monte Carlo random seed')
+    parser.add_argument('--workers', type=int, default=None, help='worker processes (default: one per CPU)')
     visual = parser.add_mutually_exclusive_group()
     visual.add_argument('--visual', action='store_true', help='also render the outlook card (PNG, every format)')
     visual.add_argument(
@@ -109,7 +110,8 @@ def _evaluate(args: argparse.Namespace, config: LeagueConfig) -> tuple[ScenarioR
     if args.source == SOURCE_LIQUIPEDIA:
         write_results(series, results_path(config))
         write_event(event, event_path(config))
-    report = evaluate(config, series, method=args.method, samples=args.samples, seed=args.seed)
+    options = EvaluationOptions(method=args.method, samples=args.samples, seed=args.seed, workers=args.workers)
+    report = evaluate(config, series, options)
     sys.stdout.write(format_table(report))
     csv_path, json_path = write_outlook(report, league_dir(config.slug) / OUTLOOK_DIR)
     logger.info('Outlook saved to %s and %s', csv_path, json_path)
