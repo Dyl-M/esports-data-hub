@@ -1,6 +1,4 @@
-# `esports-data-hub`
-
-**A repository containing projects related to esports and data.**
+![Esports Data Hub: a collection of projects around data through esports competitions](.github/assets/banner.png)
 
 [![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json&style=flat-square)](https://github.com/astral-sh/uv)
@@ -12,9 +10,20 @@
 [![DeepSource](https://app.deepsource.com/gh/Dyl-M/esports-data-hub.svg/?label=active+issues&show_trend=true&token=TOKEN)](https://app.deepsource.com/gh/Dyl-M/esports-data-hub/)
 [![DeepSource](https://app.deepsource.com/gh/Dyl-M/esports-data-hub.svg/?label=code+coverage&show_trend=true&token=TOKEN)](https://app.deepsource.com/gh/Dyl-M/esports-data-hub/)
 
+## Projects
+
+**Esports Data Hub** (EDH) gathers several data projects built on esports competition results, each in its own
+subpackage of `edh`, sharing the same tooling and data sources.
+
+| Project                                         | Package         | Status            |
+|-------------------------------------------------|-----------------|-------------------|
+| [League play scenarios](#league-play-scenarios) | `edh.scenarios` | First version out |
+
+League play scenarios is the first of them; more projects will follow.
+
 ## League play scenarios
 
-The first project computes ranking and qualification scenarios for teams during the league play stage of an esports
+This project computes ranking and qualification scenarios for teams during the league play stage of an esports
 event: given the results already played, it works out how each team can finish once the remaining matches are played,
 either by enumerating every possible outcome or by Monte Carlo sampling. Match data comes from
 [Liquipedia](https://liquipedia.net/) through [`liquipydia`](https://github.com/Dyl-M/liquipydia).
@@ -81,7 +90,7 @@ esports-data-hub/
 ├── .github          # GitHub Actions workflows (tests & coverage, license year), Dependabot config, CODEOWNERS
 ├── _data            # One folder per league: league.json (format), results.csv and event.json (Liquipedia snapshots)
 ├── _tests           # Pytest test suite, CSV / recorded Liquipedia / placeholder visual fixtures, shared configuration
-└── edh              # Main application package: exceptions, paths, brand
+└── edh              # Main application package: exceptions, paths, brand (one subpackage per project)
     └── scenarios    # League play scenarios: models, config, standings / tiebreakers, engine, report, run.py (CLI)
         ├── sources  # Result sources: Liquipedia (through liquipydia) and CSV, event details snapshot
         └── visuals  # Outlook card: HTML rendering (Jinja2) and PNG export (Playwright)
