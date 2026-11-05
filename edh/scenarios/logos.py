@@ -21,7 +21,7 @@ from urllib.parse import urlsplit
 
 # Third-party
 import httpxyz
-from PIL import Image, ImageStat, UnidentifiedImageError
+from PIL import Image, ImageStat
 
 # Local
 from .config import league_dir
@@ -150,7 +150,7 @@ def trimmed_logo(path: Path, *, watermark: bool = False) -> TrimmedLogo | None:
     try:
         with Image.open(path) as image:
             rgba = image.convert('RGBA')
-    except (UnidentifiedImageError, OSError):
+    except OSError:  # also Pillow's UnidentifiedImageError (not an image), a subclass
         logger.warning('Unreadable logo %s: skipped', path)
         return None
     box = rgba.getchannel('A').getbbox()
