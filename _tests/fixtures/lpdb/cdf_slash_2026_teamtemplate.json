@@ -1,0 +1,68 @@
+{
+  "dumornay goat": [
+    {
+      "template": "dumornay goat",
+      "page": "DUMORNAY GOAT",
+      "name": "DUMORNAY GOAT",
+      "image": "Rocket League default lightmode.png",
+      "imagedark": "Rocket League default darkmode.png",
+      "imageurl": "https://liquipedia.net/commons/images/thumb/c/c6/Rocket_League_default_lightmode.png/400px-Rocket_League_default_lightmode.png",
+      "imagedarkurl": "https://liquipedia.net/commons/images/thumb/3/30/Rocket_League_default_darkmode.png/400px-Rocket_League_default_darkmode.png"
+    }
+  ],
+  "geekay esports 2024": [
+    {
+      "template": "geekay esports 2024",
+      "page": "Geekay Esports",
+      "name": "Geekay Esports",
+      "image": "Geekay Esports 2024 allmode.png",
+      "imagedark": "Geekay Esports 2024 allmode.png",
+      "imageurl": "https://liquipedia.net/commons/images/thumb/e/e1/Geekay_Esports_2024_allmode.png/400px-Geekay_Esports_2024_allmode.png",
+      "imagedarkurl": "https://liquipedia.net/commons/images/thumb/e/e1/Geekay_Esports_2024_allmode.png/400px-Geekay_Esports_2024_allmode.png"
+    }
+  ],
+  "gentle mates 2026": [
+    {
+      "template": "gentle mates 2026",
+      "page": "Gentle Mates",
+      "name": "Gentle Mates",
+      "image": "Gentle Mates 2024 lightmode.png",
+      "imagedark": "Gentle Mates 2024 darkmode.png",
+      "imageurl": "https://liquipedia.net/commons/images/thumb/c/c0/Gentle_Mates_2024_lightmode.png/400px-Gentle_Mates_2024_lightmode.png",
+      "imagedarkurl": "https://liquipedia.net/commons/images/thumb/4/42/Gentle_Mates_2024_darkmode.png/400px-Gentle_Mates_2024_darkmode.png"
+    }
+  ],
+  "ikkaku": [
+    {
+      "template": "ikkaku",
+      "page": "Ikkaku",
+      "name": "Ikkaku",
+      "image": "Rocket League default lightmode.png",
+      "imagedark": "Rocket League default darkmode.png",
+      "imageurl": "https://liquipedia.net/commons/images/thumb/c/c6/Rocket_League_default_lightmode.png/400px-Rocket_League_default_lightmode.png",
+      "imagedarkurl": "https://liquipedia.net/commons/images/thumb/3/30/Rocket_League_default_darkmode.png/400px-Rocket_League_default_darkmode.png"
+    }
+  ],
+  "karmine corp 2024": [
+    {
+      "template": "karmine corp 2024",
+      "page": "Karmine Corp",
+      "name": "Karmine Corp",
+      "image": "Karmine Corp lightmode.png",
+      "imagedark": "Karmine Corp allmode.png",
+      "imageurl": "https://liquipedia.net/commons/images/thumb/0/0e/Karmine_Corp_lightmode.png/400px-Karmine_Corp_lightmode.png",
+      "imagedarkurl": "https://liquipedia.net/commons/images/thumb/d/d1/Karmine_Corp_allmode.png/400px-Karmine_Corp_allmode.png"
+    }
+  ],
+  "vitality 2023": [
+    {
+      "template": "vitality 2023",
+      "page": "Team Vitality",
+      "name": "Team Vitality",
+      "image": "Team Vitality 2023 lightmode.png",
+      "imagedark": "Team Vitality 2023 darkmode.png",
+      "imageurl": "https://liquipedia.net/commons/images/thumb/e/e4/Team_Vitality_2023_lightmode.png/330px-Team_Vitality_2023_lightmode.png",
+      "imagedarkurl": "https://liquipedia.net/commons/images/thumb/9/96/Team_Vitality_2023_darkmode.png/330px-Team_Vitality_2023_darkmode.png"
+    }
+  ]
+}

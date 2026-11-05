@@ -3,6 +3,7 @@
 # Standard library
 import re
 from dataclasses import asdict, dataclass, field, replace
+from pathlib import Path
 from typing import Self
 
 # Local
@@ -77,14 +78,35 @@ class Series:
 
 
 @dataclass(frozen=True)
+class Logos:
+    """Logo files downloaded for a league (kept local: `_data/<league>/logos/` is out of git).
+
+    Attributes:
+        event: The competition logo, None when unknown.
+        teams: Team name -> its logo file.
+    """
+
+    event: Path | None = None
+    teams: dict[str, Path] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
 class EventInfo:
     """Event details shown on visuals, beyond the league format.
 
     Attributes:
         organizers: Tournament organizers, in Liquipedia order (empty when unknown).
+        logo_url: Address of the competition logo, dark theme version first (empty when unknown). Not saved in
+            `event.json`: the logo itself is downloaded to the league's local `logos/` folder.
+        team_logo_urls: Team name (current name, after aliases) -> address of its logo; teams without a logo of
+            their own are left out. Not saved in `event.json` either.
+        logos: Logo files downloaded from those addresses (local only), read back before drawing visuals.
     """
 
     organizers: tuple[str, ...] = ()
+    logo_url: str = ''
+    team_logo_urls: dict[str, str] = field(default_factory=dict)
+    logos: Logos = field(default_factory=Logos)
 
 
 @dataclass(frozen=True)

@@ -13,7 +13,7 @@ import pytest
 # Local
 from edh.exceptions import VisualError
 from edh.scenarios import run
-from edh.scenarios.models import EventInfo
+from edh.scenarios.models import EventInfo, Logos
 from edh.scenarios.report import read_outlook
 from edh.scenarios.sources import CsvSource, LiquipediaSource, write_event
 
@@ -145,6 +145,29 @@ def test_main_visual_only_uses_saved_outlook(league_folder, monkeypatch):
     assert call['event'] == NEO
     assert call['report'].scenarios == 100
     assert call['as_of'] == date.today()
+
+
+def test_main_liquipedia_source_downloads_logos(league_folder, monkeypatch):
+    """Test that a Liquipedia run downloads the event's logos and that the card receives them."""
+    event = EventInfo(organizers=('NEO',), logo_url='https://x/cup.png')
+    downloads = []
+
+    def download(event, folder):
+        """Stand in for download_logos: write the logo and its manifest as a real download would."""
+        downloads.append((event, folder))
+        folder.mkdir()
+        (folder / 'event.png').write_bytes(b'cup')
+        manifest = {'event': {'url': event.logo_url, 'file': 'event.png'}, 'teams': {}}
+        (folder / 'logos.json').write_text(json.dumps(manifest), encoding='utf-8')
+
+    recorder = CardRecorder()
+    monkeypatch.setattr(run, 'build_source', lambda name: StaticSource([make_series(1, 'A', 'B')], event))
+    monkeypatch.setattr(run, 'download_logos', download)
+    monkeypatch.setattr(run, 'export_cards', recorder)
+    assert run.main(['test_league', '--visual']) == 0
+    assert downloads == [(event, league_folder / 'logos')]
+    assert recorder.calls[0]['event'].logos == Logos(event=league_folder / 'logos' / 'event.png')
+    assert CsvSource.fetch_event(run.load_league('test_league')) == NEO  # addresses are not saved in event.json
 
 
 def test_main_visual_only_without_outlook(league_folder):

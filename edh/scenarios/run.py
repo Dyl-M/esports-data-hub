@@ -2,7 +2,8 @@
 
 Importing this module has no side effect; run `python -m edh.scenarios.run <league>`, where `<league>` is a folder
 of `_data/` holding a `league.json`. With the Liquipedia source (default), the fetched results and event details are
-also saved as `results.csv` and `event.json`, which the `csv` source reads back offline. `--visual` also renders the
+also saved as `results.csv` and `event.json`, which the `csv` source reads back offline, and the competition and team
+logos are downloaded to the league's local `logos/` folder. `--visual` also renders the
 outlook card (PNG, every social format); `--visual-only` renders it from the saved outlook without evaluating.
 """
 
@@ -11,6 +12,7 @@ import argparse
 import logging
 import sys
 from collections.abc import Sequence
+from dataclasses import replace
 from datetime import date
 
 # Local
@@ -27,6 +29,7 @@ from .constants import (
     SOURCES,
 )
 from .engine import evaluate
+from .logos import download_logos, logos_dir, read_logos
 from .models import EvaluationOptions, EventInfo, LeagueConfig, ScenarioReport
 from .report import format_table, read_outlook, write_outlook
 from .sources import CsvSource, LiquipediaSource, ResultSource, event_path, results_path, write_event, write_results
@@ -84,7 +87,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     """
     args = parse_args(argv)
     logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
-    logging.getLogger('httpx').setLevel(logging.WARNING)  # one INFO line per API request otherwise
+    # one INFO line per request otherwise: httpx under liquipydia (API), httpxyz for logo downloads
+    for name in ('httpx', 'httpxyz'):
+        logging.getLogger(name).setLevel(logging.WARNING)
     try:
         config = load_league(args.league)
         if args.visual_only:
@@ -94,6 +99,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             report, event = _evaluate(args, config)
             as_of = date.today()
         if args.visual or args.visual_only:
+            event = replace(event, logos=read_logos(logos_dir(config)))
             cards = export_cards(report, config, event, league_dir(config.slug) / OUTLOOK_DIR, as_of=as_of)
             logger.info('Outlook card saved to %s', ', '.join(str(path) for path in cards))
     except EsportsDataHubError as error:
@@ -110,6 +116,7 @@ def _evaluate(args: argparse.Namespace, config: LeagueConfig) -> tuple[ScenarioR
     if args.source == SOURCE_LIQUIPEDIA:
         write_results(series, results_path(config))
         write_event(event, event_path(config))
+        download_logos(event, logos_dir(config))
     options = EvaluationOptions(method=args.method, samples=args.samples, seed=args.seed, workers=args.workers)
     report = evaluate(config, series, options)
     sys.stdout.write(format_table(report))

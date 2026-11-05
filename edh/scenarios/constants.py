@@ -45,6 +45,26 @@ SOURCES = (SOURCE_LIQUIPEDIA, SOURCE_CSV)
 LPDB_API_KEY_ENV = 'LPDB_API_KEY'  # takes precedence over paths.TOKENS_JSON
 LPDB_APP_NAME = 'esports-data-hub'  # User-Agent application name
 LPDB_PAGE_SIZE = 100
+# Logo downloads (liquipedia.net/commons): Liquipedia asks for a User-Agent naming the tool and a contact
+LOGO_USER_AGENT = f'{LPDB_APP_NAME} (https://github.com/Dyl-M/esports-data-hub)'
+LOGO_TIMEOUT = 20.0  # seconds per logo download
+# Team logos on the card cover the same area whatever their shape; aspect ratios beyond this are clamped, so a very wide
+# or very tall logo does not turn into a thin line
+MAX_LOGO_ASPECT = 2.5
+# Team logo watermarks are drawn in grayscale, their tones stretched from this gray (darkest drawn tone, 0-255) to
+# white (lightest): a dark fill (Geekay's navy triangle) stays visible on the dark card without being bleached, and the
+# logo keeps its full inner contrast
+WATERMARK_FLOOR = 100
+OPAQUE_ALPHA = 128  # pixels more opaque than this count as drawn when measuring a logo's tones
+MEDIA_TYPE_PNG = 'image/png'
+MEDIA_TYPE_SVG = 'image/svg+xml'
+LOGO_MEDIA_TYPES = {
+    '.png': MEDIA_TYPE_PNG,
+    '.svg': MEDIA_TYPE_SVG,
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.webp': 'image/webp',
+}
 
 # LPDB opponent statuses
 STATUS_SCORED = 'S'  # regular (scored) result
@@ -63,6 +83,8 @@ OUTLOOK_JSON = 'outlook.json'
 
 RESULTS_COLUMNS = ('round', 'team_1', 'team_2', 'score_1', 'score_2', 'finished', 'goals')
 NO_GOALS = '-'  # `goals` cell of a series known to have no goals (a walkover); empty means unknown
+LOGOS_DIR = 'logos'  # downloaded logos, in _data/<league>/logos/ (gitignored, like outlook/)
+LOGOS_JSON = 'logos.json'  # logos manifest: address and file of each logo, in the logos folder
 CARD_PNG = 'card_{format}.png'  # outlook card per format, in _data/<league>/outlook/
 
 # === Visuals ===

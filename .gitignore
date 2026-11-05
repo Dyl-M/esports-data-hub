@@ -226,6 +226,7 @@ __marimo__/
 .tokens/
 _drafts/
 _data/*/outlook/
+_data/*/logos/
 
 # Visual design kept local: brand files (avatar, font, icons) and card templates
 edh/assets/

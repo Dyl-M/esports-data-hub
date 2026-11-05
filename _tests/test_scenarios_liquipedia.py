@@ -3,18 +3,24 @@
 # Standard library
 import json
 import logging
+from dataclasses import replace
 
 # Third-party
 import pytest
-from liquipydia import ApiResponse, LiquipediaError, Match
+from liquipydia import ApiResponse, LiquipediaError, Match, TeamTemplate
 
 # Local
 from edh import paths
 from edh.exceptions import ConfigurationError, DataSourceError
 from edh.scenarios.config import load_league
-from edh.scenarios.models import EventInfo
 from edh.scenarios.sources import liquipedia
-from edh.scenarios.sources.liquipedia import LiquipediaSource, load_api_key, parse_organizers, to_series
+from edh.scenarios.sources.liquipedia import (
+    LiquipediaSource,
+    load_api_key,
+    parse_organizers,
+    team_logo_url,
+    to_series,
+)
 
 from .conftest import FIXTURES_DIR, make_league
 
@@ -77,14 +83,32 @@ class FakeTournaments:
         return ApiResponse(result=self.tournaments, warnings=[])
 
 
+class FakeTeamTemplates:
+    """Recorded `/teamtemplate` responses, matching the source's `LpdbTeamTemplates` protocol."""
+
+    def __init__(self, templates, error):
+        """Serve `templates` (template name -> records), or raise `error` when set; queries are recorded."""
+        self.templates = templates
+        self.error = error
+        self.queries = []
+
+    def get(self, wiki, template, *, date=None):
+        """Record the query, then return the recorded records of the template (none when unknown)."""
+        self.queries.append({'wiki': wiki, 'template': template, 'date': date})
+        if self.error:
+            raise self.error
+        return ApiResponse(result=self.templates.get(template, []), warnings=[])
+
+
 class FakeClient:
     """Stand-in for LiquipediaClient serving recorded payloads, matching the source's `LpdbClient` protocol."""
 
-    def __init__(self, tables=None, matches=None, error=None, tournaments=None):
-        """Serve `tables`, `matches` and `tournaments` (recorded CdF payloads by default), or raise `error`."""
+    def __init__(self, tables=None, matches=None, error=None, tournaments=None, templates=None):
+        """Serve `tables`, `matches`, `tournaments` and `templates` (recorded CdF payloads by default), or `error`."""
         self.standings_tables = FakeStandingsTables(_load('standingstable') if tables is None else tables, error)
         self.matches = FakeMatches(_load('match') if matches is None else matches, error)
         self.tournaments = FakeTournaments(_load('tournament') if tournaments is None else tournaments, error)
+        self.team_templates = FakeTeamTemplates(_load('teamtemplate') if templates is None else templates, error)
         self.closed = False
 
     def __enter__(self):
@@ -187,18 +211,65 @@ def test_fetch_opens_and_closes_its_own_client(cdf, monkeypatch):
 
 
 def test_fetch_event_cdf(cdf):
-    """Test that the organizers come from the league page's tournament record."""
+    """Test the event details: organizers and dark competition logo from the tournament, team logos from templates."""
     client = FakeClient()
-    assert LiquipediaSource(client).fetch_event(cdf) == EventInfo(organizers=('NEO',))
+    event = LiquipediaSource(client).fetch_event(cdf)
+    assert event.organizers == ('NEO',)
+    assert event.logo_url.endswith('/Coupe_de_France_Slash_icon_darkmode.png')
     assert client.tournaments.queries == [
-        {'wiki': 'rocketleague', 'pagename': 'NEO/Coupe_de_France_Slash/2026', 'query': 'pagename,organizers'}
+        {
+            'wiki': 'rocketleague',
+            'pagename': 'NEO/Coupe_de_France_Slash/2026',
+            'query': 'pagename,organizers,iconurl,icondarkurl',
+        }
     ]
+    assert sorted(event.team_logo_urls) == sorted(
+        ['DUMORNAY GOAT', 'Geekay Esports', 'Gentle Mates', 'Ikkaku', 'Karmine Corp', 'Team Vitality']
+    )
+    # teams without branding of their own keep Liquipedia's default logo of the game
+    assert event.team_logo_urls['Ikkaku'].endswith('/400px-Rocket_League_default_darkmode.png')
+    assert event.team_logo_urls['Gentle Mates'].endswith('/400px-Gentle_Mates_2024_darkmode.png')
+    assert {query['template'] for query in client.team_templates.queries} == set(_load('teamtemplate'))
+
+
+def test_fetch_event_team_logos_use_aliases_and_latest_template(cdf):
+    """Test that a renamed team gets the logo of its latest match, under its current name."""
+    first, second = (_match_payload(match['match2id']) for match in _load('match')[:2])
+    first['match2opponents'][0] |= {'name': 'Old Name', 'template': 'old'}
+    second['match2opponents'][0] |= {'name': 'New Name', 'template': 'new'}
+    templates = {
+        'old': [{'template': 'old', 'imagedark': 'Old darkmode.png', 'imagedarkurl': 'https://x/old.png'}],
+        'new': [{'template': 'new', 'imagedark': 'New darkmode.png', 'imagedarkurl': 'https://x/new.png'}],
+    }
+    league = replace(cdf, team_aliases={'Old Name': 'New Name'})
+    event = LiquipediaSource(FakeClient(matches=[first, second], templates=templates)).fetch_event(league)
+    assert event.team_logo_urls['New Name'] == 'https://x/new.png'
+    assert 'Old Name' not in event.team_logo_urls
+
+
+@pytest.mark.parametrize(
+    ('fields', 'url'),
+    [
+        ({'imagedarkurl': 'dark', 'imageurl': 'light'}, 'dark'),
+        ({'imagedarkurl': '', 'imageurl': 'light'}, 'light'),
+        (
+            {'imagedarkurl': 'https://x/Rocket_League_default_darkmode.png'},
+            'https://x/Rocket_League_default_darkmode.png',
+        ),
+        ({}, ''),
+    ],
+)
+def test_team_logo_url(fields, url):
+    """Test the logo choice: dark version first, then light, Liquipedia's default logo included."""
+    assert team_logo_url(TeamTemplate.model_validate(fields)) == url
 
 
 def test_fetch_event_without_tournament_record(cdf, caplog):
     """Test that a page without a tournament record gives unknown organizers, with a warning."""
     with caplog.at_level(logging.WARNING):
-        assert LiquipediaSource(FakeClient(tournaments=[])).fetch_event(cdf) == EventInfo()
+        event = LiquipediaSource(FakeClient(tournaments=[])).fetch_event(cdf)
+    assert (event.organizers, event.logo_url) == ((), '')
+    assert event.team_logo_urls  # team logos do not depend on the tournament record
     assert 'organizers unknown' in caplog.text
 
 
