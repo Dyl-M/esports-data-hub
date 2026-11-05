@@ -65,7 +65,8 @@ uv run python -m edh.scenarios.run cdf_slash_2026 --visual-only      # render th
 
 Each run prints, per team, the share of scenarios ending at each rank and qualifying, and saves it to
 `_data/<league>/outlook/` (`outlook.csv` / `outlook.json`, gitignored). A Liquipedia run also saves the results to
-`_data/<league>/results.csv` and the event organizers to `_data/<league>/event.json`.
+`_data/<league>/results.csv` and the event organizers to `_data/<league>/event.json`, and downloads the competition
+and team logos to `_data/<league>/logos/` (gitignored, kept local).
 
 Teams are listed in **projected standings** order: each rank goes to one team, taking team / rank pairings from the
 most to the least likely (a team losing its most likely rank to a likelier team falls back to its next most likely free
@@ -76,7 +77,10 @@ rank).
 `--visual` turns the outlook into a card to share on social media, saved as `card_portrait.png` (1080×1350),
 `card_square.png` (1080×1080) and `card_landscape.png` (1200×675) in `_data/<league>/outlook/`. Each team row shows its
 share of scenarios reaching the league's first qualification slot and its share of each final rank. The footer names
-the evaluation method and credits the event organizers for the results (read from Liquipedia). The card is an HTML
+the evaluation method and credits the event organizers for the results (read from Liquipedia). The competition logo
+sits in the top right corner and each team's logo is a faint, slightly tilted watermark behind its name. Logos are
+cropped to what they actually draw and sized to cover the same area, so a wide logo doesn't look smaller than a square
+one (teams without branding of their own get Liquipedia's default logo of the game). The card is an HTML
 template rendered by a headless Chromium through [Playwright](https://playwright.dev/python/), installed once with:
 
 ```bash

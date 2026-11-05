@@ -1,7 +1,10 @@
 """Outlook card: one row per team with its qualification share and the share of each final rank.
 
 The card shows the league's first qualification slot (e.g. Playoffs); the rank strip leaves a gap after the last rank of
-every slot. Brand images, icons and the font are embedded as data URIs, so the HTML renders offline.
+every slot. Brand images, icons, the font and the logos are embedded as data URIs, so the HTML renders offline. Logos
+(competition, top right; teams, as watermarks behind their names) are optional: the local `logos/` folder of the league
+may lack some or all of them (`EventInfo.logos`). Logos are cropped to their drawn content, and team logos are sized to
+cover the same area (a wide logo is wider and flatter, a tall one narrower), so none looks smaller than the others.
 
 The template (`templates/card.html.j2`) and the brand files (`paths.ASSETS_DIR`) are kept out of git: they exist only
 locally, and rendering without them raises VisualError. Tests use placeholders from `_tests/fixtures/visuals/`.
@@ -9,7 +12,8 @@ locally, and rendering without them raises VisualError. Tests use placeholders f
 
 # Standard library
 import base64
-from dataclasses import dataclass
+import math
+from dataclasses import dataclass, replace
 from datetime import date
 from pathlib import Path
 from typing import TypedDict
@@ -20,7 +24,16 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateNotFo
 # Local
 from ... import brand, paths
 from ...exceptions import VisualError
-from ..constants import CARD_FORMATS, DATA_CREDIT, GAME_NAMES, HEAT_FULL_SHARE, METHOD_LABELS, STAGE_LABEL
+from ..constants import (
+    CARD_FORMATS,
+    DATA_CREDIT,
+    GAME_NAMES,
+    HEAT_FULL_SHARE,
+    MAX_LOGO_ASPECT,
+    METHOD_LABELS,
+    STAGE_LABEL,
+)
+from ..logos import trimmed_logo
 from ..models import EventInfo, LeagueConfig, QualificationSlot, ScenarioReport, TeamOutlook, Theme
 from ..report import format_share
 
@@ -50,6 +63,21 @@ class StripCell:
 
 
 @dataclass(frozen=True)
+class CardLogo:
+    """A logo embedded in the card, sized to cover the same area as every other logo.
+
+    Attributes:
+        uri: The logo, cropped to its drawn content, as a data URI.
+        width: Width as a multiple of the side of the square of the same area (the template sets that side).
+        height: Height, same unit; `width * height` is 1 for every logo.
+    """
+
+    uri: str
+    width: float
+    height: float
+
+
+@dataclass(frozen=True)
 class CardRow:
     """One team row of the card.
 
@@ -62,6 +90,7 @@ class CardRow:
         qualified_width: Qualified share as a bar width, in percent.
         undecided_width: Tiebreak share as a bar width, in percent.
         cells: Rank strip, rank 1 first.
+        logo: Team logo, None when unknown.
     """
 
     position: int
@@ -72,6 +101,7 @@ class CardRow:
     qualified_width: float
     undecided_width: float
     cells: tuple[StripCell, ...]
+    logo: CardLogo | None = None
 
 
 class CardContext(TypedDict):
@@ -96,6 +126,7 @@ class CardContext(TypedDict):
     method: str
     method_note: str
     organizers: str
+    event_logo: CardLogo | None
     credit: str
     ranks: int
     strip_columns: str
@@ -108,7 +139,7 @@ def render_card(report: ScenarioReport, config: LeagueConfig, event: EventInfo, 
     Args:
         report: Evaluated scenarios.
         config: League format (qualification slots, series length, wiki, theme).
-        event: Event details (organizers).
+        event: Event details (organizers, downloaded logos).
         fmt: Card format, a key of `CARD_FORMATS`.
         as_of: Date shown on the card.
 
@@ -177,11 +208,15 @@ def card_context(
         'method': METHOD_LABELS[report.method][0],
         'method_note': METHOD_LABELS[report.method][1],
         'organizers': ', '.join(event.organizers),
+        'event_logo': card_logo(event.logos.event),
         'credit': DATA_CREDIT,
         'ranks': ranks,
         'strip_columns': _strip_columns(ranks, cutoffs),
         'rows': [
-            _row(position, outlook, slot, cutoffs, exact=report.exact)
+            replace(
+                _row(position, outlook, slot, cutoffs, exact=report.exact),
+                logo=card_logo(event.logos.teams.get(outlook.team), watermark=True),
+            )
             for position, outlook in enumerate(report.teams, start=1)
         ],
     }
@@ -273,3 +308,21 @@ def _icon_uri(icon: str, theme: Theme) -> str:
     svg = _read_asset(paths.ASSETS_DIR / 'icons' / f'{icon}.svg').decode('utf-8')
     colored = svg.replace('<svg ', f'<svg fill="{theme.text}" ', 1)
     return f'data:image/svg+xml;base64,{base64.b64encode(colored.encode("utf-8")).decode("ascii")}'
+
+
+def card_logo(path: Path | None, *, watermark: bool = False) -> CardLogo | None:
+    """Embed a logo, cropped to its drawn content and sized to cover a fixed area.
+
+    Args:
+        path: Logo file; None when the logo is unknown.
+        watermark: Whether the logo is a team watermark (grayscale, dark logos lightened; see `trimmed_logo`).
+
+    Returns:
+        The card logo (aspect ratio clamped to `MAX_LOGO_ASPECT`); None when there is no usable logo.
+    """
+    logo = trimmed_logo(path, watermark=watermark) if path else None
+    if logo is None:
+        return None
+    aspect = min(max(logo.aspect, 1 / MAX_LOGO_ASPECT), MAX_LOGO_ASPECT)
+    uri = f'data:{logo.media_type};base64,{base64.b64encode(logo.content).decode("ascii")}'
+    return CardLogo(uri=uri, width=round(math.sqrt(aspect), 3), height=round(1 / math.sqrt(aspect), 3))

@@ -4,7 +4,8 @@ The league's standings table (`/standingstable`) lists its match ids per round, 
 playoffs on the same page) out. The matches themselves come from `/match`: series score per opponent (-1 until
 played), per-game goals in `match2games`. The table also records the tiebreakers Liquipedia applies; a mismatch with
 `league.json` is logged, since `league.json` stays the reference. The page's tournament record (`/tournament`) gives the
-event details shown on visuals (organizers).
+event details shown on visuals (organizers, competition logo); the team logos come from the team template each match
+opponent uses (`/teamtemplate`, the logo of the period, e.g. `karmine corp 2024`).
 """
 
 # Standard library
@@ -16,7 +17,15 @@ from collections.abc import Iterator
 from typing import Any, Protocol
 
 # Third-party
-from liquipydia import ApiResponse, LiquipediaClient, LiquipediaError, Match, StandingsTable, Tournament
+from liquipydia import (
+    ApiResponse,
+    LiquipediaClient,
+    LiquipediaError,
+    Match,
+    StandingsTable,
+    TeamTemplate,
+    Tournament,
+)
 
 # Local
 from ... import paths
@@ -63,6 +72,14 @@ class LpdbTournaments(Protocol):
         ...
 
 
+class LpdbTeamTemplates(Protocol):
+    """The `/teamtemplate` queries the source needs (liquipydia's `client.team_templates`)."""
+
+    def get(self, wiki: str, template: str, *, date: str | None = None) -> ApiResponse:
+        """Return the team template named template."""
+        ...
+
+
 class LpdbClient(Protocol):
     """The part of an LPDB client the source uses; `liquipydia.LiquipediaClient` satisfies it."""
 
@@ -79,6 +96,11 @@ class LpdbClient(Protocol):
     @property
     def tournaments(self) -> LpdbTournaments:
         """Tournament queries."""
+        ...
+
+    @property
+    def team_templates(self) -> LpdbTeamTemplates:
+        """Team template queries."""
         ...
 
 
@@ -144,7 +166,8 @@ class LiquipediaSource:
             config: League format (`wiki` and `pagename` locate the tournament).
 
         Returns:
-            The event details, empty when the page holds no tournament record.
+            The event details: organizers and competition logo, empty when the page holds no tournament record;
+            team logos.
 
         Raises:
             DataSourceError: If the API fails.
@@ -157,16 +180,54 @@ class LiquipediaSource:
 
 
 def _fetch_event(client: LpdbClient, config: LeagueConfig) -> EventInfo:
-    """Query the tournament record of the league page, translating liquipydia errors into DataSourceError."""
+    """Query the tournament record and the team templates, translating liquipydia errors into DataSourceError."""
     try:
-        response = client.tournaments.list(config.wiki, pagename=config.pagename, query='pagename,organizers')
+        response = client.tournaments.list(
+            config.wiki, pagename=config.pagename, query='pagename,organizers,iconurl,icondarkurl'
+        )
+        team_logo_urls = _team_logo_urls(client, config)
     except LiquipediaError as error:
         raise DataSourceError(f'Liquipedia request failed for {config.pagename}: {error}') from error
     if not response.result:
         logger.warning('No tournament record on %s: organizers unknown', config.pagename)
-        return EventInfo()
+        return EventInfo(team_logo_urls=team_logo_urls)
     tournament = Tournament.model_validate(response.result[0])
-    return EventInfo(organizers=parse_organizers(tournament.organizers))
+    return EventInfo(
+        organizers=parse_organizers(tournament.organizers),
+        logo_url=tournament.icondarkurl or tournament.iconurl or '',
+        team_logo_urls=team_logo_urls,
+    )
+
+
+def _team_logo_urls(client: LpdbClient, config: LeagueConfig) -> dict[str, str]:
+    """Logo address of each team of the league page, from the team template of its latest match."""
+    templates: dict[str, str] = {}
+    records = client.matches.paginate(config.wiki, pagename=config.pagename, order='date ASC', page_size=LPDB_PAGE_SIZE)
+    for record in records:
+        for opponent in Match.model_validate(record).match2opponents or []:
+            name, template = opponent.get('name'), opponent.get('template')
+            if name and template:
+                templates[config.team_aliases.get(str(name), str(name))] = str(template)
+    urls = {}
+    for team, template in templates.items():
+        response = client.team_templates.get(config.wiki, template)
+        url = team_logo_url(TeamTemplate.model_validate(response.result[0])) if response.result else ''
+        if url:
+            urls[team] = url
+    return urls
+
+
+def team_logo_url(template: TeamTemplate) -> str:
+    """Return the logo address of a team template, dark theme version first.
+
+    Args:
+        template: The LPDB team template.
+
+    Returns:
+        The address; empty when the template has none. A team without branding of its own gets Liquipedia's
+        default logo of the game (e.g. `Rocket League default darkmode.png`), kept as is.
+    """
+    return template.imagedarkurl or template.imageurl or ''
 
 
 def parse_organizers(text: str | None) -> tuple[str, ...]:

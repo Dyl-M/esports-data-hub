@@ -4,17 +4,19 @@
 import base64
 from dataclasses import replace
 from datetime import date
+from io import BytesIO
 
 # Third-party
 import pytest
+from PIL import Image
 
 # Local
 from edh import paths
 from edh.exceptions import VisualError
 from edh.scenarios.engine import evaluate
-from edh.scenarios.models import EvaluationOptions, EventInfo, Theme
+from edh.scenarios.models import EvaluationOptions, EventInfo, Logos, Theme
 from edh.scenarios.visuals import card
-from edh.scenarios.visuals.card import card_context, primary_slot, render_card
+from edh.scenarios.visuals.card import CardLogo, card_context, card_logo, primary_slot, render_card
 
 from .conftest import make_league, make_series
 
@@ -170,3 +172,72 @@ def test_context_names_the_semi_exhaustive_method():
     """Test that a winners-first report is labelled semi-exhaustive, and still exact."""
     context = _context(report=_report(_league(), method='winnersfirst'))
     assert (context['method'], context['exact'], context['scenario_unit']) == ('Semi-exhaustive', True, 'scenarios')
+
+
+def _png(path, size, box=None):
+    """Write a transparent PNG of `size`, opaque inside `box` (the whole image by default)."""
+    width, height = size
+    image = Image.new('RGBA', size, (0, 0, 0, 0))
+    image.paste((255, 255, 255, 255), box or (0, 0, width, height))
+    image.save(path)
+    return path
+
+
+def _logo(path) -> CardLogo:
+    """Build the card logo of an image that has one (fails the test otherwise)."""
+    logo = card_logo(path)
+    assert logo is not None
+    return logo
+
+
+def _decoded(logo: CardLogo):
+    """Open the image embedded in a card logo."""
+    return Image.open(BytesIO(base64.b64decode(logo.uri.removeprefix('data:image/png;base64,'))))
+
+
+def test_context_embeds_downloaded_logos(tmp_path):
+    """Test that the competition logo and each team's logo are embedded; teams without one get none."""
+    (tmp_path / 'team_a.svg').write_bytes(b'<svg/>')
+    event_logo = _png(tmp_path / 'event.png', (40, 40))
+    logos = Logos(event=event_logo, teams={'A': tmp_path / 'team_a.svg', 'B': tmp_path / 'gone.png'})
+    context = _context(event=replace(NEO, logos=logos))
+    assert context['event_logo'] is not None
+    assert context['event_logo'].uri.startswith('data:image/png;base64,')
+    rows = {row.team: row.logo for row in context['rows']}
+    assert rows['A'] == CardLogo(f'data:image/svg+xml;base64,{base64.b64encode(b"<svg/>").decode()}', 1.0, 1.0)
+    assert rows['B'] is rows['C'] is None  # B's file is gone, C has no logo
+
+
+def test_card_logo_trims_margins_and_keeps_the_same_area(tmp_path):
+    """Test that logos are cropped to their drawn content and sized to the same area, whatever their shape."""
+    wide = _logo(_png(tmp_path / 'wide.png', (100, 100), box=(10, 40, 90, 60)))  # 80x20 drawn, 4:1 → clamped
+    square = _logo(_png(tmp_path / 'square.png', (100, 100), box=(30, 30, 70, 70)))
+    tall = _logo(_png(tmp_path / 'tall.png', (90, 200)))
+    assert _decoded(wide).size == (80, 20)
+    assert _decoded(square).size == (40, 40)
+    assert (square.width, square.height) == (1.0, 1.0)
+    assert (wide.width, wide.height) == (1.581, 0.632)  # aspect clamped to 2.5
+    assert (tall.width, tall.height) == (0.671, 1.491)  # aspect 0.45
+    for logo in (wide, square, tall):
+        assert logo.width * logo.height == pytest.approx(1, abs=0.002)
+
+
+def test_card_logo_without_usable_image(tmp_path):
+    """Test that a missing, fully transparent or unreadable logo is left out."""
+    (tmp_path / 'broken.png').write_bytes(b'not a png')
+    assert card_logo(None) is None
+    assert card_logo(tmp_path / 'gone.png') is None
+    assert card_logo(_png(tmp_path / 'empty.png', (10, 10), box=(0, 0, 0, 0))) is None
+    assert card_logo(tmp_path / 'broken.png') is None
+
+
+def test_render_card_with_and_without_logos(tmp_path):
+    """Test that the template receives the logos and their sizes, and that a card without logos has no logo image."""
+    logo = _png(tmp_path / 'event.png', (40, 40))
+    event = replace(NEO, logos=Logos(event=logo, teams={'A': logo}))
+    html = render_card(_report(_league()), _league(), event, fmt='square', as_of=AS_OF)
+    assert html.count('class="event-logo"') == 1
+    assert html.count('class="team-logo"') == 1
+    assert 'data-size="1.0x1.0"' in html
+    html = render_card(_report(_league()), _league(), NEO, fmt='square', as_of=AS_OF)
+    assert 'logo"' not in html

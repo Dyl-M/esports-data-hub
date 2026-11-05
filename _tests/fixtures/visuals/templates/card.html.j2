@@ -4,10 +4,10 @@
 <head><meta charset="utf-8"><title>{{ league }} · {{ slot }} outlook</title><style>@font-face { font-family: 'Test'; src: url({{ font_uri }}); }</style></head>
 <body style="margin: 0; background: {{ theme.background }}">
 <div class="frame {{ format }}" style="width: {{ width }}px; height: {{ height }}px; --c-bg: {{ theme.background }}; --c-glow: {{ theme.glow }}; --c-fg: {{ theme.text }}">
-<p class="header">{{ eyebrow }} | {{ league }} | {{ slot }} | {{ remaining }} | {{ scenarios }} {{ scenario_unit }} | {{ format_rule }} | exact={{ exact }} | {{ method }}: {{ method_note }}</p>
+<p class="header">{% if event_logo %}<img class="event-logo" src="{{ event_logo.uri }}" data-size="{{ event_logo.width }}x{{ event_logo.height }}" alt="">{% endif %}{{ eyebrow }} | {{ league }} | {{ slot }} | {{ remaining }} | {{ scenarios }} {{ scenario_unit }} | {{ format_rule }} | exact={{ exact }} | {{ method }}: {{ method_note }}</p>
 <p class="strip" data-ranks="{{ ranks }}" data-columns="{{ strip_columns }}"></p>
 {% for row in rows %}
-<p class="row">{{ row.position }} {{ row.team }} {{ row.share }} {{ row.tiebreak }} {{ row.badge }} {{ row.qualified_width }} {{ row.undecided_width }}{% for cell in row.cells %} [{{ cell.label }} {{ cell.low }} {{ cell.heat }} {{ cell.projected }} {{ cell.gap_after }}]{% endfor %}</p>
+<p class="row">{% if row.logo %}<img class="team-logo" src="{{ row.logo.uri }}" data-size="{{ row.logo.width }}x{{ row.logo.height }}" alt="">{% endif %}{{ row.position }} {{ row.team }} {{ row.share }} {{ row.tiebreak }} {{ row.badge }} {{ row.qualified_width }} {{ row.undecided_width }}{% for cell in row.cells %} [{{ cell.label }} {{ cell.low }} {{ cell.heat }} {{ cell.projected }} {{ cell.gap_after }}]{% endfor %}</p>
 {% endfor %}
 <p class="footer">organizers={{ organizers }} | credit={{ credit }} | {{ brand_name }} <img src="{{ avatar_uri }}" alt="">{% for icon_uri, handle in socials %} <img src="{{ icon_uri }}" alt="">{{ handle }}{% endfor %}</p>
 </div>
