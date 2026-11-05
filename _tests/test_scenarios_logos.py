@@ -13,7 +13,7 @@ from PIL import Image
 # Local
 from edh.scenarios import logos
 from edh.scenarios.constants import WATERMARK_FLOOR
-from edh.scenarios.logos import download_logos, logo_media_type, logos_dir, read_logos, trimmed_logo
+from edh.scenarios.logos import TrimmedLogo, download_logos, logo_media_type, logos_dir, read_logos, trimmed_logo
 from edh.scenarios.models import EventInfo, Logos
 
 from .conftest import make_league
@@ -189,7 +189,14 @@ def _two_tone(path, dark, light):
     return path
 
 
-def _pixels(logo):
+def _trimmed(path, *, watermark=False) -> TrimmedLogo:
+    """Trim a logo that is a usable image (fails the test otherwise)."""
+    logo = trimmed_logo(path, watermark=watermark)
+    assert logo is not None
+    return logo
+
+
+def _pixels(logo: TrimmedLogo):
     """Gray levels of the left and right halves of a watermark."""
     image = Image.open(BytesIO(logo.content))
     assert image.mode == 'LA'
@@ -198,14 +205,14 @@ def _pixels(logo):
 
 def test_trimmed_logo_watermark_stretches_tones(tmp_path):
     """Test that a watermark's darkest drawn tone becomes the floor gray and its lightest white."""
-    logo = trimmed_logo(_two_tone(tmp_path / 'dark.png', 40, 200), watermark=True)
+    logo = _trimmed(_two_tone(tmp_path / 'dark.png', 40, 200), watermark=True)
     assert _pixels(logo) == (WATERMARK_FLOOR, 255)
     assert logo.aspect == 2.0  # transparent rows trimmed
 
 
 def test_trimmed_logo_watermark_single_tone_is_white(tmp_path):
     """Test that a single-tone logo becomes white, like the logos drawn in white already."""
-    logo = trimmed_logo(_two_tone(tmp_path / 'flat.png', 60, 60), watermark=True)
+    logo = _trimmed(_two_tone(tmp_path / 'flat.png', 60, 60), watermark=True)
     assert _pixels(logo) == (255, 255)
 
 
@@ -215,12 +222,12 @@ def test_trimmed_logo_watermark_faint_logo(tmp_path):
     image.paste((40, 40, 40, 100), (0, 0, 10, 10))
     image.paste((200, 200, 200, 100), (10, 0, 20, 10))
     image.save(tmp_path / 'faint.png')
-    assert _pixels(trimmed_logo(tmp_path / 'faint.png', watermark=True)) == (WATERMARK_FLOOR, 255)
+    assert _pixels(_trimmed(tmp_path / 'faint.png', watermark=True)) == (WATERMARK_FLOOR, 255)
 
 
 def test_trimmed_logo_keeps_colors_by_default(tmp_path):
     """Test that a logo that is not a watermark (the competition logo) keeps its colors."""
     image = Image.new('RGBA', (4, 4), (200, 30, 30, 255))
     image.save(tmp_path / 'red.png')
-    logo = trimmed_logo(tmp_path / 'red.png')
+    logo = _trimmed(tmp_path / 'red.png')
     assert Image.open(BytesIO(logo.content)).getpixel((0, 0)) == (200, 30, 30, 255)

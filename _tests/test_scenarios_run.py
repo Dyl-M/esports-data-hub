@@ -152,12 +152,12 @@ def test_main_liquipedia_source_downloads_logos(league_folder, monkeypatch):
     event = EventInfo(organizers=('NEO',), logo_url='https://x/cup.png')
     downloads = []
 
-    def download(event, folder):
+    def download(fetched, folder):
         """Stand in for download_logos: write the logo and its manifest as a real download would."""
-        downloads.append((event, folder))
+        downloads.append((fetched, folder))
         folder.mkdir()
         (folder / 'event.png').write_bytes(b'cup')
-        manifest = {'event': {'url': event.logo_url, 'file': 'event.png'}, 'teams': {}}
+        manifest = {'event': {'url': fetched.logo_url, 'file': 'event.png'}, 'teams': {}}
         (folder / 'logos.json').write_text(json.dumps(manifest), encoding='utf-8')
 
     recorder = CardRecorder()

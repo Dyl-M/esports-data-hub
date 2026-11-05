@@ -176,13 +176,21 @@ def test_context_names_the_semi_exhaustive_method():
 
 def _png(path, size, box=None):
     """Write a transparent PNG of `size`, opaque inside `box` (the whole image by default)."""
+    width, height = size
     image = Image.new('RGBA', size, (0, 0, 0, 0))
-    image.paste((255, 255, 255, 255), box or (0, 0, *size))
+    image.paste((255, 255, 255, 255), box or (0, 0, width, height))
     image.save(path)
     return path
 
 
-def _decoded(logo):
+def _logo(path) -> CardLogo:
+    """Build the card logo of an image that has one (fails the test otherwise)."""
+    logo = card_logo(path)
+    assert logo is not None
+    return logo
+
+
+def _decoded(logo: CardLogo):
     """Open the image embedded in a card logo."""
     return Image.open(BytesIO(base64.b64decode(logo.uri.removeprefix('data:image/png;base64,'))))
 
@@ -202,9 +210,9 @@ def test_context_embeds_downloaded_logos(tmp_path):
 
 def test_card_logo_trims_margins_and_keeps_the_same_area(tmp_path):
     """Test that logos are cropped to their drawn content and sized to the same area, whatever their shape."""
-    wide = card_logo(_png(tmp_path / 'wide.png', (100, 100), box=(10, 40, 90, 60)))  # 80x20 drawn, 4:1 → clamped
-    square = card_logo(_png(tmp_path / 'square.png', (100, 100), box=(30, 30, 70, 70)))
-    tall = card_logo(_png(tmp_path / 'tall.png', (90, 200)))
+    wide = _logo(_png(tmp_path / 'wide.png', (100, 100), box=(10, 40, 90, 60)))  # 80x20 drawn, 4:1 → clamped
+    square = _logo(_png(tmp_path / 'square.png', (100, 100), box=(30, 30, 70, 70)))
+    tall = _logo(_png(tmp_path / 'tall.png', (90, 200)))
     assert _decoded(wide).size == (80, 20)
     assert _decoded(square).size == (40, 40)
     assert (square.width, square.height) == (1.0, 1.0)
