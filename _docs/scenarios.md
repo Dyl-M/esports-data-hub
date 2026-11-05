@@ -216,7 +216,7 @@ The estimate is the sample mean:
 
 $$
 \hat{p} = \frac{1}{n} \sum_{j=1}^{n} X_j, \qquad \mathbb{E}[\hat{p}] = p, \qquad
-\operatorname{Var} (\hat{p}) = \frac{\sigma^2}{n} \quad \text{with} \quad \sigma^2 = \operatorname{Var} (X_j) \le p (1-p).
+\mathrm{Var} (\hat{p}) = \frac{\sigma^2}{n} \quad \text{with} \quad \sigma^2 = \mathrm{Var} (X_j) \le p (1-p).
 $$
 
 Since every $X_j$ has mean $p$, $\hat{p}$ is **unbiased**, whatever the league. The variance bound is an
@@ -229,11 +229,11 @@ The **standard error** of a share, and the margin it gives at 95% confidence (ce
 approximation), are:
 
 $$
-\operatorname{SE} (\hat{p}) = \sqrt{\frac{p (1-p)}{n}}, \qquad
-\Pr\bigl (|\hat{p} - p| \le 1.96 \operatorname{SE} (\hat{p})\bigr) \approx 0.95.
+\mathrm{SE} (\hat{p}) = \sqrt{\frac{p (1-p)}{n}}, \qquad
+\Pr\bigl (|\hat{p} - p| \le 1.96 \mathrm{SE} (\hat{p})\bigr) \approx 0.95.
 $$
 
-$p (1-p)$ is largest at $p = 1/2$, so the worst case is $\operatorname{SE} = 1/ (2\sqrt{n})$:
+$p (1-p)$ is largest at $p = 1/2$, so the worst case is $\mathrm{SE} = 1/ (2\sqrt{n})$:
 
 | Samples $n$       | Worst-case standard error | 95% margin (worst case) |
 |-------------------|---------------------------|-------------------------|
