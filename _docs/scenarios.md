@@ -426,16 +426,21 @@ Measured on 16 cores: Monte Carlo 100k samples 10 s → 2 s; winners-first 12 le
 ## Outlook card
 
 `--visual` turns the outlook into a card to share on social media, saved as `card_portrait.png` (1080×1350),
-`card_square.png` (1080×1080) and `card_landscape.png` (1200×675) in `_data/<league>/outlook/`.
+`card_square.png` (1080×1080) and `card_landscape.png` (1200×675) next to the run's outlook, in
+`_data/<league>/outlook/<YYYY-MM-DD>/<method>/` (one folder per day and method, so methods can be compared). The day,
+also printed on the card, is the league's progress rather than the day of the run: the last day a series finished, in
+the event's timezone (Liquipedia stores match times in UTC with the offset of the page's timezone).
 
 - One row per team, in projected standings order: its share of scenarios reaching the league's **first**
   qualification slot, a qualified / tiebreak bar, and a strip of its share of each final rank (a gap after each slot
-  cutoff, the projected rank outlined). IN / OUT badges appear on exact runs only.
+  cutoff, the projected rank outlined). IN / OUT badges appear on exact runs only. Shares have one decimal; `-` and
+  `100%` are kept for exact 0 and 1, so a share that would round to them is written `<0.1` / `>99.9`.
 - The competition logo sits in the top right corner; each team's logo is a faint, slightly tilted watermark behind
   its name. Logos are cropped to what they actually draw and sized to cover the same area, so a wide logo doesn't look
   smaller than a square one; teams without branding of their own get Liquipedia's default logo of the game.
 - Colors come from the league's `theme` in `league.json` (a neutral palette by default).
-- The footer names the evaluation method and credits the event organizers for the results (read from Liquipedia).
+- The footer names the evaluation method and the source of the results: the event's organizers (read from
+  Liquipedia).
 
 The card is a Jinja2 HTML template rendered by a headless Chromium through
 [Playwright](https://playwright.dev/python/). The template (`edh/scenarios/visuals/templates/`) and the brand files it

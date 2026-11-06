@@ -50,11 +50,13 @@ uv run python -m edh.scenarios.run cdf_slash_2026 --source csv       # offline, 
 uv run python -m edh.scenarios.run cdf_slash_2026 --method montecarlo --samples 200000 --seed 1
 uv run python -m edh.scenarios.run cdf_slash_2026 --workers 4        # cap worker processes (default: all CPUs)
 uv run python -m edh.scenarios.run cdf_slash_2026 --visual           # evaluate, then render the outlook card
-uv run python -m edh.scenarios.run cdf_slash_2026 --visual-only      # render the card from the saved outlook
+uv run python -m edh.scenarios.run cdf_slash_2026 --visual-only      # render the card from the latest saved outlook
 ```
 
-Each run prints, per team, the share of scenarios ending at each rank and qualifying, and saves it to
-`_data/<league>/outlook/` (`outlook.csv` / `outlook.json`, gitignored). A Liquipedia run also saves the results to
+Each run prints, per team, the share of scenarios ending at each rank and qualifying, and saves it (with its cards)
+to `_data/<league>/outlook/<YYYY-MM-DD>/<method>/` (`outlook.csv` / `outlook.json`, gitignored), so runs of other
+matchdays and methods are kept for comparison. The day is the league's progress: the last day a series finished, in the
+event's timezone (Liquipedia's), which is also the date shown on the card. `--visual-only --method <method>` renders the latest outlook of that method. A Liquipedia run also saves the results to
 `_data/<league>/results.csv` and the event organizers to `_data/<league>/event.json`, and downloads the competition
 and team logos to `_data/<league>/logos/` (gitignored, kept local).
 
