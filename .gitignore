@@ -224,6 +224,7 @@ __marimo__/
 
 # Private & Drafts files
 .tokens/
+_archive/
 _drafts/
 _data/*/outlook/
 _data/*/logos/
@@ -234,4 +235,5 @@ edh/scenarios/visuals/templates/
 
 # Claude Code & Claude personal Config
 .claude/
+.remember/
 CLAUDE.md

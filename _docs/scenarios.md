@@ -94,9 +94,10 @@ of how much a team depends on other results, **not** a betting-style probability
 model: in an exact run, **0% and 100%** (the IN / OUT badges of the card) mean that no reachable outcome changes the
 result. That holds under any model that gives every reachable score a non-zero probability.
 
-**One format so far.** The engine has been built and checked on Coupe de France Slash 2026: a single round robin
-with one series length for every match, Liquipedia's tiebreakers, no disqualification and no goals for simulated
-games. Other formats (starting with the RLCS Clubs Championships League Play) will be checked against their
+**One format so far.** The engine has been built and checked on Coupe de France Slash 2026: 6 teams in a double
+round robin (each pair meets twice, 30 Bo5 series over 6 days of 5 series, 10 series per team), one series length for
+every match, Liquipedia's tiebreakers, no disqualification and no goals for simulated games. Other formats (starting
+with the RLCS Clubs Championships League Play) will be checked against their
 Liquipedia page before use, and may need changes.
 
 **Planned evolution** (in this order, not started):
@@ -140,8 +141,9 @@ When a goal tiebreaker meets a team whose goals in its scope are unknown, the gr
 tiebreaker and the ones after it are skipped), and is counted as unresolved.
 
 **Example** (Coupe de France Slash 2026: `matchscore`, `gamediff`, `ml.gamediff`, `ml.rounddiff`, `manual`): three
-teams on 4-3 in series are first split by their game difference over the whole league; two of them still level then
-compare their game difference in the series between the two of them only, then the goals of that series.
+teams finishing 6-4 in series are first split by their game difference over the whole league; two of them still level
+then compare their game difference in the two series they played against each other, then the goals of those two
+series.
 
 ## Choosing a method
 
@@ -162,8 +164,8 @@ For each pending series, every reachable ending is built once as a finished `Ser
 the Cartesian product (`itertools.product`) of those endings; each one is appended to the played series and ranked
 with `standings.rank`, and the ranking is counted with weight 1.
 
-Cost grows as $(2k)^m$ for $m$ remaining series: about 7 Bo5 series fit under the $10^6$ limit
-($6^7 = 279{,}936$, $6^8 = 1{,}679{,}616$).
+Cost grows as $(2k)^m$ for $m$ remaining series: about 7 Bo5 series fit under the $10^6$ limit, since
+$6^7 = 279{,}936$ and $6^8 = 1{,}679{,}616$.
 
 ## Monte Carlo sampling
 
@@ -184,7 +186,7 @@ The exact share of an event $A \subseteq \Omega$ (say, "team X qualifies") is th
 scenario $\omega$ drawn uniformly from $\Omega$:
 
 $$
-p = \frac{|A|}{N} = \Pr_{\omega \sim \mathcal{U} (\Omega)} (\omega \in A).
+p = \frac{|A|}{N} = \Pr_{\omega \sim \mathcal{U}(\Omega)}(\omega \in A).
 $$
 
 Exhaustive enumeration computes $p$ by visiting all $N$ scenarios. Monte Carlo instead draws $n$ scenarios at
@@ -198,7 +200,7 @@ by $|E_i|$). Because the picks are independent, a given scenario $\omega = (e_1,
 probability
 
 $$
-\Pr (\omega) = \prod_{i=1}^{m} \frac{1}{|E_i|} = \frac{1}{N},
+\Pr(\omega) = \prod_{i=1}^{m} \frac{1}{|E_i|} = \frac{1}{N},
 $$
 
 so each sample is a uniform draw from $\Omega$, without ever building $\Omega$. Samples are independent of each
@@ -216,7 +218,7 @@ The estimate is the sample mean:
 
 $$
 \hat{p} = \frac{1}{n} \sum_{j=1}^{n} X_j, \qquad \mathbb{E}[\hat{p}] = p, \qquad
-\mathrm{Var} (\hat{p}) = \frac{\sigma^2}{n} \quad \text{with} \quad \sigma^2 = \mathrm{Var} (X_j) \le p (1-p).
+\mathrm{Var}(\hat{p}) = \frac{\sigma^2}{n} \quad \text{with} \quad \sigma^2 = \mathrm{Var}(X_j) \le p(1-p).
 $$
 
 Since every $X_j$ has mean $p$, $\hat{p}$ is **unbiased**, whatever the league. The variance bound is an
@@ -229,11 +231,11 @@ The **standard error** of a share, and the margin it gives at 95% confidence (ce
 approximation), are:
 
 $$
-\mathrm{SE} (\hat{p}) = \sqrt{\frac{p (1-p)}{n}}, \qquad
-\Pr\bigl (|\hat{p} - p| \le 1.96 \mathrm{SE} (\hat{p})\bigr) \approx 0.95.
+\mathrm{SE}(\hat{p}) = \sqrt{\frac{p(1-p)}{n}}, \qquad
+\Pr\bigl(\lvert \hat{p} - p \rvert \le 1.96 \cdot \mathrm{SE}(\hat{p})\bigr) \approx 0.95.
 $$
 
-$p (1-p)$ is largest at $p = 1/2$, so the worst case is $\mathrm{SE} = 1/ (2\sqrt{n})$:
+$p(1-p)$ is largest at $p = 1/2$, so the worst case is $\mathrm{SE} = 1/(2\sqrt{n})$:
 
 | Samples $n$       | Worst-case standard error | 95% margin (worst case) |
 |-------------------|---------------------------|-------------------------|
@@ -241,21 +243,22 @@ $p (1-p)$ is largest at $p = 1/2$, so the worst case is $\mathrm{SE} = 1/ (2\sqr
 | 100,000 (default) | 0.16 pt                   | ± 0.31 pt               |
 | 1,000,000         | 0.05 pt                   | ± 0.10 pt               |
 
-Shares near 0% or 100% are more precise (a 2% share at 100,000 samples: ± 0.09 pt). Consequences:
+Shares near 0% or 100% are more precise (a 2% share at 100,000 samples: ± 0.09 pt). Solving the worst case for $n$
+gives the samples needed for a 95% margin $h$:
 
-- **The error shrinks as $1/\sqrt{n}$**: halving the margin takes 4× the samples (and 4× the time). For a 95% margin
-  $h$ in the worst case:
+$$
+n \ge \frac{1.96^2 \cdot \tfrac{1}{4}}{h^2} \approx \frac{0.96}{h^2}, \qquad h = 0.001 \quad\Rightarrow\quad n \approx 960{,}000.
+$$
 
-  $$
-  n \ge \frac{1.96^2 \cdot \tfrac{1}{4}}{h^2} \approx \frac{0.96}{h^2}, \qquad h = 0.001 \quad\Rightarrow\quad n \approx 960{,}000.
-  $$
+Consequences:
 
+- **The error shrinks as $1/\sqrt{n}$**: halving the margin takes 4× the samples (and 4× the time).
 - **Precision depends on $n$, not on $N$**: $10^9$ or $10^{20}$ scenarios left give the same margin for the
   same samples. This is why Monte Carlo is the fallback for large leagues, its cost being $n$ rankings.
 - **Shares come with a margin**: a team at 50.2% against one at 49.9% after 100,000 samples is a tie for practical
   purposes. The **projected standings** can then swap between two seeds, since they compare shares.
-- **Many shares, some outliers**: each of the team × rank shares has its own error. With 8 teams and 8 ranks (64
-  shares), about $64 \times 0.05 \approx 3$ of them are expected outside their 95% margin in any run.
+- **Many shares, some outliers**: each of the team × rank shares has its own error. On CDF Slash 2026 (6 teams, 6
+  ranks: 36 shares), about $36 \times 0.05 \approx 2$ of them are expected outside their 95% margin in any run.
 
 Checked against an exact run: on CDF Slash 2026 with 15 series left, 1,000,000 samples matched all
 $6^{15} = 470{,}184{,}984{,}576$ scenarios within 0.1 pt, as the table predicts.
@@ -285,8 +288,8 @@ which numpy designs to give independent streams. Chunks are merged in order, so:
 
 The report states the number of samples (shown as "simulations" on the card, "scenarios" on exact runs).
 
-Today every draw is uniform. Once per-team strengths exist ([planned evolution](#limits-and-planned-evolution)), each series'
-ending will be drawn with its own probabilities; the estimator and its error stay the same.
+Today every draw is uniform. Once per-team strengths exist ([planned evolution](#limits-and-planned-evolution)), each
+series' ending will be drawn with its own probabilities; the estimator and its error stay the same.
 
 ## Winners-first (semi-exhaustive, exact)
 
@@ -297,27 +300,26 @@ leading tiebreakers, and only through the series those teams play.
 
 ### Stage 1: enumerate the winners
 
-Each pending series $i$ has at most 2 outcomes (a winner $w$) instead of $2k$ scores. Each outcome carries:
+Each pending series $i$ has at most 2 outcomes (a winner $w$) instead of $2k$ scores. An outcome keeps its
+**scores** $E_i^{w} \subseteq E_i$, the final scores giving that winner (equally likely among themselves), and its
+**probability** is the share of the series' reachable scores it takes:
 
-- its **scores** $E_i^{w} \subseteq E_i$: the final scores giving that winner, equally likely among themselves;
-- its **probability**, the share of the series' reachable scores it takes:
+$$
+q_i(w) = \frac{|E_i^{w}|}{|E_i|},
+$$
 
-  $$
-  q_i (w) = \frac{|E_i^{w}|}{|E_i|}
-  $$
+i.e. $1/2$ at 0-0 and $3/4$ for the leader at 2-0 in a Bo5.
 
-  ($1/2$ at 0-0, $3/4$ for the leader at 2-0 in a Bo5).
-
-A winner combination $\mathbf{w} = (w_1, \dots, w_m)$ has probability $Q (\mathbf{w}) = \prod_i q_i (w_i)$. Its
+A winner combination $\mathbf{w} = (w_1, \dots, w_m)$ has probability $Q(\mathbf{w}) = \prod_i q_i(w_i)$. Its
 records (series won / lost only) go through the leading tiebreakers (`TieResolver` on the margin-free prefix), which
 split the teams into groups no margin can change. A team alone in its group gets its rank with probability
-$Q (\mathbf{w})$.
+$Q(\mathbf{w})$.
 
 15 Bo5 series left give $2^{15} = 32{,}768$ winner combinations instead of $6^{15} \approx 4.7 \times 10^{11}$
 scenarios. The method is exact because it only regroups the exhaustive sum:
 
 $$
-\Pr (A) = \sum_{\mathbf{w}} Q (\mathbf{w}) \Pr (A \mid \mathbf{w}),
+\Pr(A) = \sum_{\mathbf{w}} Q(\mathbf{w}) \Pr(A \mid \mathbf{w}),
 $$
 
 where, given the winners, the scores of each series are uniform over $E_i^{w_i}$ and independent.
@@ -392,11 +394,12 @@ $w$:
 - **Undecided** (per slot): the group straddles the slot's edge, so qualification depends on how the tie is settled.
 - **Unresolved**: the team ended in a tie of several teams.
 
-Totals are divided by the total weight $W$ at the end ($N$ scenarios, $n$ samples, or 1 for winners-first). For
-team $t$ and rank $\rho$:
+Totals are divided by the total weight $W$ at the end ($N$ scenarios, $n$ samples, or 1 for winners-first). Writing
+$\mathcal{G}(t, \rho)$ for the weighted groups $(G, w)$ of the run that contain team $t$ and cover rank $\rho$
+(i.e. $r_G \le \rho \le r_G + |G| - 1$, with $r_G$ the group's first rank):
 
 $$
-\text{share} (t, \rho) = \frac{1}{W} \sum_{t \in G,~ r \le \rho \le r + |G| - 1} \frac{w}{|G|}.
+\mathrm{share}(t, \rho) = \frac{1}{W} \sum_{(G, w) \in \mathcal{G}(t, \rho)} \frac{w}{|G|}.
 $$
 
 ### Projected standings
