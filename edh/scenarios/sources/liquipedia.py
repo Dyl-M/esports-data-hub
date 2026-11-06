@@ -14,6 +14,7 @@ import logging
 import os
 import re
 from collections.abc import Iterator
+from datetime import date, timedelta
 from typing import Any, Protocol
 
 # Third-party
@@ -303,21 +304,60 @@ def to_series(match: Match, round_number: int, config: LeagueConfig) -> Series:
 
     Returns:
         The series. `goals` lists the goals of each decided game: empty for a walkover, None for a finished series
-        whose games are not all scored (goal tiebreakers then treat it as unknown).
+        whose games are not all scored (goal tiebreakers then treat it as unknown). `played_on` is its day in the
+        event's timezone (`local_day`).
 
     Raises:
         DataSourceError: If the match does not have two named opponents.
     """
     first, second = _opponents(match)
-    finished = bool(match.finished)
+    finished, played_on = bool(match.finished), local_day(match)
     statuses = (first.get('status') or '', second.get('status') or '')
     if any(status in STATUS_WALKOVERS for status in statuses):
         score_1, score_2 = _walkover_scores(statuses, config.walkover_games)
-        return Series(round_number, first['name'], second['name'], score_1, score_2, finished, ())
+        return Series(round_number, first['name'], second['name'], score_1, score_2, finished, (), played_on)
 
     score_1, score_2 = _score(first), _score(second)
     goals = _goals(match, expected_games=score_1 + score_2 if finished else None)
-    return Series(round_number, first['name'], second['name'], score_1, score_2, finished, goals)
+    return Series(round_number, first['name'], second['name'], score_1, score_2, finished, goals, played_on)
+
+
+def local_day(match: Match) -> date | None:
+    """Return the day of a match in the event's timezone.
+
+    LPDB stores match dates in UTC, with the offset of the timezone the page gives them in (e.g. `+01:00` for CET)
+    in `extradata.timezoneoffset`: a late UTC evening can already be the next day where the event takes place.
+
+    Args:
+        match: The LPDB match.
+
+    Returns:
+        The local day; the UTC day when no offset is recorded or the date has no time (`dateexact` unset); None
+        without a date.
+    """
+    if match.date is None:
+        return None
+    offset = parse_utc_offset((match.extradata or {}).get('timezoneoffset')) if match.dateexact else None
+    return (match.date + (offset or timedelta())).date()
+
+
+def parse_utc_offset(text: object) -> timedelta | None:
+    """Parse a UTC offset such as `+01:00`, `-05:30` or `+2`.
+
+    Args:
+        text: Raw offset (None or empty when unset).
+
+    Returns:
+        The offset; None when unset or unreadable.
+    """
+    found = re.fullmatch(r'([+-])(\d{1,2})(?::?(\d{2}))?', str(text or '').strip())
+    if found is None:
+        if text:
+            logger.warning('Unreadable timezone offset: %r', text)
+        return None
+    sign, hours, minutes = found.groups()
+    offset = timedelta(hours=int(hours), minutes=int(minutes or 0))
+    return -offset if sign == '-' else offset
 
 
 def _opponents(match: Match) -> tuple[dict[str, Any], dict[str, Any]]:

@@ -81,7 +81,8 @@ OUTLOOK_DIR = 'outlook'  # computed per-team outlook, in _data/<league>/outlook/
 OUTLOOK_CSV = 'outlook.csv'
 OUTLOOK_JSON = 'outlook.json'
 
-RESULTS_COLUMNS = ('round', 'team_1', 'team_2', 'score_1', 'score_2', 'finished', 'goals')
+RESULTS_COLUMNS = ('round', 'team_1', 'team_2', 'score_1', 'score_2', 'finished', 'goals', 'date')
+RESULTS_OPTIONAL_COLUMNS = frozenset({'date'})  # snapshots written before the column existed still read
 NO_GOALS = '-'  # `goals` cell of a series known to have no goals (a walkover); empty means unknown
 LOGOS_DIR = 'logos'  # downloaded logos, in _data/<league>/logos/ (gitignored, like outlook/)
 LOGOS_JSON = 'logos.json'  # logos manifest: address and file of each logo, in the logos folder

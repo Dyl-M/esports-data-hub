@@ -1,5 +1,8 @@
 """Tests for edh/scenarios/sources/csv_source.py - CSV results reading and writing."""
 
+# Standard library
+from datetime import date
+
 # Third-party
 import pytest
 
@@ -61,8 +64,37 @@ def test_round_trip_keeps_known_empty_goals(tmp_path):
     unknown = make_series(2, 'A', 'B', 3, 0)
     path = tmp_path / 'results.csv'
     write_results([walkover, unknown], path)
-    assert path.read_text(encoding='utf-8').splitlines()[1:] == ['1,A,B,3,0,1,-', '2,A,B,3,0,1,']
+    assert path.read_text(encoding='utf-8').splitlines()[1:] == ['1,A,B,3,0,1,-,', '2,A,B,3,0,1,,']
     assert CsvSource(path).fetch(make_league()) == [walkover, unknown]
+
+
+def test_round_trip_keeps_days(tmp_path):
+    """Test that the day of each series is written as `YYYY-MM-DD` and read back, empty when unknown."""
+    played = make_series(1, 'A', 'B', 3, 0, played_on=date(2026, 11, 4))
+    unknown = make_series(2, 'A', 'B')
+    path = tmp_path / 'results.csv'
+    write_results([played, unknown], path)
+    assert path.read_text(encoding='utf-8').splitlines() == [
+        'round,team_1,team_2,score_1,score_2,finished,goals,date',
+        '1,A,B,3,0,1,,2026-11-04',
+        '2,A,B,0,0,0,,',
+    ]
+    assert CsvSource(path).fetch(make_league()) == [played, unknown]
+
+
+def test_fetch_without_date_column(tmp_path):
+    """Test that a snapshot written before the `date` column existed still reads, days unknown."""
+    path = tmp_path / 'results.csv'
+    path.write_text(HEADER + '1,A,B,3,0,1,\n', encoding='utf-8')
+    assert CsvSource(path).fetch(make_league()) == [make_series(1, 'A', 'B', 3, 0)]
+
+
+def test_fetch_invalid_day(tmp_path):
+    """Test that an unreadable day is reported with its line number."""
+    path = tmp_path / 'results.csv'
+    path.write_text('round,team_1,team_2,score_1,score_2,finished,goals,date\n1,A,B,3,0,1,,4/11\n', encoding='utf-8')
+    with pytest.raises(DataSourceError, match='line 2'):
+        CsvSource(path).fetch(make_league())
 
 
 def test_fetch_league_snapshot(data_dir):
