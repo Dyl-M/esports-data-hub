@@ -21,6 +21,7 @@ def test_write_then_read_round_trip(tmp_path):
     write_event(event, path)
     assert read_event(path) == event
     assert json.loads(path.read_text(encoding='utf-8')) == {'organizers': ['NEO', 'Fédération']}
+    assert b'\r' not in path.read_bytes()  # LF on every platform, like the rest of the repo
 
 
 def test_read_missing_file_is_unknown(tmp_path):

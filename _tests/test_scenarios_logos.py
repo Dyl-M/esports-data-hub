@@ -61,6 +61,7 @@ def test_download_logos(tmp_path):
         'event': {'url': EVENT_URL, 'file': 'event.png'},
         'teams': {'Gentle Mates': {'url': TEAM_URL, 'file': 'team_gentle-mates.png'}},
     }
+    assert b'\r' not in (folder / 'logos.json').read_bytes()  # LF on every platform
     assert read_logos(folder) == result
 
 
