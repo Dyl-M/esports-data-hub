@@ -203,7 +203,7 @@ class _ComparisonGrid:
         shifts = [self._pairwise(stat, won, lost) for stat in self.compared]
         shift = np.concatenate(shifts) if shifts else np.zeros(0, dtype=np.int64)
         signs = np.sign(self.rows + shift[:, np.newaxis])
-        keys: list[int | tuple[int, ...]]
+        keys: Sequence[int | tuple[int, ...]]
         if self.powers is not None:
             # One base-3 code per cell: a 1-D unique is much faster than a column-wise one
             codes, firsts, inverse = np.unique((signs + 1).T @ self.powers, return_index=True, return_inverse=True)
@@ -450,7 +450,8 @@ class WinnersFirst:
 
     def _external(self, index: Mapping[str, int], involved: Sequence[_Outcome]) -> list[dict[State, float]]:
         """Return, per team of a tied group, the distribution of games won / lost (as kept) in its external series."""
-        external: list[dict[State, float]] = [{(0, 0): 1.0} for _ in index]
+        start: State = (0, 0)  # no game won or lost yet
+        external = [{start: 1.0} for _ in index]
         for outcome in involved:
             if (outcome.winner in index) == (outcome.loser in index):
                 continue  # internal series

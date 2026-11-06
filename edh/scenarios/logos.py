@@ -83,7 +83,9 @@ def download_logos(event: EventInfo, folder: Path, *, client: httpxyz.Client | N
             manifest[EVENT_KEY] = entry
         else:
             manifest[TEAMS_KEY][team] = entry
-    (folder / LOGOS_JSON).write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    (folder / LOGOS_JSON).write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n'
+    )
     return read_logos(folder)
 
 

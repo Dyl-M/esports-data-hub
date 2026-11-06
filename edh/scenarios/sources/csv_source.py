@@ -1,19 +1,21 @@
 """CSV results: offline snapshots, manual input and test fixtures.
 
-Columns: `round, team_1, team_2, score_1, score_2, finished, goals`. `finished` is `1` or `0`; `goals` lists the
-goals of each game as `team_1-team_2` separated by `;` (e.g. `7-2;2-0;4-1`), `-` when known to be none (a walkover
-or an upcoming series), empty when unknown.
+Columns: `round, team_1, team_2, score_1, score_2, finished, goals, date`. `finished` is `1` or `0`; `goals` lists
+the goals of each game as `team_1-team_2` separated by `;` (e.g. `7-2;2-0;4-1`), `-` when known to be none (a walkover
+or an upcoming series), empty when unknown; `date` is the day of the series in the event's timezone (`YYYY-MM-DD`),
+empty or absent when unknown.
 """
 
 # Standard library
 import csv
 from collections.abc import Iterable
+from datetime import date
 from pathlib import Path
 
 # Local
 from ...exceptions import DataSourceError
 from ..config import league_dir
-from ..constants import NO_GOALS, RESULTS_COLUMNS, RESULTS_CSV
+from ..constants import NO_GOALS, RESULTS_COLUMNS, RESULTS_CSV, RESULTS_OPTIONAL_COLUMNS
 from ..models import EventInfo, LeagueConfig, Series
 from .event import event_path, read_event
 
@@ -57,7 +59,7 @@ class CsvSource:
         try:
             with path.open(encoding='utf-8', newline='') as file:
                 reader = csv.DictReader(file)
-                missing = set(RESULTS_COLUMNS) - set(reader.fieldnames or ())
+                missing = set(RESULTS_COLUMNS) - RESULTS_OPTIONAL_COLUMNS - set(reader.fieldnames or ())
                 if missing:
                     raise DataSourceError(f'{path}: missing columns {", ".join(sorted(missing))}')
                 return [_parse_row(row, line) for line, row in enumerate(reader, start=2)]
@@ -93,8 +95,9 @@ def write_results(series: Iterable[Series], path: Path) -> None:
         writer.writerow(RESULTS_COLUMNS)
         for item in series:
             goals = _format_goals(item.goals)
+            day = item.played_on.isoformat() if item.played_on else ''
             writer.writerow(
-                (item.round, item.team_1, item.team_2, item.score_1, item.score_2, int(item.finished), goals)
+                (item.round, item.team_1, item.team_2, item.score_1, item.score_2, int(item.finished), goals, day)
             )
 
 
@@ -109,6 +112,7 @@ def _parse_row(row: dict[str, str], line: int) -> Series:
             score_2=int(row['score_2'] or 0),
             finished=row['finished'].strip() == '1',
             goals=_parse_goals(row['goals'].strip()),
+            played_on=_parse_day((row.get('date') or '').strip()),
         )
     except ValueError as error:
         raise DataSourceError(f'Invalid row at line {line}: {error}') from error
@@ -119,6 +123,11 @@ def _format_goals(goals: tuple[tuple[int, int], ...] | None) -> str:
     if goals is None:
         return ''
     return ';'.join(f'{one}-{two}' for one, two in goals) or NO_GOALS
+
+
+def _parse_day(text: str) -> date | None:
+    """Parse a `YYYY-MM-DD` day, None when empty."""
+    return date.fromisoformat(text) if text else None
 
 
 def _parse_goals(text: str) -> tuple[tuple[int, int], ...] | None:

@@ -1,6 +1,7 @@
 """Tests for edh/scenarios/sources/liquipedia.py - LPDB matches to series (recorded payloads, no live calls)."""
 
 # Standard library
+import datetime as dt
 import json
 import logging
 from dataclasses import replace
@@ -18,6 +19,7 @@ from edh.scenarios.sources.liquipedia import (
     LiquipediaSource,
     load_api_key,
     parse_organizers,
+    parse_utc_offset,
     team_logo_url,
     to_series,
 )
@@ -353,6 +355,55 @@ def test_to_series_partial_goals_are_unknown(cdf):
     games[1] |= {'opponents': [{'status': 'S', 'score': 2}, {'status': '', 'score': 0}]}
     series = to_series(Match.model_validate(payload | {'match2games': games}), 1, cdf)
     assert (series.score_1, series.score_2, series.goals) == (3, 0, None)
+
+
+CET = {'timezoneid': 'CET', 'timezoneoffset': '+01:00'}  # as recorded on CDF Slash 2026 matches
+
+
+@pytest.mark.parametrize(
+    ('fields', 'day'),
+    [
+        ({'date': '2026-11-02 18:30:00', 'dateexact': 1, 'extradata': CET}, dt.date(2026, 11, 2)),
+        (
+            {'date': '2026-11-02 23:30:00', 'dateexact': 1, 'extradata': CET},
+            dt.date(2026, 11, 3),
+        ),  # past midnight in CET
+        (
+            {'date': '2026-11-03 01:00:00', 'dateexact': 1, 'extradata': {'timezoneoffset': '-05:00'}},
+            dt.date(2026, 11, 2),
+        ),
+        ({'date': '2026-11-02 23:30:00', 'dateexact': 1}, dt.date(2026, 11, 2)),  # no offset: UTC day
+        ({'date': '2026-11-02 23:30:00', 'dateexact': 0, 'extradata': CET}, dt.date(2026, 11, 2)),  # day only, no time
+        ({'date': '0000-01-01 00:00:00'}, None),
+    ],
+)
+def test_to_series_local_day(cdf, fields, day):
+    """Test that a series is dated by its day in the event's timezone, from LPDB's UTC date and offset."""
+    payload = _match_payload('dprh3EmctD_0001') | fields
+    assert to_series(Match.model_validate(payload), 1, cdf).played_on == day
+
+
+@pytest.mark.parametrize(
+    ('text', 'offset'),
+    [
+        ('+01:00', dt.timedelta(hours=1)),
+        ('-05:30', -dt.timedelta(hours=5, minutes=30)),
+        ('+2', dt.timedelta(hours=2)),
+        ('+0530', dt.timedelta(hours=5, minutes=30)),
+        ('', None),
+        (None, None),
+    ],
+)
+def test_parse_utc_offset(text, offset):
+    """Test the UTC offsets LPDB records with match dates."""
+    assert parse_utc_offset(text) == offset
+
+
+def test_parse_utc_offset_unreadable(caplog):
+    """Test that an unreadable offset is logged and ignored."""
+    with caplog.at_level(logging.WARNING):
+        assert parse_utc_offset('CET') is None
+    assert 'Unreadable timezone offset' in caplog.text
 
 
 def test_to_series_requires_named_opponents(cdf):

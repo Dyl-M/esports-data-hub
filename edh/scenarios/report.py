@@ -11,7 +11,9 @@ from ..exceptions import DataSourceError
 from .constants import OUTLOOK_CSV, OUTLOOK_JSON
 from .models import ScenarioReport, TeamOutlook
 
-RANK_WIDTH = 7  # fits `[99.9%]`
+RANK_WIDTH = 8  # fits `[>99.9%]`
+MIN_SHOWN_PERCENT = 0.1  # shares between 0 and this are written `<0.1%`
+MAX_SHOWN_PERCENT = 99.9  # shares between this and 100 are written `>99.9%`
 
 
 def format_table(report: ScenarioReport) -> str:
@@ -76,7 +78,7 @@ def write_outlook(report: ScenarioReport, folder: Path) -> tuple[Path, Path]:
     data = asdict(report)
     for team, outlook in zip(data['teams'], report.teams, strict=True):
         team['expected_rank'] = outlook.expected_rank
-    json_path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    json_path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
 
     labels, ranks = report.slot_labels, report.rank_count
     with csv_path.open('w', encoding='utf-8', newline='') as file:
@@ -152,8 +154,8 @@ def _rank_cell(outlook: TeamOutlook, rank: int) -> str:
 
 
 def _slot_width(label: str) -> int:
-    """Column width of a qualification slot, wide enough for `99.9% (+99.9%)`."""
-    return max(len(label), 14)
+    """Column width of a qualification slot, wide enough for `>99.9% (+<0.1%)`."""
+    return max(len(label), 16)
 
 
 def format_share(share: float) -> str:
@@ -163,13 +165,19 @@ def format_share(share: float) -> str:
         share: Share between 0 and 1.
 
     Returns:
-        `-` for 0, `100%` for 1, else a percentage with one decimal clamped to 0.1%-99.9%.
+        `-` for 0, `100%` for 1, `<0.1%` / `>99.9%` for shares that would otherwise round to them, else a
+        percentage with one decimal.
     """
     if share == 0:
         return '-'
     if share == 1:
         return '100%'
-    return f'{min(max(share * 100, 0.1), 99.9):.1f}%'
+    percent = share * 100
+    if percent < MIN_SHOWN_PERCENT:
+        return f'<{MIN_SHOWN_PERCENT}%'
+    if percent > MAX_SHOWN_PERCENT:
+        return f'>{MAX_SHOWN_PERCENT}%'
+    return f'{percent:.1f}%'
 
 
 def _qualification(outlook: TeamOutlook, label: str, *, exact: bool) -> str:

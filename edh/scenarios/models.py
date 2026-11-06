@@ -2,7 +2,9 @@
 
 # Standard library
 import re
+from collections.abc import Mapping
 from dataclasses import asdict, dataclass, field, replace
+from datetime import date
 from pathlib import Path
 from typing import Self
 
@@ -36,6 +38,7 @@ class Series:
         score_2: Games won by `team_2` so far.
         finished: Whether the series is over.
         goals: Goals per game, `(team_1, team_2)`, in game order; None when unknown (e.g. a simulated series).
+        played_on: Day of the series in the event's own timezone (scheduled day until played); None when unknown.
     """
 
     round: int
@@ -45,6 +48,7 @@ class Series:
     score_2: int = 0
     finished: bool = False
     goals: tuple[tuple[int, int], ...] | None = None
+    played_on: date | None = None
 
     def __post_init__(self) -> None:
         """Validate the series."""
@@ -321,8 +325,8 @@ class TeamOutlook:
 
     team: str
     rank_shares: tuple[float, ...]
-    qualified: dict[str, float]
-    undecided: dict[str, float]
+    qualified: Mapping[str, float]
+    undecided: Mapping[str, float]
     unresolved: float
     projected_rank: int | None = None
 

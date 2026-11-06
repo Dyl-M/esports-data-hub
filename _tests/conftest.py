@@ -18,9 +18,9 @@ VISUALS_DIR = FIXTURES_DIR / 'visuals'  # placeholder brand files (assets/) and 
 
 
 def make_series(round_, team_1, team_2, score_1=0, score_2=0, **kwargs):
-    """Build a series; `finished` (keyword) defaults to True when a score is given, `goals` to None."""
+    """Build a series; `finished` (keyword) defaults to True when a score is given, `goals` / `played_on` to None."""
     finished = kwargs.get('finished', score_1 > 0 or score_2 > 0)
-    return Series(round_, team_1, team_2, score_1, score_2, finished, kwargs.get('goals'))
+    return Series(round_, team_1, team_2, score_1, score_2, finished, kwargs.get('goals'), kwargs.get('played_on'))
 
 
 def make_league(tiebreakers=('matchscore', 'gamediff'), *, best_of=5, qualification=None, **kwargs):

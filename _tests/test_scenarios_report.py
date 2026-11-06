@@ -47,6 +47,7 @@ def test_format_table_estimated():
 def test_write_outlook(tmp_path):
     """Test the CSV and JSON exports."""
     csv_path, json_path = write_outlook(_report(), tmp_path / 'out')
+    assert b'\r' not in csv_path.read_bytes() + json_path.read_bytes()  # LF on every platform
     rows = list(csv.DictReader(csv_path.read_text(encoding='utf-8').splitlines()))
     assert [row['team'] for row in rows] == ['A', 'B', 'C']
     assert {'projected_rank', 'rank_1', 'rank_3', 'Top_qualified', 'Top_undecided', 'unresolved'} <= set(rows[0])
@@ -71,10 +72,18 @@ def test_format_table_eliminated_team():
 
 @pytest.mark.parametrize(
     ('share', 'text'),
-    [(0, '-'), (1, '100%'), (0.5, '50.0%'), (0.0001, '0.1%'), (0.99999, '99.9%')],
+    [
+        (0, '-'),
+        (1, '100%'),
+        (0.5, '50.0%'),
+        (0.0001, '<0.1%'),
+        (0.001, '0.1%'),
+        (0.999, '99.9%'),
+        (0.99999, '>99.9%'),
+    ],
 )
 def test_format_share(share, text):
-    """Test that 0% and 100% are kept for exact values, and other shares clamped to 0.1%-99.9%."""
+    """Test that 0% and 100% are kept for exact values, and shares beyond 0.1%-99.9% marked `<` / `>`."""
     assert format_share(share) == text
 
 
