@@ -199,14 +199,15 @@ def test_main_keeps_each_method_and_day(league_folder, monkeypatch):
     yesterday = date.today() - timedelta(days=1)
     write_outlook(report, run_folder(league_folder, day=yesterday))
     write_outlook(replace(report, method='exhaustive'), run_folder(league_folder, 'exhaustive', yesterday))
-    (league_folder / 'outlook' / 'notes').mkdir()  # not a run folder: ignored
+    write_outlook(report, league_folder / 'outlook' / 'notes' / 'montecarlo')  # not a run folder (no day): ignored
     assert run.main(['test_league', '--source', 'csv', '--samples', '100', '--seed', '2']) == 0
     assert read_outlook(run_folder(league_folder, day=yesterday) / 'outlook.json') == report  # not overwritten
     recorder = CardRecorder()
     monkeypatch.setattr(run, 'export_cards', recorder)
     assert run.main(['test_league', '--visual-only']) == 0
     assert run.main(['test_league', '--visual-only', '--method', 'exhaustive']) == 0
-    latest, exhaustive = recorder.calls
+    assert len(recorder.calls) == 2
+    latest, exhaustive = recorder.calls[0], recorder.calls[1]
     assert (latest['folder'], latest['as_of'], latest['report'].method) == (
         run_folder(league_folder),
         date.today(),

@@ -9,12 +9,12 @@ opponent uses (`/teamtemplate`, the logo of the period, e.g. `karmine corp 2024`
 """
 
 # Standard library
+import datetime as dt
 import json
 import logging
 import os
 import re
 from collections.abc import Iterator
-from datetime import date, timedelta
 from typing import Any, Protocol
 
 # Third-party
@@ -322,7 +322,7 @@ def to_series(match: Match, round_number: int, config: LeagueConfig) -> Series:
     return Series(round_number, first['name'], second['name'], score_1, score_2, finished, goals, played_on)
 
 
-def local_day(match: Match) -> date | None:
+def local_day(match: Match) -> dt.date | None:
     """Return the day of a match in the event's timezone.
 
     LPDB stores match dates in UTC, with the offset of the timezone the page gives them in (e.g. `+01:00` for CET)
@@ -338,10 +338,10 @@ def local_day(match: Match) -> date | None:
     if match.date is None:
         return None
     offset = parse_utc_offset((match.extradata or {}).get('timezoneoffset')) if match.dateexact else None
-    return (match.date + (offset or timedelta())).date()
+    return (match.date + (offset or dt.timedelta())).date()
 
 
-def parse_utc_offset(text: object) -> timedelta | None:
+def parse_utc_offset(text: object) -> dt.timedelta | None:
     """Parse a UTC offset such as `+01:00`, `-05:30` or `+2`.
 
     Args:
@@ -356,7 +356,7 @@ def parse_utc_offset(text: object) -> timedelta | None:
             logger.warning('Unreadable timezone offset: %r', text)
         return None
     sign, hours, minutes = found.groups()
-    offset = timedelta(hours=int(hours), minutes=int(minutes or 0))
+    offset = dt.timedelta(hours=int(hours), minutes=int(minutes or 0))
     return -offset if sign == '-' else offset
 
 
