@@ -138,7 +138,11 @@ def league_day(series: Sequence[Series]) -> date:
         The latest `played_on` of the finished series; today when none is known (nothing played yet, or a snapshot
         without dates).
     """
-    days = [item.played_on for item in series if item.finished and item.played_on]
+    days: list[date] = []
+    for item in series:
+        day = item.played_on
+        if item.finished and day is not None:
+            days.append(day)
     if not days:
         logger.warning('No finished series with a known day: results dated today')
         return date.today()

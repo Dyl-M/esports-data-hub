@@ -337,11 +337,12 @@ def local_day(match: Match) -> dt.date | None:
     """
     if match.date is None:
         return None
-    offset = parse_utc_offset((match.extradata or {}).get('timezoneoffset')) if match.dateexact else None
+    raw = (match.extradata or {}).get('timezoneoffset')
+    offset = parse_utc_offset(raw if isinstance(raw, str) else None) if match.dateexact else None
     return (match.date + (offset or dt.timedelta())).date()
 
 
-def parse_utc_offset(text: object) -> dt.timedelta | None:
+def parse_utc_offset(text: str | None) -> dt.timedelta | None:
     """Parse a UTC offset such as `+01:00`, `-05:30` or `+2`.
 
     Args:
@@ -350,7 +351,7 @@ def parse_utc_offset(text: object) -> dt.timedelta | None:
     Returns:
         The offset; None when unset or unreadable.
     """
-    found = re.fullmatch(r'([+-])(\d{1,2})(?::?(\d{2}))?', str(text or '').strip())
+    found = re.fullmatch(r'([+-])(\d{1,2})(?::?(\d{2}))?', (text or '').strip())
     if found is None:
         if text:
             logger.warning('Unreadable timezone offset: %r', text)

@@ -1,10 +1,12 @@
 """Tests for edh/scenarios/run.py - command line entry point."""
 
 # Standard library
+import io
 import json
 import runpy
 import shutil
 import sys
+from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import replace
 from datetime import date, timedelta
 
@@ -92,11 +94,13 @@ def test_parse_args_defaults():
     assert run.parse_args(['cdf_slash_2026', '--workers', '4']).workers == 4
 
 
-def test_main_csv_source(league_folder, capsys):
+def test_main_csv_source(league_folder):
     """Test a full Monte Carlo run from the CSV snapshot: table printed, outlook saved, results untouched."""
     before = (league_folder / 'results.csv').read_text(encoding='utf-8')
-    assert run.main(['test_league', '--source', 'csv', '--samples', '200', '--seed', '3']) == 0
-    assert 'Test League: 23 series left, 200 scenarios' in capsys.readouterr().out
+    out = io.StringIO()  # rather than capsys, whose `CaptureResult` PyCharm types as `str | bytes`
+    with redirect_stdout(out):
+        assert run.main(['test_league', '--source', 'csv', '--samples', '200', '--seed', '3']) == 0
+    assert 'Test League: 23 series left, 200 scenarios' in out.getvalue()
     assert (run_folder(league_folder) / 'outlook.csv').is_file()
     assert (run_folder(league_folder) / 'outlook.json').is_file()
     assert (league_folder / 'results.csv').read_text(encoding='utf-8') == before
@@ -155,13 +159,14 @@ def test_league_day(series, day, caplog):
     assert ('results dated today' in caplog.text) == (day == date.today())
 
 
-def test_parse_args_visual_options_are_exclusive(capsys):
+def test_parse_args_visual_options_are_exclusive():
     """Test that --visual and --visual-only cannot be combined."""
     assert run.parse_args(['x', '--visual']).visual
     assert run.parse_args(['x', '--visual-only']).visual_only
-    with pytest.raises(SystemExit):
+    err = io.StringIO()
+    with redirect_stderr(err), pytest.raises(SystemExit):
         run.parse_args(['x', '--visual', '--visual-only'])
-    assert 'not allowed with' in capsys.readouterr().err
+    assert 'not allowed with' in err.getvalue()
 
 
 def test_main_visual_renders_the_evaluated_report(league_folder, monkeypatch):
