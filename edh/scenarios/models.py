@@ -2,6 +2,7 @@
 
 # Standard library
 import re
+from collections.abc import Mapping
 from dataclasses import asdict, dataclass, field, replace
 from datetime import date
 from pathlib import Path
@@ -324,8 +325,8 @@ class TeamOutlook:
 
     team: str
     rank_shares: tuple[float, ...]
-    qualified: dict[str, float]
-    undecided: dict[str, float]
+    qualified: Mapping[str, float]
+    undecided: Mapping[str, float]
     unresolved: float
     projected_rank: int | None = None
 

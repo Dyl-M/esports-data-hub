@@ -1,10 +1,10 @@
 """Tests for edh/scenarios/sources/liquipedia.py - LPDB matches to series (recorded payloads, no live calls)."""
 
 # Standard library
+import datetime as dt
 import json
 import logging
 from dataclasses import replace
-from datetime import date, timedelta
 
 # Third-party
 import pytest
@@ -363,11 +363,17 @@ CET = {'timezoneid': 'CET', 'timezoneoffset': '+01:00'}  # as recorded on CDF Sl
 @pytest.mark.parametrize(
     ('fields', 'day'),
     [
-        ({'date': '2026-11-02 18:30:00', 'dateexact': 1, 'extradata': CET}, date(2026, 11, 2)),
-        ({'date': '2026-11-02 23:30:00', 'dateexact': 1, 'extradata': CET}, date(2026, 11, 3)),  # past midnight in CET
-        ({'date': '2026-11-03 01:00:00', 'dateexact': 1, 'extradata': {'timezoneoffset': '-05:00'}}, date(2026, 11, 2)),
-        ({'date': '2026-11-02 23:30:00', 'dateexact': 1}, date(2026, 11, 2)),  # no offset: UTC day
-        ({'date': '2026-11-02 23:30:00', 'dateexact': 0, 'extradata': CET}, date(2026, 11, 2)),  # day only, no time
+        ({'date': '2026-11-02 18:30:00', 'dateexact': 1, 'extradata': CET}, dt.date(2026, 11, 2)),
+        (
+            {'date': '2026-11-02 23:30:00', 'dateexact': 1, 'extradata': CET},
+            dt.date(2026, 11, 3),
+        ),  # past midnight in CET
+        (
+            {'date': '2026-11-03 01:00:00', 'dateexact': 1, 'extradata': {'timezoneoffset': '-05:00'}},
+            dt.date(2026, 11, 2),
+        ),
+        ({'date': '2026-11-02 23:30:00', 'dateexact': 1}, dt.date(2026, 11, 2)),  # no offset: UTC day
+        ({'date': '2026-11-02 23:30:00', 'dateexact': 0, 'extradata': CET}, dt.date(2026, 11, 2)),  # day only, no time
         ({'date': '0000-01-01 00:00:00'}, None),
     ],
 )
@@ -380,10 +386,10 @@ def test_to_series_local_day(cdf, fields, day):
 @pytest.mark.parametrize(
     ('text', 'offset'),
     [
-        ('+01:00', timedelta(hours=1)),
-        ('-05:30', -timedelta(hours=5, minutes=30)),
-        ('+2', timedelta(hours=2)),
-        ('+0530', timedelta(hours=5, minutes=30)),
+        ('+01:00', dt.timedelta(hours=1)),
+        ('-05:30', -dt.timedelta(hours=5, minutes=30)),
+        ('+2', dt.timedelta(hours=2)),
+        ('+0530', dt.timedelta(hours=5, minutes=30)),
         ('', None),
         (None, None),
     ],
