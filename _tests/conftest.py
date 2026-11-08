@@ -47,7 +47,7 @@ def data_dir(tmp_path, monkeypatch):
 
 @pytest.fixture
 def visual_files(monkeypatch):
-    """Use the placeholder brand files and card template: the real ones are kept out of git."""
+    """Use the placeholder brand files (the real ones are kept out of git) and the context-printing card template."""
     monkeypatch.setattr(paths, 'ASSETS_DIR', VISUALS_DIR / 'assets')
     monkeypatch.setattr(card, 'TEMPLATES_DIR', VISUALS_DIR / 'templates')
     return VISUALS_DIR

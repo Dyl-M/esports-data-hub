@@ -6,8 +6,9 @@ every slot. Brand images, icons, the font and the logos are embedded as data URI
 may lack some or all of them (`EventInfo.logos`). Logos are cropped to their drawn content, and team logos are sized to
 cover the same area (a wide logo is wider and flatter, a tall one narrower), so none looks smaller than the others.
 
-The template (`templates/card.html.j2`) and the brand files (`paths.ASSETS_DIR`) are kept out of git: they exist only
-locally, and rendering without them raises VisualError. Tests use placeholders from `_tests/fixtures/visuals/`.
+The template (`templates/card.html.j2`) is public, for transparency; the brand files (`paths.ASSETS_DIR`) are kept out
+of git: they exist only locally, and rendering without them raises VisualError. Tests use placeholders from
+`_tests/fixtures/visuals/` (brand files, and a template printing every context value).
 """
 
 # Standard library
@@ -148,7 +149,7 @@ def render_card(report: ScenarioReport, config: LeagueConfig, event: EventInfo, 
 
     Raises:
         VisualError: If the format is unknown, the league has no qualification slot, or the template or a brand
-            file is missing (both are kept out of git).
+            file (kept out of git) is missing.
     """
     context = card_context(report, config, event, fmt=fmt, as_of=as_of)
     environment = Environment(
@@ -157,9 +158,7 @@ def render_card(report: ScenarioReport, config: LeagueConfig, event: EventInfo, 
     try:
         template = environment.get_template(CARD_TEMPLATE)
     except TemplateNotFound as error:
-        raise VisualError(
-            f'Missing card template {TEMPLATES_DIR / CARD_TEMPLATE}: templates are kept out of git, add it locally'
-        ) from error
+        raise VisualError(f'Missing card template {TEMPLATES_DIR / CARD_TEMPLATE}') from error
     return template.render(context)
 
 

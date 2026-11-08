@@ -7,7 +7,7 @@ import pytest
 from edh.exceptions import ScenarioError
 from edh.scenarios.outcomes import reachable_scores, series_scores
 
-from .conftest import make_series
+from ..conftest import make_series
 
 
 @pytest.mark.parametrize(

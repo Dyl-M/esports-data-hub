@@ -16,7 +16,7 @@ from edh.scenarios.constants import WATERMARK_FLOOR
 from edh.scenarios.logos import TrimmedLogo, download_logos, logo_media_type, logos_dir, read_logos, trimmed_logo
 from edh.scenarios.models import EventInfo, Logos
 
-from .conftest import make_league
+from ..conftest import make_league
 
 EVENT_URL = 'https://liquipedia.net/commons/images/7/72/Cup_icon_darkmode.png'
 TEAM_URL = 'https://liquipedia.net/commons/images/thumb/4/42/Team_darkmode.png/400px-Team_darkmode.png'

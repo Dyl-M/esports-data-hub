@@ -17,7 +17,7 @@ from edh.scenarios.models import (
     Tiebreaker,
 )
 
-from .conftest import make_league
+from ..conftest import make_league
 
 # === Series ===
 

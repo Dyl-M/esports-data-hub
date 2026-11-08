@@ -13,7 +13,7 @@ from edh.scenarios.engine import evaluate
 from edh.scenarios.models import EvaluationOptions
 from edh.scenarios.report import format_share, format_table, read_outlook, write_outlook
 
-from .conftest import make_league, make_series
+from ..conftest import make_league, make_series
 
 
 def _report(method='exhaustive'):

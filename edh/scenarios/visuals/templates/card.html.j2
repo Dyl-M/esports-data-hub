@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ league }} · {{ slot }} outlook</title>
+<style>
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url({{ font_uri }}) format('truetype');
+  font-weight: 100 800;
+  font-style: normal;
+}
+:root {
+  /* competition theme (league.json `theme`) */
+  --c-bg: {{ theme.background }};
+  --c-surface: {{ theme.surface }};
+  --c-line: {{ theme.line }};
+  --c-fg: {{ theme.text }};
+  --c-muted: {{ theme.muted }};
+  --c-heat: {{ theme.heat }};
+  --c-accent: {{ theme.accent }};
+  --c-glow: {{ theme.glow }};
+  /* fixed across themes */
+  --c-in: #3fbf8f;
+  --c-out: #e2665e;
+  --c-undecided: #c9a646;
+  --f-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--c-bg); }
+
+.frame {
+  --mark-size: calc(var(--row-font) * 4.2); --mark-x: calc(var(--mark-size) * 0.8); --mark-tilt: 12deg;
+  width: {{ width }}px; height: {{ height }}px; overflow: hidden;
+  display: flex; flex-direction: column; gap: var(--gap); padding: var(--pad);
+  background: var(--c-bg); color: var(--c-fg); font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  background-image: radial-gradient(130% 70% at 100% 0%, var(--c-glow), transparent 65%);
+  --rank-col: calc(var(--row-font) * 1.6); --strip-col: 42%; --pct-col: 19%;
+}
+.portrait  { --event-logo: 118px; --pad: 72px; --gap: 36px; --title: 52px; --eyebrow: 19px; --meta: 20px; --row-font: 30px; --cell-font: 20px; --pct-font: 44px; --foot: 17px; --avatar: 64px; }
+.square    { --event-logo: 100px; --pad: 60px; --gap: 26px; --title: 44px; --eyebrow: 17px; --meta: 18px; --row-font: 26px; --cell-font: 18px; --pct-font: 38px; --foot: 16px; --avatar: 56px; }
+.landscape { --event-logo: 64px; --pad: 40px; --gap: 16px; --title: 32px; --eyebrow: 14px; --meta: 15px; --row-font: 20px; --cell-font: 14px; --pct-font: 28px; --foot: 13px; --avatar: 42px; --strip-col: 34%; --pct-col: 15%; }
+
+.hd { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.hd-text { display: flex; flex-direction: column; gap: calc(var(--gap) * 0.4); min-width: 0; }
+.event-logo { height: var(--event-logo); width: auto; max-width: calc(var(--event-logo) * 1.6); flex: none; object-fit: contain; opacity: 0.92; }
+.eyebrow { font: 600 var(--eyebrow)/1 var(--f-mono); color: var(--c-muted); letter-spacing: 0.12em; text-transform: uppercase; }
+.title { margin: 0; font: 800 var(--title)/1 var(--f-mono); letter-spacing: -0.015em; text-wrap: balance; }
+.title em { font-style: normal; color: var(--c-accent); }
+.meta { display: flex; flex-wrap: wrap; gap: 10px 26px; font: 500 var(--meta)/1.2 var(--f-mono); color: var(--c-muted); }
+.meta b { color: var(--c-fg); font-weight: 700; }
+
+.card { flex: 1; min-height: 0; display: grid; grid-template-rows: auto repeat({{ rows | length }}, 1fr); }
+.legend, .row { display: grid; grid-template-columns: var(--rank-col) 1fr var(--strip-col) var(--pct-col); column-gap: 20px; }
+.legend { align-items: end; font: 500 var(--cell-font)/1 var(--f-mono); color: var(--c-muted); padding-bottom: 10px; }
+.legend .right { text-align: right; }
+.strip, .strip-h { display: grid; grid-template-columns: {{ strip_columns }}; gap: 3px; }
+.strip-h { text-align: center; white-space: nowrap; }
+.strip-h .first { grid-column: 1 / 2; }
+.strip-h .mid { grid-column: 2 / -2; }
+.strip-h .last { grid-column: -2 / -1; }
+.row { position: relative; isolation: isolate; overflow: hidden; align-items: center; border-top: 1px solid var(--c-line); }
+/* team logo as a watermark behind the name, right-aligned: absolute in the name column's grid area */
+.mark {
+  position: absolute; grid-column: 2 / 3; grid-row: 1; z-index: -1;
+  /* same area for every logo: --mark-size is the side of that square, --logo-w / --logo-h the logo's shape (from the
+     context, cropped to its drawn content); every logo is centered on the same point, --mark-x from the column's right
+     edge (a wide logo spreads both ways instead of sliding under the rank strip); cropped by the row; --mark-tilt
+     rotates it clockwise */
+  top: 50%; right: var(--mark-x); width: calc(var(--mark-size) * var(--logo-w)); height: calc(var(--mark-size) * var(--logo-h));
+  transform: translate(50%, -50%) rotate(var(--mark-tilt)); transform-origin: center;
+  opacity: 0.085; /* grayscale and tone evened out per logo in Python (card_logo watermark=True) */
+}
+.n { font: 600 calc(var(--row-font) * 0.85) var(--f-mono); color: var(--c-muted); }
+.who { display: flex; flex-direction: column; gap: 0.4em; min-width: 0; }
+.name { font: 700 calc(var(--row-font) * 0.86)/1.05 var(--f-mono); letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini { height: 5px; border-radius: 3px; background: var(--c-surface); overflow: hidden; display: flex; }
+.mini .q { background: var(--c-in); }
+.mini .u { background: var(--c-undecided); }
+.strip { height: calc(var(--row-font) * 1.25); }
+.strip i {
+  display: grid; place-items: center; border-radius: 2px;
+  font: 500 calc(var(--cell-font) * 0.85)/1 var(--f-mono); font-style: normal; letter-spacing: -0.03em; color: var(--c-fg);
+  background: color-mix(in oklch, var(--c-heat) calc(var(--s) * 100%), var(--c-surface));
+}
+.strip i.low { color: var(--c-muted); }
+.strip i.proj { box-shadow: inset 0 0 0 2px var(--c-fg); font-weight: 700; }
+.strip i.gap { background: none; }
+/* right-aligned flex column: a line wider than the column (`+<0.1% on tiebreak`) spills left into the gutter instead of
+   being cropped by the row; the negative letter-spacing also follows the last glyph, so the share gets that space back
+   as padding to keep its `%` inside */
+.pct { display: flex; flex-direction: column; align-items: flex-end; font: 700 var(--pct-font)/1 var(--f-mono); letter-spacing: -0.04em; white-space: nowrap; }
+.pct .share { padding-right: 0.08em; }
+.pct small { font-size: 0.38em; font-weight: 500; color: var(--c-undecided); letter-spacing: 0; margin-top: 4px; }
+.badge { display: inline-block; font: 800 calc(var(--pct-font) * 0.6)/1 var(--f-mono); padding: 0.25em 0.5em; border-radius: 4px; letter-spacing: 0.08em; color: var(--c-bg); }
+.badge.in { background: var(--c-in); }
+.badge.out { background: var(--c-out); }
+
+.ft { display: flex; flex-direction: column; gap: calc(var(--gap) * 0.45); border-top: 1px solid var(--c-line); padding-top: calc(var(--gap) * 0.5); font: 400 var(--foot)/1.35 var(--f-mono); color: var(--c-muted); }
+.ft .line { display: flex; justify-content: space-between; gap: 24px; }
+.ft b { color: var(--c-fg); font-weight: 600; }
+.ft .src { text-align: right; white-space: nowrap; flex: none; }
+.brand { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand .id { display: flex; align-items: center; gap: 14px; }
+.avatar { width: var(--avatar); height: var(--avatar); flex: none; border-radius: 50%; overflow: hidden; }
+.avatar img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.brand .edh { font: 700 calc(var(--foot) * 1.15)/1.1 var(--f-mono); color: var(--c-fg); }
+.brand .edh span { display: block; font-weight: 400; font-size: 0.8em; color: var(--c-muted); }
+.socials { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 22px; }
+.socials span { display: inline-flex; align-items: center; gap: 0.5em; white-space: nowrap; }
+.socials img { width: 1.15em; height: 1.15em; flex: none; }
+.landscape .ft { flex-direction: row; justify-content: space-between; align-items: center; }
+.landscape .ft .line { flex-direction: column; gap: 2px; }
+.landscape .ft .src { text-align: left; }
+.landscape .brand { gap: 24px; }
+.landscape .socials { flex-direction: column; align-items: flex-end; gap: 2px; }
+</style>
+</head>
+<body>
+<div class="frame {{ format }}">
+  <div class="hd">
+    <div class="hd-text">
+    <div class="eyebrow">{{ eyebrow }}</div>
+    {% if format == 'landscape' %}
+    <h1 class="title">{{ league }} · <em>{{ slot }} outlook</em></h1>
+    {% else %}
+    <h1 class="title">{{ league }}<br><em>{{ slot }} outlook</em></h1>
+    {% endif %}
+    <div class="meta">
+      <span><b>{{ remaining }}</b> series left</span>
+      <span><b>{{ scenarios }}</b> {{ scenario_unit }}</span>
+      <span>{{ format_rule }}</span>
+    </div>
+    </div>
+    {% if event_logo %}<img class="event-logo" src="{{ event_logo.uri }}" alt="">{% endif %}
+  </div>
+
+  <div class="card">
+    <div class="legend">
+      <span></span>
+      <span>Team</span>
+      <span class="strip-h"><span class="first">#1</span><span class="mid">Final rank (%)</span><span class="last">#{{ ranks }}</span></span>
+      <span class="right">{{ slot }}</span>
+    </div>
+    {% for row in rows %}
+    <div class="row">
+      {% if row.logo %}<img class="mark" src="{{ row.logo.uri }}" style="--logo-w: {{ row.logo.width }}; --logo-h: {{ row.logo.height }}" alt="">{% endif %}
+      <span class="n">{{ row.position }}</span>
+      <span class="who">
+        <span class="name">{{ row.team }}</span>
+        <span class="mini"><span class="q" style="width: {{ row.qualified_width }}%"></span><span class="u" style="width: {{ row.undecided_width }}%"></span></span>
+      </span>
+      <span class="strip">
+        {% for cell in row.cells %}<i class="{{ 'proj' if cell.projected }} {{ 'low' if cell.low }}" style="--s: {{ cell.heat }}">{{ cell.label }}</i>{% if cell.gap_after %}<i class="gap"></i>{% endif %}{% endfor %}
+      </span>
+      <span class="pct">
+        {% if row.badge %}<span class="badge {{ row.badge }}">{{ row.badge | upper }}</span>{% else %}<span class="share">{{ row.share }}</span>{% if row.tiebreak %}<small>{{ row.tiebreak }} on tiebreak</small>{% endif %}{% endif %}
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="ft">
+    <div class="line">
+      <span><b>Method: {{ method }}</b> · {{ method_note }}</span>
+      <span class="src">{% if organizers %}Source: <b>{{ organizers }}</b><br>via {{ credit }}{% else %}Source: {{ credit }}{% endif %}</span>
+    </div>
+    <div class="brand">
+      <div class="id">
+        <div class="avatar"><img src="{{ avatar_uri }}" alt=""></div>
+        <div class="edh">{{ brand_name }}<span>league play scenarios</span></div>
+      </div>
+      <div class="socials">
+        {% for icon_uri, handle in socials %}<span><img src="{{ icon_uri }}" alt="">{{ handle }}</span>{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
