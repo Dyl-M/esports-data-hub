@@ -17,7 +17,7 @@ from edh.scenarios.visuals.export import export_cards
 
 from .conftest import make_league, make_series
 
-pytestmark = pytest.mark.usefixtures('visual_files')  # placeholder template and brand files (real ones are local)
+pytestmark = pytest.mark.usefixtures('visual_files')  # placeholder template and brand files
 
 AS_OF = date(2026, 11, 4)
 

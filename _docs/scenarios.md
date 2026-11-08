@@ -446,9 +446,11 @@ the event's timezone (Liquipedia stores match times in UTC with the offset of th
   Liquipedia).
 
 The card is a Jinja2 HTML template rendered by a headless Chromium through
-[Playwright](https://playwright.dev/python/). The template (`edh/scenarios/visuals/templates/`) and the brand files it
-embeds (`edh/assets/`: profile picture, font, social icons) are kept out of git, so cards can only be rendered where
-those files exist locally; without them, `--visual` stops with an error naming the missing file.
+[Playwright](https://playwright.dev/python/). The template
+([`edh/scenarios/visuals/templates/card.html.j2`](../edh/scenarios/visuals/templates/card.html.j2)) is public, so
+anyone can check how the card displays the results. The brand files it embeds (`edh/assets/`: profile picture, font,
+social icons) are kept out of git, so cards can only be rendered where those files exist locally; without them,
+`--visual` stops with an error naming the missing file.
 
 ## Module map
 

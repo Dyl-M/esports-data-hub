@@ -229,9 +229,8 @@ _drafts/
 _data/*/outlook/
 _data/*/logos/
 
-# Visual design kept local: brand files (avatar, font, icons) and card templates
+# Brand files kept local (avatar, font, icons); the card templates are public, for transparency
 edh/assets/
-edh/scenarios/visuals/templates/
 
 # Claude Code & Claude personal Config
 .claude/

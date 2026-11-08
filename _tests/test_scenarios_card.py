@@ -24,6 +24,7 @@ pytestmark = pytest.mark.usefixtures('visual_files')
 
 AS_OF = date(2026, 11, 4)
 NEO = EventInfo(organizers=('NEO',))
+REAL_TEMPLATES_DIR = card.TEMPLATES_DIR  # read before the visual_files fixture swaps in the placeholder
 
 
 def _league(**kwargs):
@@ -140,8 +141,18 @@ def test_context_icons_take_the_theme_text_color():
     assert b'<svg fill="#f0f4fa" ' in base64.b64decode(icon_uri.removeprefix('data:image/svg+xml;base64,'))
 
 
+@pytest.mark.parametrize('fmt', ['portrait', 'square', 'landscape'])
+def test_real_template_renders(monkeypatch, fmt):
+    """Test that the real card template renders every context value it uses (strict: a missing one fails)."""
+    monkeypatch.setattr(card, 'TEMPLATES_DIR', REAL_TEMPLATES_DIR)
+    html = render_card(_report(_league()), _league(), NEO, fmt=fmt, as_of=AS_OF)
+    assert f'<div class="frame {fmt}">' in html
+    assert 'Test League' in html
+    assert 'Method: Exhaustive' in html
+
+
 def test_missing_template(tmp_path, monkeypatch):
-    """Test that a missing card template (kept out of git) is a visual error naming the file."""
+    """Test that a missing card template is a visual error naming the file."""
     monkeypatch.setattr(card, 'TEMPLATES_DIR', tmp_path)
     with pytest.raises(VisualError, match=r'Missing card template .*card\.html\.j2'):
         render_card(_report(_league()), _league(), NEO, fmt='square', as_of=AS_OF)
