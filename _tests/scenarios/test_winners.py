@@ -16,7 +16,7 @@ from edh.scenarios.models import EvaluationOptions, Tiebreaker
 from edh.scenarios.sources import CsvSource
 from edh.scenarios.winners import WinnersFirst, count_winner_combinations, margin_free_prefix
 
-from .conftest import CDF_DAY2_CSV, make_league, make_series
+from ..conftest import CDF_DAY2_CSV, make_league, make_series
 
 # Tiebreaker chains covering every game statistic kept (difference, games won, both, none), `ml.` before and after
 # full-league tiebreakers, manual points and unresolved goal tiebreakers

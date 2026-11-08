@@ -15,7 +15,7 @@ from edh.scenarios.models import EventInfo
 from edh.scenarios.visuals import export
 from edh.scenarios.visuals.export import export_cards
 
-from .conftest import make_league, make_series
+from ...conftest import make_league, make_series
 
 pytestmark = pytest.mark.usefixtures('visual_files')  # placeholder template and brand files
 

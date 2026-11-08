@@ -7,7 +7,7 @@ import pytest
 from edh.scenarios.models import Tiebreaker
 from edh.scenarios.standings import rank, tally
 
-from .conftest import make_series
+from ..conftest import make_series
 
 
 def _tiebreakers(*values):

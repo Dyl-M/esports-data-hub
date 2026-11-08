@@ -10,7 +10,7 @@ import pytest
 from edh.exceptions import DataSourceError
 from edh.scenarios.sources import CsvSource, results_path, write_results
 
-from .conftest import CDF_DAY2_CSV, make_league, make_series
+from ...conftest import CDF_DAY2_CSV, make_league, make_series
 
 HEADER = 'round,team_1,team_2,score_1,score_2,finished,goals\n'
 

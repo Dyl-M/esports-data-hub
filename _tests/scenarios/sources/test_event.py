@@ -11,7 +11,7 @@ from edh.exceptions import DataSourceError
 from edh.scenarios.models import EventInfo
 from edh.scenarios.sources import CsvSource, event_path, read_event, write_event
 
-from .conftest import make_league
+from ...conftest import make_league
 
 
 def test_write_then_read_round_trip(tmp_path):

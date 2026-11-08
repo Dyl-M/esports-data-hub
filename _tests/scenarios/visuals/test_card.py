@@ -18,7 +18,7 @@ from edh.scenarios.models import EvaluationOptions, EventInfo, Logos, Theme
 from edh.scenarios.visuals import card
 from edh.scenarios.visuals.card import CardLogo, card_context, card_logo, primary_slot, render_card
 
-from .conftest import make_league, make_series
+from ...conftest import make_league, make_series
 
 pytestmark = pytest.mark.usefixtures('visual_files')
 

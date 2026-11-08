@@ -24,7 +24,7 @@ from edh.scenarios.sources.liquipedia import (
     to_series,
 )
 
-from .conftest import FIXTURES_DIR, make_league
+from ...conftest import FIXTURES_DIR, make_league
 
 LPDB_DIR = FIXTURES_DIR / 'lpdb'
 

@@ -20,7 +20,7 @@ from edh.scenarios.models import EventInfo, Logos
 from edh.scenarios.report import read_outlook, write_outlook
 from edh.scenarios.sources import CsvSource, LiquipediaSource, write_event
 
-from .conftest import CDF_DAY2_CSV, make_series
+from ..conftest import CDF_DAY2_CSV, make_series
 
 NEO = EventInfo(organizers=('NEO',))
 

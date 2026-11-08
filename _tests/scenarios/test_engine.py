@@ -10,7 +10,7 @@ from edh.scenarios.engine import choose_method, count_scenarios, evaluate, proje
 from edh.scenarios.models import EvaluationOptions, TeamOutlook
 from edh.scenarios.sources import CsvSource
 
-from .conftest import CDF_DAY2_CSV, make_league, make_series
+from ..conftest import CDF_DAY2_CSV, make_league, make_series
 
 
 @pytest.fixture
