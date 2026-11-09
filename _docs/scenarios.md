@@ -2,7 +2,7 @@
 
 This page explains what `edh.scenarios` computes and how: the probability model, the standings rules, the three
 evaluation methods (exhaustive, winners-first, Monte Carlo), how results are aggregated and the outlook card. For the
-command line, see the [README](../README.md#league-play-scenarios).
+command line, see the [README](/README.md#league-play-scenarios).
 
 > [!IMPORTANT]
 > The shares are **shares of scenarios, not predictions**: every possible score of a remaining series is assumed
@@ -453,7 +453,7 @@ the event's timezone (Liquipedia stores match times in UTC with the offset of th
 
 The card is a Jinja2 HTML template rendered by a headless Chromium through
 [Playwright](https://playwright.dev/python/). The template
-([`edh/scenarios/visuals/templates/card.html.j2`](../edh/scenarios/visuals/templates/card.html.j2)) is public, so
+([`edh/scenarios/visuals/templates/card.html.j2`](/edh/scenarios/visuals/templates/card.html.j2)) is public, so
 anyone can check how the card displays the results. The brand files it embeds (`edh/assets/`: profile picture, font,
 social icons) are kept out of git, so cards can only be rendered where those files exist locally; without them,
 `--visual` stops with an error naming the missing file.

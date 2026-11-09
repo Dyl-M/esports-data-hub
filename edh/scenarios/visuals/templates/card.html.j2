@@ -33,7 +33,7 @@ html, body { margin: 0; padding: 0; background: var(--c-bg); }
   --mark-size: calc(var(--row-font) * 4.2); --mark-x: calc(var(--mark-size) * 0.8); --mark-tilt: 12deg;
   width: {{ width }}px; height: {{ height }}px; overflow: hidden;
   display: flex; flex-direction: column; gap: var(--gap); padding: var(--pad);
-  background: var(--c-bg); color: var(--c-fg); font-family: var(--f-mono);
+  background: var(--c-bg); color: var(--c-fg); font-family: var(--f-mono), monospace;
   font-variant-numeric: tabular-nums;
   background-image: radial-gradient(130% 70% at 100% 0%, var(--c-glow), transparent 65%);
   --rank-col: calc(var(--row-font) * 1.6); --strip-col: 42%; --pct-col: 19%;
@@ -89,6 +89,8 @@ html, body { margin: 0; padding: 0; background: var(--c-bg); }
   font: 500 calc(var(--cell-font) * 0.85)/1 var(--f-mono); font-style: normal; letter-spacing: -0.03em; color: var(--c-fg);
   background: color-mix(in oklch, var(--c-heat) calc(var(--s) * 100%), var(--c-surface));
 }
+/* trimmed to the digits (cap height to baseline), so centering ignores the room the font keeps for descenders */
+.strip i span { display: block; text-box: trim-both cap alphabetic; }
 .strip i.low { color: var(--c-muted); }
 .strip i.proj { box-shadow: inset 0 0 0 2px var(--c-fg); font-weight: 700; }
 .strip i.gap { background: none; }
@@ -162,7 +164,7 @@ html, body { margin: 0; padding: 0; background: var(--c-bg); }
         <span class="mini"><span class="q" style="width: {{ row.qualified_width }}%"></span><span class="u" style="width: {{ row.undecided_width }}%"></span></span>
       </span>
       <span class="strip">
-        {% for cell in row.cells %}<i class="{{ 'proj' if cell.projected }} {{ 'low' if cell.low }}" style="--s: {{ cell.heat }}">{{ cell.label }}</i>{% if cell.gap_after %}<i class="gap"></i>{% endif %}{% endfor %}
+        {% for cell in row.cells %}<i class="{{ 'proj' if cell.projected }} {{ 'low' if cell.low }}" style="--s: {{ cell.heat }}"><span>{{ cell.label }}</span></i>{% if cell.gap_after %}<i class="gap"></i>{% endif %}{% endfor %}
       </span>
       <span class="pct">
         {% if row.badge %}<span class="badge {{ row.badge }}">{{ row.badge | upper }}</span>{% else %}<span class="share">{{ row.share }}</span>{% if row.tiebreak %}<small>{{ row.tiebreak }} on tiebreak</small>{% endif %}{% endif %}
