@@ -240,6 +240,23 @@ def test_fetch_event_team_logos_use_aliases_and_latest_template(cdf):
     assert 'Old Name' not in event.team_logo_urls
 
 
+def test_fetch_event_team_logos_skip_matches_without_template(cdf):
+    """Test that a later match whose opponent has no template keeps the logo found on an earlier one."""
+    first, second = (_match_payload(match['match2id']) for match in _load('match')[:2])
+    first['match2opponents'][0] |= {'name': 'Some Team', 'template': 'some'}
+    second['match2opponents'][0] |= {'name': 'Some Team', 'template': None}
+    templates = {'some': [{'template': 'some', 'imagedark': 'Some darkmode.png', 'imagedarkurl': 'https://x/some.png'}]}
+    event = LiquipediaSource(FakeClient(matches=[first, second], templates=templates)).fetch_event(cdf)
+    assert event.team_logo_urls['Some Team'] == 'https://x/some.png'
+
+
+def test_fetch_event_light_logo_without_dark_one(cdf):
+    """Test that the competition logo falls back to the light version when the tournament has no dark one."""
+    tournament = _load('tournament')[0] | {'icondarkurl': ''}
+    event = LiquipediaSource(FakeClient(tournaments=[tournament])).fetch_event(cdf)
+    assert event.logo_url.endswith('/Coupe_de_France_Slash_icon_lightmode.png')
+
+
 @pytest.mark.parametrize(
     ('fields', 'url'),
     [
@@ -312,13 +329,21 @@ def test_to_series_finished(cdf):
     assert series.goals == ((7, 2), (2, 0), (4, 1))
 
 
+def test_to_series_finished_with_lost_games(cdf):
+    """Test that the goals of a series won 3-1 are kept: every game played counts, the lost one included."""
+    series = to_series(_match('dprh3EmctD_0004'), 1, cdf)
+    assert (series.score_1, series.score_2, len(series.goals)) == (3, 1, 4)
+
+
 def test_to_series_upcoming(cdf):
     """Test that an upcoming series (scores -1, empty games) is 0-0 with no goals."""
     series = to_series(_match('KYsrR25uHZ_0001'), 3, cdf)
     assert (series.score_1, series.score_2, series.finished, series.goals) == (0, 0, False, ())
 
 
-@pytest.mark.parametrize(('statuses', 'scores'), [(('W', 'FF'), (3, 0)), (('DQ', 'W'), (0, 3)), (('L', ''), (0, 3))])
+@pytest.mark.parametrize(
+    ('statuses', 'scores'), [(('W', 'FF'), (3, 0)), (('DQ', 'W'), (0, 3)), (('L', ''), (0, 3)), (('', 'FF'), (3, 0))]
+)
 def test_to_series_walkover(cdf, statuses, scores):
     """Test that a walkover credits `walkover_games` to the winner, with no goals."""
     payload = _match_payload('KYsrR25uHZ_0001')

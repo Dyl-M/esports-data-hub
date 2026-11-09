@@ -28,9 +28,9 @@ def test_fetch_cdf_snapshot():
 
 
 def test_write_then_fetch_round_trip(tmp_path):
-    """Test that written results read back unchanged."""
+    """Test that written results read back unchanged, missing parent folders created."""
     series = CsvSource(CDF_DAY2_CSV).fetch(make_league())
-    path = tmp_path / 'nested' / 'results.csv'
+    path = tmp_path / 'new_league' / 'snapshots' / 'results.csv'
     write_results(series, path)
     assert CsvSource(path).fetch(make_league()) == series
 
@@ -81,6 +81,13 @@ def test_round_trip_keeps_days(tmp_path):
         '2,A,B,0,0,0,,',
     ]
     assert CsvSource(path).fetch(make_league()) == [played, unknown]
+
+
+def test_fetch_empty_scores_are_zero(tmp_path):
+    """Test that an upcoming series with empty score cells reads as 0-0."""
+    path = tmp_path / 'results.csv'
+    path.write_text(HEADER + '1,A,B,,,0,\n', encoding='utf-8')
+    assert CsvSource(path).fetch(make_league()) == [make_series(1, 'A', 'B')]
 
 
 def test_fetch_without_date_column(tmp_path):

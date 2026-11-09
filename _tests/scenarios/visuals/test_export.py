@@ -108,7 +108,8 @@ def test_export_cards_every_format(tmp_path, monkeypatch):
     browser = FakeBrowser()
     monkeypatch.setattr(export, 'sync_playwright', FakePlaywright(browser))
     report, league = _inputs()
-    written = export_cards(report, league, EventInfo(), tmp_path / 'outlook', as_of=AS_OF)
+    folder = tmp_path / 'outlook' / AS_OF.isoformat() / 'exhaustive'  # created with its parents, as outlook_dir
+    written = export_cards(report, league, EventInfo(), folder, as_of=AS_OF)
     assert [path.name for path in written] == ['card_portrait.png', 'card_square.png', 'card_landscape.png']
     assert all(path.read_bytes() == b'png' for path in written)
     assert [page.viewport for page in browser.pages] == [

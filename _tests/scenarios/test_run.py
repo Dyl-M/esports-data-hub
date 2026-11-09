@@ -336,6 +336,30 @@ def test_main_continues_after_a_failed_league(three_leagues, caplog):
     assert '1 of 2 leagues ran; failed: absent' in caplog.text
 
 
+def test_main_single_league_has_no_summary(league_folder, caplog):
+    """Test that a run of one league logs no "N of M leagues ran" summary."""
+    caplog.set_level(logging.INFO)
+    assert run.main(['test_league', '--source', 'csv', '--samples', '100', '--seed', '1']) == 0
+    assert 'leagues ran' not in caplog.text
+
+
+@pytest.mark.parametrize(
+    ('method', 'message'),
+    [('auto', 'No saved outlook for test_league'), ('exhaustive', 'No saved exhaustive outlook for test_league')],
+)
+def test_main_visual_only_without_saved_outlook(league_folder, caplog, method, message):
+    """Test that --visual-only without a saved outlook fails, naming the method asked for unless auto."""
+    assert run.main(['test_league', '--visual-only', '--method', method]) == 1
+    assert message in caplog.text
+
+
+def test_help_describes_the_tool(capsys):
+    """Test that --help shows the first line of the module docstring as the description."""
+    with pytest.raises(SystemExit):
+        run.parse_args(['--help'])
+    assert 'Evaluate the league play scenarios' in capsys.readouterr().out
+
+
 def test_main_pattern_without_match(three_leagues):
     """Test that a pattern matching nothing exits with code 1 before running anything."""
     assert run.main(['nope_*', 'other', '--source', 'csv', '--samples', '100']) == 1
