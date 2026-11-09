@@ -27,6 +27,8 @@ CHAINS = [
     ('matchscore', 'ml.gamewins', 'gamediff', 'rounddiff'),
     ('matchdiff', 'manual', 'ml.gamediff', 'gamediff'),
     ('matchscore',),
+    ('manual', 'gamediff', 'matchscore', 'ml.matchwins'),  # tied on manual points only: series records differ
+    ('manual', 'ml.gamediff', 'matchdiff', 'rounddiff'),
 ]
 
 
@@ -119,8 +121,8 @@ def test_combination_probabilities_sum_to_one():
 
 
 def test_requires_series_winner_tiebreaker():
-    """Test that a first tiebreaker on game margins is rejected."""
-    with pytest.raises(ScenarioError, match='first tiebreaker on series winners'):
+    """Test that a first tiebreaker on game margins is rejected, naming the chain received."""
+    with pytest.raises(ScenarioError, match=r'first tiebreaker on series winners \(got: gamediff, matchscore\)'):
         WinnersFirst([], [make_series(1, 'A', 'B')], make_league(('gamediff', 'matchscore')), {})
 
 

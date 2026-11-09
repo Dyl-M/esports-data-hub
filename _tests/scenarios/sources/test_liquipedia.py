@@ -225,29 +225,33 @@ def test_fetch_event_cdf(cdf):
     assert {query['template'] for query in client.team_templates.queries} == set(_load('teamtemplate'))
 
 
+def _team_logos(league, earlier, later, templates):
+    """Team logo addresses when the first opponent of two matches is `earlier`, then `later` (name, template).
+
+    Each template of `templates` has the dark logo `https://x/<template>.png`.
+    """
+    first, second = (_match_payload(match['match2id']) for match in _load('match')[:2])
+    for payload, (name, template) in ((first, earlier), (second, later)):
+        payload['match2opponents'][0] |= {'name': name, 'template': template}
+    records = {
+        name: [{'template': name, 'imagedark': f'{name} darkmode.png', 'imagedarkurl': f'https://x/{name}.png'}]
+        for name in templates
+    }
+    return LiquipediaSource(FakeClient(matches=[first, second], templates=records)).fetch_event(league).team_logo_urls
+
+
 def test_fetch_event_team_logos_use_aliases_and_latest_template(cdf):
     """Test that a renamed team gets the logo of its latest match, under its current name."""
-    first, second = (_match_payload(match['match2id']) for match in _load('match')[:2])
-    first['match2opponents'][0] |= {'name': 'Old Name', 'template': 'old'}
-    second['match2opponents'][0] |= {'name': 'New Name', 'template': 'new'}
-    templates = {
-        'old': [{'template': 'old', 'imagedark': 'Old darkmode.png', 'imagedarkurl': 'https://x/old.png'}],
-        'new': [{'template': 'new', 'imagedark': 'New darkmode.png', 'imagedarkurl': 'https://x/new.png'}],
-    }
     league = replace(cdf, team_aliases={'Old Name': 'New Name'})
-    event = LiquipediaSource(FakeClient(matches=[first, second], templates=templates)).fetch_event(league)
-    assert event.team_logo_urls['New Name'] == 'https://x/new.png'
-    assert 'Old Name' not in event.team_logo_urls
+    urls = _team_logos(league, ('Old Name', 'old'), ('New Name', 'new'), ('old', 'new'))
+    assert urls['New Name'] == 'https://x/new.png'
+    assert 'Old Name' not in urls
 
 
 def test_fetch_event_team_logos_skip_matches_without_template(cdf):
     """Test that a later match whose opponent has no template keeps the logo found on an earlier one."""
-    first, second = (_match_payload(match['match2id']) for match in _load('match')[:2])
-    first['match2opponents'][0] |= {'name': 'Some Team', 'template': 'some'}
-    second['match2opponents'][0] |= {'name': 'Some Team', 'template': None}
-    templates = {'some': [{'template': 'some', 'imagedark': 'Some darkmode.png', 'imagedarkurl': 'https://x/some.png'}]}
-    event = LiquipediaSource(FakeClient(matches=[first, second], templates=templates)).fetch_event(cdf)
-    assert event.team_logo_urls['Some Team'] == 'https://x/some.png'
+    urls = _team_logos(cdf, ('Some Team', 'some'), ('Some Team', None), ('some',))
+    assert urls['Some Team'] == 'https://x/some.png'
 
 
 def test_fetch_event_light_logo_without_dark_one(cdf):
