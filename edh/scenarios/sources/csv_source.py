@@ -9,6 +9,7 @@ empty or absent when unknown.
 # Standard library
 import csv
 from collections.abc import Iterable
+from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 
@@ -20,16 +21,15 @@ from ..models import EventInfo, LeagueConfig, Series
 from .event import read_event
 
 
+@dataclass(frozen=True)
 class CsvSource:
-    """Read league series from a CSV file: the league's results snapshot, or a given file."""
+    """Read league series from a CSV file: the league's results snapshot, or a given file.
 
-    def __init__(self, path: Path | None = None) -> None:
-        """Read results from `path`, or from the league's snapshot (`results.csv`) when None.
+    Attributes:
+        path: CSV file (fixtures, manual input); None for the league's snapshot (`results.csv`).
+    """
 
-        Args:
-            path: CSV file (fixtures, manual input); None for the league's snapshot.
-        """
-        self.path = path
+    path: Path | None = None
 
     def fetch(self, config: LeagueConfig) -> list[Series]:
         """Return the series stored in the CSV file.

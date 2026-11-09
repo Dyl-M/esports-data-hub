@@ -86,6 +86,7 @@ def test_context_monte_carlo_never_claims_certainty():
     assert (context['scenario_unit'], context['exact'], context['method']) == ('simulations', False, 'Monte Carlo')
     assert not any(row.badge for row in context['rows'])
     assert context['rows'][0].share == '100%'
+    assert context['rows'][0].tiebreak == ''  # nothing left to a tie: no "+0%"
 
 
 def test_context_strip_gaps_after_each_cutoff():
@@ -219,17 +220,33 @@ def test_context_embeds_downloaded_logos(tmp_path):
     assert rows['B'] is rows['C'] is None  # B's file is gone, C has no logo
 
 
+def test_context_watermarks_team_logos_only(tmp_path):
+    """Test that team logos are embedded as grayscale watermarks, while the competition logo keeps its colors."""
+    image = Image.new('RGBA', (20, 20), (200, 30, 30, 255))
+    image.save(tmp_path / 'red.png')
+    logos = Logos(event=tmp_path / 'red.png', teams={'A': tmp_path / 'red.png'})
+    context = _context(event=replace(NEO, logos=logos))
+    event_logo = context['event_logo']
+    team_logo = {row.team: row.logo for row in context['rows']}['A']
+    assert event_logo is not None
+    assert team_logo is not None
+    assert _decoded(event_logo).getpixel((0, 0)) == (200, 30, 30, 255)
+    assert _decoded(team_logo).mode == 'LA'
+
+
 def test_card_logo_trims_margins_and_keeps_the_same_area(tmp_path):
     """Test that logos are cropped to their drawn content and sized to the same area, whatever their shape."""
     wide = _logo(_png(tmp_path / 'wide.png', (100, 100), box=(10, 40, 90, 60)))  # 80x20 drawn, 4:1 → clamped
     square = _logo(_png(tmp_path / 'square.png', (100, 100), box=(30, 30, 70, 70)))
     tall = _logo(_png(tmp_path / 'tall.png', (90, 200)))
+    thin = _logo(_png(tmp_path / 'thin.png', (20, 200)))  # 1:10 → clamped
     assert _decoded(wide).size == (80, 20)
     assert _decoded(square).size == (40, 40)
     assert (square.width, square.height) == (1.0, 1.0)
     assert (wide.width, wide.height) == (1.581, 0.632)  # aspect clamped to 2.5
     assert (tall.width, tall.height) == (0.671, 1.491)  # aspect 0.45
-    for logo in (wide, square, tall):
+    assert (thin.width, thin.height) == (0.632, 1.581)  # aspect clamped to 1 / 2.5
+    for logo in (wide, square, tall, thin):
         assert logo.width * logo.height == pytest.approx(1, abs=0.002)
 
 

@@ -39,21 +39,23 @@ class StaticSource:
     """Result source serving a fixed list of series and event details, standing in for Liquipedia."""
 
     def __init__(self, series, event=NEO):
-        """Serve `series` and `event`; the leagues asked for are recorded in `configs` / `event_configs`."""
+        """Serve `series` and `event`; each request is recorded in `requests` as `(method, league)`."""
         self.series = series
         self.event = event
-        self.configs = []
-        self.event_configs = []
+        self.requests = []
 
     def fetch(self, config):
-        """Record the league asked for, then return the stored series."""
-        self.configs.append(config)
-        return self.series
+        """Return the stored series."""
+        return self._serve('fetch', config, self.series)
 
     def fetch_event(self, config):
-        """Record the league asked for, then return the stored event details."""
-        self.event_configs.append(config)
-        return self.event
+        """Return the stored event details."""
+        return self._serve('fetch_event', config, self.event)
+
+    def _serve(self, method, config, value):
+        """Record the request, then return `value`."""
+        self.requests.append((method, config))
+        return value
 
 
 class CardRecorder:
@@ -116,7 +118,7 @@ def test_main_liquipedia_source_saves_snapshot(league_folder, monkeypatch):
     monkeypatch.setattr(run, 'export_cards', recorder)
     assert run.main(['test_league']) == 0
     league = run.load_league('test_league')
-    assert source.configs == source.event_configs == [league]
+    assert sorted(source.requests) == [('fetch', league), ('fetch_event', league)]
     assert CsvSource().fetch(league) == fetched
     assert CsvSource.fetch_event(league) == NEO
     assert not recorder.calls
@@ -332,6 +334,31 @@ def test_main_continues_after_a_failed_league(three_leagues, caplog):
     assert (run_folder(three_leagues / 'other') / 'outlook.json').is_file()
     assert 'absent: League file not found' in caplog.text
     assert '1 of 2 leagues ran; failed: absent' in caplog.text
+
+
+def test_main_single_league_has_no_summary(league_folder, caplog):
+    """Test that a run of one league logs no "N of M leagues ran" summary."""
+    caplog.set_level(logging.INFO)
+    assert run.main(['test_league', '--source', 'csv', '--samples', '100', '--seed', '1']) == 0
+    assert 'leagues ran' not in caplog.text
+
+
+@pytest.mark.parametrize(
+    ('method', 'message'),
+    [('auto', 'No saved outlook for test_league'), ('exhaustive', 'No saved exhaustive outlook for test_league')],
+)
+def test_main_visual_only_without_saved_outlook(league_folder, caplog, method, message):
+    """Test that --visual-only without a saved outlook fails, naming the method asked for unless auto."""
+    assert run.main(['test_league', '--visual-only', '--method', method]) == 1
+    assert message in caplog.text
+
+
+def test_help_describes_the_tool():
+    """Test that --help shows the first line of the module docstring as the description."""
+    out = io.StringIO()
+    with redirect_stdout(out), pytest.raises(SystemExit):
+        run.parse_args(['--help'])
+    assert 'Evaluate the league play scenarios' in out.getvalue()
 
 
 def test_main_pattern_without_match(three_leagues):

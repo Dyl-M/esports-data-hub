@@ -15,6 +15,7 @@ import logging
 import os
 import re
 from collections.abc import Iterator
+from dataclasses import dataclass
 from typing import Any, Protocol
 
 # Third-party
@@ -134,16 +135,16 @@ def load_api_key() -> str:
     return str(key)
 
 
+@dataclass(frozen=True)
 class LiquipediaSource:
-    """Fetch league series from Liquipedia."""
+    """Fetch league series from Liquipedia.
 
-    def __init__(self, client: LpdbClient | None = None) -> None:
-        """Use `client`, or create one from `load_api_key()` on each fetch.
+    Attributes:
+        client: An open LPDB client (tests pass a fake one); None to open a liquipydia client per fetch, with the key
+            from `load_api_key()`.
+    """
 
-        Args:
-            client: An open LPDB client (tests pass a fake one); None to open a liquipydia client per fetch.
-        """
-        self.client = client
+    client: LpdbClient | None = None
 
     def fetch(self, config: LeagueConfig) -> list[Series]:
         """Return the league series, in round order.

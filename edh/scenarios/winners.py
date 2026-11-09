@@ -283,7 +283,7 @@ class WinnersFirst:
         """
         prefix = margin_free_prefix(config.tiebreakers)
         if not prefix:
-            names = ', '.join(str(item) for item in config.tiebreakers) or 'none'
+            names = ', '.join(str(item) for item in config.tiebreakers)  # never empty (LeagueConfig)
             raise ScenarioError(f'The winners-first method needs a first tiebreaker on series winners (got: {names})')
         self.prefix = prefix
         self.teams = tuple(sorted({team for item in [*played, *pending] for team in item.teams}))
@@ -375,9 +375,7 @@ class WinnersFirst:
     def _played_between(self, group: Group) -> dict[str, TeamRecord]:
         """Return the records of `group` over the finished series between its teams (cached, never mutated)."""
         if group not in self._mini_played:
-            members = set(group)
-            series = (item for item in self.played if item.team_1 in members and item.team_2 in members)
-            self._mini_played[group] = tally(series, group)
+            self._mini_played[group] = tally(self.played, group)  # tally skips series with outsiders
         return self._mini_played[group]
 
     def _resolve_margins(self, group: Group, involved: Sequence[_Outcome]) -> list[tuple[Resolution, float]]:

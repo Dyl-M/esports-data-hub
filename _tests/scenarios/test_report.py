@@ -3,6 +3,7 @@
 # Standard library
 import csv
 import json
+from dataclasses import replace
 
 # Third-party
 import pytest
@@ -28,12 +29,14 @@ def test_format_table_exact():
     table = format_table(_report())
     lines = table.splitlines()
     assert lines[0] == 'Test League: 1 series left, 6 scenarios (exact)'
+    assert lines[2].split()[:7] == ['Team', 'Avg', 'Proj', '#1', '#2', '#3', 'Top']  # one column per rank
     rows = {line.split()[0]: line for line in lines[3:6]}
     assert set(rows) == {'A', 'B', 'C'}
     assert 'IN' in rows['C']  # top 3 of 3 teams
     assert '(+16.7%)' in rows['A']  # top spot decided by goal difference in the 3-0 scenario
     assert rows['A'].split()[2:4] == ['#1', '[88.9%]']  # projected rank, highlighted
     assert rows['C'].split()[2] == '#3'
+    assert rows['C'].split()[5].startswith('[')  # the last rank cell, C's projected rank
     assert table.endswith('\n')
 
 
@@ -42,18 +45,21 @@ def test_format_table_estimated():
     table = format_table(_report('montecarlo'))
     assert 'estimated, Monte Carlo' in table.splitlines()[0]
     assert ' IN' not in table
+    assert 'OUT' not in table
 
 
 def test_write_outlook(tmp_path):
     """Test the CSV and JSON exports."""
-    csv_path, json_path = write_outlook(_report(), tmp_path / 'out')
+    csv_path, json_path = write_outlook(replace(_report(), league='Ligue Été'), tmp_path / 'out')
     assert b'\r' not in csv_path.read_bytes() + json_path.read_bytes()  # LF on every platform
     rows = list(csv.DictReader(csv_path.read_text(encoding='utf-8').splitlines()))
     assert [row['team'] for row in rows] == ['A', 'B', 'C']
-    assert {'projected_rank', 'rank_1', 'rank_3', 'Top_qualified', 'Top_undecided', 'unresolved'} <= set(rows[0])
+    assert {'projected_rank', 'Top_qualified', 'Top_undecided', 'unresolved'} <= set(rows[0])
+    assert [column for column in rows[0] if column.startswith('rank_')] == ['rank_1', 'rank_2', 'rank_3']
     assert not {'likely_rank', 'avg_rank_position'} & set(rows[0])
     assert [row['projected_rank'] for row in rows] == ['1', '2', '3']
     data = json.loads(json_path.read_text(encoding='utf-8'))
+    assert 'Ligue Été' in json_path.read_text(encoding='utf-8')  # written as is, not as a JSON escape
     assert (data['method'], data['scenarios'], len(data['teams'])) == ('exhaustive', 6, 3)
     first = data['teams'][0]
     assert first['projected_rank'] == 1

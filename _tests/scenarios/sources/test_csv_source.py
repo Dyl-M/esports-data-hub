@@ -28,9 +28,9 @@ def test_fetch_cdf_snapshot():
 
 
 def test_write_then_fetch_round_trip(tmp_path):
-    """Test that written results read back unchanged."""
+    """Test that written results read back unchanged, missing parent folders created."""
     series = CsvSource(CDF_DAY2_CSV).fetch(make_league())
-    path = tmp_path / 'nested' / 'results.csv'
+    path = tmp_path / 'new_league' / 'snapshots' / 'results.csv'
     write_results(series, path)
     assert CsvSource(path).fetch(make_league()) == series
 
@@ -41,20 +41,21 @@ def test_fetch_missing_file(tmp_path):
         CsvSource(tmp_path / 'absent.csv').fetch(make_league())
 
 
-def test_fetch_missing_columns(tmp_path):
-    """Test that a file without the expected columns is rejected."""
+@pytest.mark.parametrize(
+    ('content', 'message'),
+    [
+        pytest.param('round,team_1\n1,A\n', 'missing columns', id='missing-columns'),
+        pytest.param(HEADER + 'x,A,B,0,0,0,\n', 'line 2', id='bad-round'),
+        pytest.param(HEADER + '1,A,A,0,0,0,\n', 'line 2', id='same-team'),
+        pytest.param(HEADER + '1,A,B,3,0,1,3-0;bad\n', 'line 2', id='bad-goals'),
+        pytest.param(HEADER.rstrip('\n') + ',date\n1,A,B,3,0,1,,4/11\n', 'line 2', id='bad-day'),
+    ],
+)
+def test_fetch_invalid_file(tmp_path, content, message):
+    """Test that a file without the expected columns is rejected, and an invalid row reported with its line number."""
     path = tmp_path / 'results.csv'
-    path.write_text('round,team_1\n1,A\n', encoding='utf-8')
-    with pytest.raises(DataSourceError, match='missing columns'):
-        CsvSource(path).fetch(make_league())
-
-
-@pytest.mark.parametrize('row', ['x,A,B,0,0,0,', '1,A,A,0,0,0,', '1,A,B,3,0,1,3-0;bad'])
-def test_fetch_invalid_row(tmp_path, row):
-    """Test that invalid rows are reported with their line number."""
-    path = tmp_path / 'results.csv'
-    path.write_text(HEADER + row + '\n', encoding='utf-8')
-    with pytest.raises(DataSourceError, match='line 2'):
+    path.write_text(content, encoding='utf-8')
+    with pytest.raises(DataSourceError, match=message):
         CsvSource(path).fetch(make_league())
 
 
@@ -82,19 +83,18 @@ def test_round_trip_keeps_days(tmp_path):
     assert CsvSource(path).fetch(make_league()) == [played, unknown]
 
 
+def test_fetch_empty_scores_are_zero(tmp_path):
+    """Test that an upcoming series with empty score cells reads as 0-0."""
+    path = tmp_path / 'results.csv'
+    path.write_text(HEADER + '1,A,B,,,0,\n', encoding='utf-8')
+    assert CsvSource(path).fetch(make_league()) == [make_series(1, 'A', 'B')]
+
+
 def test_fetch_without_date_column(tmp_path):
     """Test that a snapshot written before the `date` column existed still reads, days unknown."""
     path = tmp_path / 'results.csv'
     path.write_text(HEADER + '1,A,B,3,0,1,\n', encoding='utf-8')
     assert CsvSource(path).fetch(make_league()) == [make_series(1, 'A', 'B', 3, 0)]
-
-
-def test_fetch_invalid_day(tmp_path):
-    """Test that an unreadable day is reported with its line number."""
-    path = tmp_path / 'results.csv'
-    path.write_text('round,team_1,team_2,score_1,score_2,finished,goals,date\n1,A,B,3,0,1,,4/11\n', encoding='utf-8')
-    with pytest.raises(DataSourceError, match='line 2'):
-        CsvSource(path).fetch(make_league())
 
 
 def test_fetch_league_snapshot(data_dir):

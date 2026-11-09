@@ -7,7 +7,7 @@ import pytest
 from edh.exceptions import ScenarioError
 from edh.scenarios import engine
 from edh.scenarios.engine import choose_method, count_scenarios, evaluate, project_ranks
-from edh.scenarios.models import EvaluationOptions, TeamOutlook
+from edh.scenarios.models import EvaluationOptions, QualificationSlot, RankGroup, TeamOutlook
 from edh.scenarios.sources import CsvSource
 
 from ..conftest import CDF_DAY2_CSV, make_league, make_series
@@ -227,3 +227,66 @@ def test_prefix_chunks_cover_every_scenario(monkeypatch):
     assert len(engine._prefix_chunks(job)) == 36  # 6 < 7, then 6 x 6
     winners = engine._Job(league, ('A', 'B', 'C', 'D'), (), tuple(series), {}, 'winnersfirst')
     assert len(engine._prefix_chunks(winners)) == 8  # 2, 4 < 7, then 2 x 2 x 2
+
+
+@pytest.mark.parametrize(('target', 'chunks'), [(1, 1), (6, 6), (7, 36)])
+def test_prefix_chunks_stop_at_the_target(monkeypatch, target, chunks):
+    """Test that exact runs get no more chunks than needed to reach PARALLEL_CHUNKS (one series fixes 6 outcomes)."""
+    monkeypatch.setattr(engine, 'PARALLEL_CHUNKS', target)
+    series = (make_series(1, 'A', 'B'), make_series(1, 'C', 'D'))
+    job = engine._Job(make_league(), ('A', 'B', 'C', 'D'), (), series, {}, 'exhaustive')
+    assert len(engine._prefix_chunks(job)) == chunks
+
+
+def test_sample_chunks_draw_exactly_the_requested_samples(monkeypatch):
+    """Test that Monte Carlo chunks hold full batches then the remainder, adding up to the requested sample count."""
+    monkeypatch.setattr(engine, 'SAMPLE_BATCH', 10)
+    job = engine._Job(make_league(), ('A', 'B'), (), (make_series(1, 'A', 'B'),), {}, 'montecarlo')
+    assert [chunk.samples for chunk in engine._sample_chunks(job, 25, 1)] == [10, 10, 5]
+
+
+FOUR_TEAMS_TWO_SERIES = (make_series(1, 'A', 'B'), make_series(1, 'C', 'D'))  # 36 scenarios, 4 winner combinations
+
+
+@pytest.mark.parametrize(
+    ('method', 'work', 'workers', 'expected'),
+    [
+        pytest.param('exhaustive', (99, None), 3, 1, id='exhaustive-small'),
+        pytest.param('exhaustive', (100, None), 3, 3, id='exhaustive-at-threshold'),
+        pytest.param('exhaustive', (100, None), None, 8, id='exhaustive-all-cores'),
+        pytest.param('winnersfirst', (0, 4), 3, 1, id='winners-small'),
+        pytest.param('winnersfirst', (0, 5), 3, 3, id='winners-weighted'),
+    ],
+)
+def test_plan_worker_count(monkeypatch, method, work, workers, expected):
+    """Test that small work stays in-process and larger work uses the workers asked for, or all cores.
+
+    `work` is the job's (scenarios, winner combinations); a winner combination weighs PARALLEL_WINNERS_COST scenarios
+    against PARALLEL_MIN_WORK.
+    """
+    monkeypatch.setattr(engine, 'PARALLEL_MIN_WORK', 100)
+    monkeypatch.setattr(engine, 'PARALLEL_WINNERS_COST', 20)
+    monkeypatch.setattr(engine.os, 'cpu_count', lambda: 8)
+    teams = ('A', 'B', 'C', 'D')
+    job = engine._Job(make_league(), teams, (), FOUR_TEAMS_TWO_SERIES, {}, method, *work)
+    chunks, count = engine._plan(job, EvaluationOptions(workers=workers))
+    assert len(chunks) > 1
+    assert count == expected
+
+
+def test_plan_single_chunk_or_unknown_cores(monkeypatch):
+    """Test that a single chunk stays in-process, and that an unknown core count means one worker."""
+    monkeypatch.setattr(engine, 'PARALLEL_MIN_WORK', 0)
+    single = engine._Job(make_league(), ('A', 'B'), (), (), {}, 'exhaustive', 1)
+    assert engine._plan(single, EvaluationOptions(workers=3))[1] == 1
+    monkeypatch.setattr(engine.os, 'cpu_count', lambda: None)
+    job = engine._Job(make_league(), ('A', 'B', 'C', 'D'), (), FOUR_TEAMS_TWO_SERIES, {}, 'exhaustive', 36)
+    assert engine._plan(job, EvaluationOptions())[1] == 1
+
+
+def test_tie_straddling_the_start_of_a_slot_is_undecided():
+    """Test that teams tied over ranks 2-3 are undecided for a slot starting at rank 3, not qualified or out."""
+    totals = engine._Accumulator(('A', 'B', 'C', 'D'), [QualificationSlot('Play-in', 3, 4)])
+    totals.add([RankGroup(1, ('A',)), RankGroup(2, ('B', 'C')), RankGroup(4, ('D',))])
+    assert {team: totals.undecided[team]['Play-in'] for team in 'ABCD'} == {'A': 0, 'B': 1, 'C': 1, 'D': 0}
+    assert {team: totals.qualified[team]['Play-in'] for team in 'ABCD'} == {'A': 0, 'B': 0, 'C': 0, 'D': 1}

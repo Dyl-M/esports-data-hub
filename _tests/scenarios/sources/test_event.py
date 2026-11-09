@@ -15,12 +15,13 @@ from ...conftest import make_league
 
 
 def test_write_then_read_round_trip(tmp_path):
-    """Test that written event details read back unchanged, accents included."""
-    path = tmp_path / 'nested' / 'event.json'
+    """Test that written event details read back unchanged, accents kept readable, missing folders created."""
+    path = tmp_path / 'new_league' / 'snapshots' / 'event.json'
     event = EventInfo(organizers=('NEO', 'Fédération'))
     write_event(event, path)
     assert read_event(path) == event
     assert json.loads(path.read_text(encoding='utf-8')) == {'organizers': ['NEO', 'Fédération']}
+    assert 'Fédération' in path.read_text(encoding='utf-8')  # written as is, not as a JSON escape
     assert b'\r' not in path.read_bytes()  # LF on every platform, like the rest of the repo
 
 

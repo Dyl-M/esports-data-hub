@@ -45,10 +45,11 @@ def test_reachable_scores_finished_series():
     assert reachable_scores(make_series(1, 'A', 'B', 3, 1), 3) == ((3, 1),)
 
 
-def test_reachable_scores_impossible_score():
-    """Test that an unfinished series past the win threshold is rejected."""
+@pytest.mark.parametrize(('score_1', 'score_2'), [(4, 0), (3, 3)])
+def test_reachable_scores_impossible_score(score_1, score_2):
+    """Test that an unfinished series past the win threshold, or with both teams at it, is rejected."""
     with pytest.raises(ScenarioError, match='impossible'):
-        reachable_scores(make_series(1, 'A', 'B', 4, 0, finished=False), 3)
+        reachable_scores(make_series(1, 'A', 'B', score_1, score_2, finished=False), 3)
 
 
 @pytest.mark.parametrize(('score_1', 'score_2'), [(3, 1), (0, 3)])
