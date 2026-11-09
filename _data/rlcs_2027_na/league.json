@@ -1,0 +1,13 @@
+{
+  "name": "RLCS 2027 Club League: North America",
+  "wiki": "rocketleague",
+  "pagename": "Rocket_League_Championship_Series/Club_Championship/2027/Club_League/North_America",
+  "best_of": 5,
+  "tiebreakers": ["matchscore", "gamediff", "rounddiff", "manual"],
+  "qualification": {
+    "Club Finale": [1, 4]
+  },
+  "walkover_games": 3,
+  "team_aliases": {},
+  "manual_tiebreakers": {}
+}
