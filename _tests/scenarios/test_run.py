@@ -3,6 +3,7 @@
 # Standard library
 import io
 import json
+import logging
 import runpy
 import shutil
 import sys
@@ -14,7 +15,7 @@ from datetime import date, timedelta
 import pytest
 
 # Local
-from edh.exceptions import VisualError
+from edh.exceptions import ConfigurationError, VisualError
 from edh.scenarios import run
 from edh.scenarios.models import EventInfo, Logos
 from edh.scenarios.report import read_outlook, write_outlook
@@ -89,7 +90,7 @@ def run_folder(league_folder, method='montecarlo', day=None):
 def test_parse_args_defaults():
     """Test the default command line options."""
     args = run.parse_args(['cdf_slash_2026'])
-    assert (args.league, args.source, args.method, args.seed) == ('cdf_slash_2026', 'liquipedia', 'auto', None)
+    assert (args.leagues, args.source, args.method, args.seed) == (['cdf_slash_2026'], 'liquipedia', 'auto', None)
     assert args.workers is None
     assert run.parse_args(['cdf_slash_2026', '--workers', '4']).workers == 4
 
@@ -270,6 +271,73 @@ def test_main_errors(league_folder, argv, monkeypatch):
     """Test that configuration, source and evaluation errors exit with code 1."""
     monkeypatch.setattr(run, 'build_source', lambda name: CsvSource(league_folder / 'results.csv'))
     assert run.main(argv) == 1
+
+
+# === several leagues ===
+
+
+@pytest.fixture
+def three_leagues(data_dir):
+    """Create the leagues `rlcs_a`, `rlcs_b` and `other`, each with the CDF snapshot, plus a folder without league."""
+    for slug in ('rlcs_a', 'rlcs_b', 'other'):
+        folder = data_dir / slug
+        folder.mkdir()
+        (folder / 'league.json').write_text(json.dumps(LEAGUE | {'name': slug}), encoding='utf-8')
+        shutil.copy(CDF_DAY2_CSV, folder / 'results.csv')
+    (data_dir / 'rlcs_notes').mkdir()  # matches the pattern, but holds no league.json
+    return data_dir
+
+
+def test_parse_args_several_leagues():
+    """Test that several leagues (or patterns) can be named."""
+    assert run.parse_args(['a', 'b*', '--visual']).leagues == ['a', 'b*']
+
+
+@pytest.mark.parametrize(
+    ('names', 'leagues'),
+    [
+        (['other'], ['other']),
+        (['rlcs_*'], ['rlcs_a', 'rlcs_b']),
+        (['other', 'rlcs_?'], ['other', 'rlcs_a', 'rlcs_b']),
+        (['rlcs_b', 'rlcs_*'], ['rlcs_b', 'rlcs_a']),
+        (['rlcs_[a]'], ['rlcs_a']),
+        (['absent'], ['absent']),
+    ],
+)
+def test_resolve_leagues(three_leagues, names, leagues):
+    """Test that patterns match league folders only, in order and without duplicates; plain names are kept."""
+    assert run.resolve_leagues(names) == leagues
+
+
+def test_resolve_leagues_pattern_without_match(three_leagues):
+    """Test that a pattern matching no league is an error."""
+    with pytest.raises(ConfigurationError, match="No league matches 'nope_\\*'"):
+        run.resolve_leagues(['nope_*'])
+
+
+def test_main_runs_every_league(three_leagues, caplog):
+    """Test that a pattern runs each league, the summary counting them."""
+    caplog.set_level(logging.INFO)
+    assert run.main(['rlcs_*', '--source', 'csv', '--samples', '100', '--seed', '1']) == 0
+    for slug in ('rlcs_a', 'rlcs_b'):
+        assert (run_folder(three_leagues / slug) / 'outlook.json').is_file()
+    assert not (three_leagues / 'other' / 'outlook').exists()
+    assert '2 of 2 leagues ran' in caplog.text
+
+
+def test_main_continues_after_a_failed_league(three_leagues, caplog):
+    """Test that a failing league is logged with its name, the next one still runs, and the exit code is 1."""
+    caplog.set_level(logging.INFO)
+    assert run.main(['absent', 'other', '--source', 'csv', '--samples', '100', '--seed', '1']) == 1
+    assert (run_folder(three_leagues / 'other') / 'outlook.json').is_file()
+    assert 'absent: League file not found' in caplog.text
+    assert '1 of 2 leagues ran; failed: absent' in caplog.text
+
+
+def test_main_pattern_without_match(three_leagues):
+    """Test that a pattern matching nothing exits with code 1 before running anything."""
+    assert run.main(['nope_*', 'other', '--source', 'csv', '--samples', '100']) == 1
+    assert not (three_leagues / 'other' / 'outlook').exists()
 
 
 def test_build_source_csv(league_folder):

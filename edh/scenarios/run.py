@@ -1,9 +1,11 @@
-"""Evaluate the league play scenarios of a league.
+"""Evaluate the league play scenarios of one or several leagues.
 
-Importing this module has no side effect; run `python -m edh.scenarios.run <league>`, where `<league>` is a folder
-of `_data/` holding a `league.json`. With the Liquipedia source (default), the fetched results and event details are
-also saved as `results.csv` and `event.json`, which the `csv` source reads back offline, and the competition and team
-logos are downloaded to the league's local `logos/` folder. The outlook (and the cards) of each run is saved in
+Importing this module has no side effect; run `python -m edh.scenarios.run <league> [<league> ...]`, where each
+`<league>` is a folder of `_data/` holding a `league.json`, or a pattern matching several (`'rlcs_2027_*'`). Leagues
+run one after the other with the same options; one that fails is logged and the others still run (exit code 1 if
+any failed). With the Liquipedia source (default), the fetched results and event details are also saved as
+`results.csv` and `event.json`, which the `csv` source reads back offline, and the competition and team logos are
+downloaded to the league's local `logos/` folder. The outlook (and the cards) of each run is saved in
 `outlook/<YYYY-MM-DD>/<method>/`, dated by the league's progress (the last day a series finished, in the event's
 timezone, also the date on the card), so the outlooks of different matchdays and methods are kept side by side (a
 rerun of the same method on the same results replaces its own). `--visual` also renders the outlook card (PNG, every
@@ -21,10 +23,12 @@ from datetime import date
 from pathlib import Path
 
 # Local
-from ..exceptions import DataSourceError, EsportsDataHubError
+from .. import paths
+from ..exceptions import ConfigurationError, DataSourceError, EsportsDataHubError
 from .config import league_dir, load_league
 from .constants import (
     DEFAULT_SAMPLES,
+    LEAGUE_JSON,
     METHOD_AUTO,
     METHODS,
     OUTLOOK_DIR,
@@ -42,6 +46,8 @@ from .visuals.export import export_cards
 
 logger = logging.getLogger(__name__)
 
+GLOB_CHARS = frozenset('*?[')  # a league name holding one of these is a pattern over `_data/`
+
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     """Parse the command line.
@@ -53,7 +59,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         The parsed arguments.
     """
     parser = argparse.ArgumentParser(prog='python -m edh.scenarios.run', description=__doc__.splitlines()[0])
-    parser.add_argument('league', help='league folder in _data/ (e.g. cdf_slash_2026)')
+    parser.add_argument(
+        'leagues',
+        nargs='+',
+        metavar='league',
+        help="league folder in _data/ (e.g. cdf_slash_2026), or a pattern (e.g. 'rlcs_2027_*'); several allowed",
+    )
     parser.add_argument('--source', choices=SOURCES, default=SOURCE_LIQUIPEDIA, help='where results come from')
     parser.add_argument('--method', choices=METHODS, default=METHOD_AUTO, help='evaluation method')
     parser.add_argument('--samples', type=int, default=DEFAULT_SAMPLES, help='Monte Carlo sample count')
@@ -83,14 +94,40 @@ def build_source(name: str) -> ResultSource:
     return LiquipediaSource()
 
 
+def resolve_leagues(names: Sequence[str]) -> list[str]:
+    """Expand the leagues named on the command line into league folders.
+
+    Args:
+        names: League folders of `_data/`, or patterns (`*`, `?`, `[...]`) matching the folders holding a
+            `league.json`.
+
+    Returns:
+        The league folders, in command line order (each pattern's matches sorted), without duplicates. A plain
+        name is kept as is: a missing league fails when it runs.
+
+    Raises:
+        ConfigurationError: If a pattern matches no league.
+    """
+    leagues: list[str] = []
+    for name in names:
+        if not any(char in name for char in GLOB_CHARS):
+            leagues.append(name)
+            continue
+        matches = sorted(path.parent.name for path in paths.DATA_DIR.glob(f'{name}/{LEAGUE_JSON}'))
+        if not matches:
+            raise ConfigurationError(f'No league matches {name!r} in {paths.DATA_DIR}')
+        leagues.extend(matches)
+    return list(dict.fromkeys(leagues))
+
+
 def main(argv: Sequence[str] | None = None) -> int:
-    """Fetch the results, evaluate the scenarios, print and export the outlook, render the card if asked.
+    """Run each league named on the command line, then sum up which ones failed.
 
     Args:
         argv: Arguments (defaults to `sys.argv[1:]`).
 
     Returns:
-        The exit code: 0 on success, 1 on error.
+        The exit code: 0 when every league ran, 1 when one failed (or a pattern matched nothing).
     """
     args = parse_args(argv)
     logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
@@ -98,7 +135,29 @@ def main(argv: Sequence[str] | None = None) -> int:
     for name in ('httpx', 'httpxyz'):
         logging.getLogger(name).setLevel(logging.WARNING)
     try:
-        config = load_league(args.league)
+        leagues = resolve_leagues(args.leagues)
+    except EsportsDataHubError as error:
+        logger.critical('%s', error)
+        return 1
+    failed = [league for league in leagues if not _run_league(league, args)]
+    if len(leagues) > 1:
+        logger.info('%d of %d leagues ran%s', len(leagues) - len(failed), len(leagues), _failed_note(failed))
+    return 1 if failed else 0
+
+
+def _failed_note(failed: Sequence[str]) -> str:
+    """Name the failed leagues for the summary line (empty when none failed)."""
+    return f'; failed: {", ".join(failed)}' if failed else ''
+
+
+def _run_league(league: str, args: argparse.Namespace) -> bool:
+    """Fetch the results of one league, evaluate it, print and export the outlook, render the card if asked.
+
+    Returns whether it ran; an error is logged with the league's name instead of being raised, so the next league
+    still runs.
+    """
+    try:
+        config = load_league(league)
         if args.visual_only:
             report, as_of = _saved_outlook(config, args.method)
             event = CsvSource.fetch_event(config)
@@ -109,9 +168,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             cards = export_cards(report, config, event, outlook_dir(config, as_of, report.method), as_of=as_of)
             logger.info('Outlook card saved to %s', ', '.join(str(path) for path in cards))
     except EsportsDataHubError as error:
-        logger.critical('%s', error)
-        return 1
-    return 0
+        logger.critical('%s: %s', league, error)
+        return False
+    return True
 
 
 def outlook_dir(config: LeagueConfig, day: date, method: str) -> Path:
