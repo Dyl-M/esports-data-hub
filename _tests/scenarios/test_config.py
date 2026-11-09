@@ -9,8 +9,10 @@ import pytest
 
 # Local
 from edh.exceptions import ConfigurationError
-from edh.scenarios.config import league_dir, load_league, parse_league
+from edh.scenarios.config import league_dir, league_path, load_league, parse_league
 from edh.scenarios.models import Theme
+
+from ..conftest import make_league
 
 VALID = {
     'name': 'Test League',
@@ -46,6 +48,16 @@ def test_load_league(data_dir):
 def test_league_dir_reads_paths_at_call_time(data_dir):
     """Test that the league folder follows paths.DATA_DIR."""
     assert league_dir('x') == data_dir / 'x'
+
+
+def test_league_path(data_dir):
+    """Test that league files and folders resolve inside the league's data folder."""
+    league = make_league()
+    assert league_path(league) == data_dir / 'test_league'
+    assert (
+        league_path(league, 'outlook', '2026-11-09', 'exhaustive')
+        == data_dir / 'test_league' / 'outlook' / '2026-11-09' / 'exhaustive'
+    )
 
 
 def test_load_league_missing_file(data_dir):

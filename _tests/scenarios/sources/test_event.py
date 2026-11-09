@@ -9,7 +9,7 @@ import pytest
 # Local
 from edh.exceptions import DataSourceError
 from edh.scenarios.models import EventInfo
-from edh.scenarios.sources import CsvSource, event_path, read_event, write_event
+from edh.scenarios.sources import CsvSource, read_event, write_event
 
 from ...conftest import make_league
 
@@ -53,10 +53,9 @@ def test_read_file_without_organizers(tmp_path):
     assert read_event(path) == EventInfo()
 
 
-def test_event_path_and_csv_source(data_dir):
+def test_csv_source_reads_league_snapshot(data_dir):
     """Test that the snapshot lives in the league folder and that the CSV source reads it back."""
     league = make_league()
-    assert event_path(league) == data_dir / 'test_league' / 'event.json'
     assert CsvSource().fetch_event(league) == EventInfo()
-    write_event(EventInfo(organizers=('NEO',)), event_path(league))
+    write_event(EventInfo(organizers=('NEO',)), data_dir / 'test_league' / 'event.json')
     assert CsvSource(data_dir / 'other.csv').fetch_event(league).organizers == ('NEO',)
