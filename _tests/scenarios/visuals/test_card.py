@@ -69,8 +69,10 @@ def test_context_rows_follow_projected_standings():
 def test_context_exact_badges_and_tiebreak_share():
     """Test that an exact evaluation shows IN / OUT badges and the share left to goal difference."""
     rows = {row.team: row for row in _context()['rows']}
-    assert (rows['A'].badge, rows['A'].share, rows['A'].tiebreak) == ('', '83.3%', '+16.7%')
-    assert (rows['B'].badge, rows['B'].share, rows['B'].undecided_width) == ('', '-', 16.67)  # only a tie can save B
+    # the share splits the three-way tie of the 3-0 scenario evenly, like the #1 cell of the rank strip
+    assert (rows['A'].badge, rows['A'].share, rows['A'].tiebreak) == ('', '88.9%', '16.7%')
+    assert rows['A'].share == f'{rows["A"].cells[0].label}%'
+    assert (rows['B'].badge, rows['B'].share, rows['B'].undecided_width) == ('', '5.6%', 16.67)  # only a tie can save B
     series = [make_series(1, 'A', 'B', 3, 0), make_series(2, 'A', 'C', 3, 0), make_series(3, 'B', 'C')]
     rows = {row.team: row for row in _context(report=_report(_league(), series))['rows']}
     assert (rows['A'].badge, rows['A'].share, rows['A'].qualified_width) == ('in', '', 100.0)

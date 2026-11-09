@@ -86,7 +86,8 @@ class CardRow:
         position: Position in the projected standings.
         team: Team name.
         share: Qualification share text (`98.5%`), empty when a badge replaces it.
-        tiebreak: Share still settled by goal difference / manual tiebreak (`+0.1%`), empty when none.
+        tiebreak: Share of scenarios where a goal difference / manual tiebreak still settles the slot (`0.1%`), empty
+            when none; part of it is already counted in `share`, ties being split evenly.
         badge: `in` / `out` when the outcome is certain (exact evaluation only), else empty.
         qualified_width: Qualified share as a bar width, in percent.
         undecided_width: Tiebreak share as a bar width, in percent.
@@ -263,8 +264,8 @@ def _row(position: int, outlook: TeamOutlook, slot: QualificationSlot, cutoffs: 
     return CardRow(
         position=position,
         team=outlook.team,
-        share='' if badge else format_share(qualified),
-        tiebreak=f'+{format_share(undecided)}' if undecided and not badge else '',
+        share='' if badge else format_share(outlook.slot_share[slot.label]),
+        tiebreak=format_share(undecided) if undecided and not badge else '',
         badge=badge,
         qualified_width=round(qualified * 100, 2),
         undecided_width=round(undecided * 100, 2),

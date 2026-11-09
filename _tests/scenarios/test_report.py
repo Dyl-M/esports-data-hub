@@ -33,7 +33,8 @@ def test_format_table_exact():
     rows = {line.split()[0]: line for line in lines[3:6]}
     assert set(rows) == {'A', 'B', 'C'}
     assert 'IN' in rows['C']  # top 3 of 3 teams
-    assert '(+16.7%)' in rows['A']  # top spot decided by goal difference in the 3-0 scenario
+    # the top spot is a three-way tie in the 3-0 scenario: a third of it counts, as in the #1 share
+    assert '88.9% (16.7% tied)' in rows['A']
     assert rows['A'].split()[2:4] == ['#1', '[88.9%]']  # projected rank, highlighted
     assert rows['C'].split()[2] == '#3'
     assert rows['C'].split()[5].startswith('[')  # the last rank cell, C's projected rank

@@ -39,6 +39,7 @@ def assert_same_outlook(report, expected):
         assert item.rank_shares == pytest.approx(other.rank_shares, abs=1e-12)
         assert item.qualified == pytest.approx(other.qualified, abs=1e-12)
         assert item.undecided == pytest.approx(other.undecided, abs=1e-12)
+        assert item.slot_share == pytest.approx(other.slot_share, abs=1e-12)
         assert item.unresolved == pytest.approx(other.unresolved, abs=1e-12)
 
 

@@ -122,7 +122,7 @@ def test_rank_group_properties():
 
 def test_team_outlook_expected_rank():
     """Test the mean rank of a team."""
-    outlook = TeamOutlook('A', (0.5, 0.5, 0.0), {}, {}, 0.0)
+    outlook = TeamOutlook('A', (0.5, 0.5, 0.0), {}, {}, {}, 0.0)
     assert outlook.expected_rank == pytest.approx(1.5)
 
 

@@ -121,6 +121,7 @@ class _Accumulator:
         self.rank_shares = {team: [0.0] * len(teams) for team in teams}
         self.qualified = {team: dict.fromkeys((slot.label for slot in slots), 0.0) for team in teams}
         self.undecided = {team: dict.fromkeys((slot.label for slot in slots), 0.0) for team in teams}
+        self.missed = {team: dict.fromkeys((slot.label for slot in slots), 0.0) for team in teams}  # out of the slot
         self.unresolved = dict.fromkeys(teams, 0.0)
 
     def merge(self, other: '_Accumulator') -> None:
@@ -134,6 +135,7 @@ class _Accumulator:
             for label in self.qualified[team]:
                 self.qualified[team][label] += other.qualified[team][label]
                 self.undecided[team][label] += other.undecided[team][label]
+                self.missed[team][label] += other.missed[team][label]
 
     def add(self, groups: Sequence[RankGroup]) -> None:
         """Count one scenario's ranking."""
@@ -156,24 +158,38 @@ class _Accumulator:
             if not group.resolved:
                 self.unresolved[team] += weight
             for slot in self.slots:
-                if slot.first <= group.rank and group.last <= slot.last:
-                    self.qualified[team][slot.label] += weight
-                elif group.rank <= slot.last and slot.first <= group.last:
-                    self.undecided[team][slot.label] += weight
+                self._slot_totals(slot, group)[team][slot.label] += weight
+
+    def _slot_totals(self, slot: QualificationSlot, group: RankGroup) -> dict[str, dict[str, float]]:
+        """Return the totals a group counts toward for a slot: qualified (inside), undecided (straddling) or missed."""
+        if slot.first <= group.rank and group.last <= slot.last:
+            return self.qualified
+        if group.rank <= slot.last and slot.first <= group.last:
+            return self.undecided
+        return self.missed
 
     def outlooks(self) -> tuple[TeamOutlook, ...]:
         """Turn the totals into per-team shares, with projected ranks, in projected standings order."""
         total = self.total
-        outlooks = [
-            TeamOutlook(
-                team=team,
-                rank_shares=tuple(value / total for value in shares),
-                qualified={label: count / total for label, count in self.qualified[team].items()},
-                undecided={label: count / total for label, count in self.undecided[team].items()},
-                unresolved=self.unresolved[team] / total,
+        outlooks = []
+        for team, shares in self.rank_shares.items():
+            rank_shares = _partition_shares(shares, total)
+            qualified, undecided, slot_share = {}, {}, {}
+            for slot in self.slots:
+                label = slot.label
+                counts = (self.qualified[team][label], self.undecided[team][label], self.missed[team][label])
+                qualified[label], undecided[label], _ = _partition_shares(counts, total)
+                slot_share[label] = _slot_share(rank_shares, slot, qualified[label], undecided[label])
+            outlooks.append(
+                TeamOutlook(
+                    team=team,
+                    rank_shares=tuple(rank_shares),
+                    qualified=qualified,
+                    undecided=undecided,
+                    slot_share=slot_share,
+                    unresolved=self.unresolved[team] / total,
+                )
             )
-            for team, shares in self.rank_shares.items()
-        ]
         projected = project_ranks(outlooks)
 
         return tuple(
@@ -182,6 +198,28 @@ class _Accumulator:
                 key=lambda outlook: projected[outlook.team],
             )
         )
+
+
+def _slot_share(rank_shares: Sequence[float], slot: QualificationSlot, qualified: float, undecided: float) -> float:
+    """Share of scenarios ending inside a slot, ties straddling it spread evenly (the slot's rank shares).
+
+    Without such a tie it is the qualified share itself, which keeps a certain outcome exact.
+    """
+    if not undecided:
+        return qualified
+    first, last = slot.first - 1, slot.last
+    return sum(rank_shares[first:last])
+
+
+def _partition_shares(weights: Sequence[float], total: float) -> list[float]:
+    """Divide the weights of a partition of the scenarios (they add up to `total`) by `total`.
+
+    When a single part was ever counted, it is exactly 1: summed in another order than `total`, probability weights
+    can land a hair away from it (e.g. 0.9999999999999999), which would hide a certain outcome. Weights only grow, so
+    a part never counted is exactly 0.
+    """
+    certain = sum(1 for weight in weights if weight) == 1
+    return [(1.0 if weight else 0.0) if certain else weight / total for weight in weights]
 
 
 def project_ranks(outlooks: Sequence[TeamOutlook]) -> dict[str, int]:
