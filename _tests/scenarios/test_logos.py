@@ -13,10 +13,8 @@ from PIL import Image
 # Local
 from edh.scenarios import logos
 from edh.scenarios.constants import WATERMARK_FLOOR
-from edh.scenarios.logos import TrimmedLogo, download_logos, logo_media_type, logos_dir, read_logos, trimmed_logo
+from edh.scenarios.logos import TrimmedLogo, download_logos, logo_media_type, read_logos, trimmed_logo
 from edh.scenarios.models import EventInfo, Logos
-
-from ..conftest import make_league
 
 EVENT_URL = 'https://liquipedia.net/commons/images/7/72/Cup_icon_darkmode.png'
 TEAM_URL = 'https://liquipedia.net/commons/images/thumb/4/42/Team_darkmode.png/400px-Team_darkmode.png'
@@ -41,11 +39,6 @@ class Server:
     def client(self):
         """Open an HTTP client on this transport."""
         return httpxyz.Client(transport=httpxyz.MockTransport(self))
-
-
-def test_logos_dir(data_dir):
-    """Test that logos live in the league's data folder."""
-    assert logos_dir(make_league()) == data_dir / 'test_league' / 'logos'
 
 
 def test_download_logos(tmp_path):

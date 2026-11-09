@@ -9,21 +9,7 @@ from pathlib import Path
 
 # Local
 from ...exceptions import DataSourceError
-from ..config import league_dir
-from ..constants import EVENT_JSON
-from ..models import EventInfo, LeagueConfig
-
-
-def event_path(config: LeagueConfig) -> Path:
-    """Return the league's event details snapshot, `_data/<league>/event.json`.
-
-    Args:
-        config: League format.
-
-    Returns:
-        The snapshot path (read from `paths` at call time).
-    """
-    return league_dir(config.slug) / EVENT_JSON
+from ..models import EventInfo
 
 
 def write_event(event: EventInfo, path: Path) -> None:

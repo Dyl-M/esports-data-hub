@@ -37,6 +37,20 @@ def league_dir(slug: str) -> Path:
     return paths.DATA_DIR / slug
 
 
+def league_path(config: LeagueConfig, *parts: str) -> Path:
+    """Return a path inside the league's data folder.
+
+    Args:
+        config: League format.
+        *parts: Path segments below `_data/<league>/`, file or folder names from `constants` (e.g. `RESULTS_CSV`,
+            or `OUTLOOK_DIR` followed by the day and the method).
+
+    Returns:
+        The path (read from `paths` at call time).
+    """
+    return league_dir(config.slug).joinpath(*parts)
+
+
 def load_league(slug: str) -> LeagueConfig:
     """Load and validate a league format.
 
@@ -81,26 +95,28 @@ def parse_league(slug: str, data: object, *, file_path: str | None = None) -> Le
     try:
         return LeagueConfig(
             slug=slug,
-            name=_string(data['name'], 'name'),
-            wiki=_string(data['wiki'], 'wiki'),
-            pagename=_string(data['pagename'], 'pagename'),
+            name=_typed(data['name'], str, 'name'),
+            wiki=_typed(data['wiki'], str, 'wiki'),
+            pagename=_typed(data['pagename'], str, 'pagename'),
             best_of=_integer(data['best_of'], 'best_of'),
             tiebreakers=tuple(
-                Tiebreaker.parse(_string(value, 'tiebreakers')) for value in _list(data['tiebreakers'], 'tiebreakers')
+                Tiebreaker.parse(_typed(value, str, 'tiebreakers'))
+                for value in _typed(data['tiebreakers'], list, 'tiebreakers')
             ),
             qualification=tuple(
                 _qualification_slot(label, value)
-                for label, value in _mapping(data.get('qualification', {}), 'qualification').items()
+                for label, value in _typed(data.get('qualification', {}), dict, 'qualification').items()
             ),
             walkover_games=_integer(data.get('walkover_games', 0), 'walkover_games'),
             team_aliases={
-                old: _string(new, old) for old, new in _mapping(data.get('team_aliases', {}), 'team_aliases').items()
+                old: _typed(new, str, old)
+                for old, new in _typed(data.get('team_aliases', {}), dict, 'team_aliases').items()
             },
             manual_tiebreakers={
                 team: _integer(points, team)
-                for team, points in _mapping(data.get('manual_tiebreakers', {}), 'manual_tiebreakers').items()
+                for team, points in _typed(data.get('manual_tiebreakers', {}), dict, 'manual_tiebreakers').items()
             },
-            theme=_theme(_mapping(data.get('theme', {}), 'theme')),
+            theme=_theme(_typed(data.get('theme', {}), dict, 'theme')),
         )
     except ValueError as error:
         raise ConfigurationError(f'Invalid league file: {error}', file_path=file_path) from error
@@ -111,12 +127,12 @@ def _theme(colors: dict[str, object]) -> Theme:
     unknown = set(colors) - {item.name for item in fields(Theme)}
     if unknown:
         raise ValueError(f'unknown theme colors: {", ".join(sorted(unknown))}')
-    return Theme(**{name: _string(value, f'theme.{name}') for name, value in colors.items()})
+    return Theme(**{name: _typed(value, str, f'theme.{name}') for name, value in colors.items()})
 
 
 def _qualification_slot(label: str, value: object) -> QualificationSlot:
     """Build a qualification slot from its `[first, last]` rank range, else raise ValueError."""
-    bounds = _list(value, label)
+    bounds = _typed(value, list, label)
     if len(bounds) != 2:
         raise ValueError(f'{label} must be a [first, last] rank range, got {len(bounds)} values')
     return QualificationSlot(label=label, first=_integer(bounds[0], label), last=_integer(bounds[1], label))
@@ -129,24 +145,10 @@ def _integer(value: object, name: str) -> int:
     return value
 
 
-def _string(value: object, name: str) -> str:
-    """Return `value` if it is a string, else raise ValueError."""
-    if not isinstance(value, str):
-        raise ValueError(f'{name} must be a string, got {_json_type(value)}')
-    return value
-
-
-def _list(value: object, name: str) -> list[object]:
-    """Return `value` if it is a JSON array, else raise ValueError."""
-    if not isinstance(value, list):
-        raise ValueError(f'{name} must be a list, got {_json_type(value)}')
-    return value
-
-
-def _mapping(value: object, name: str) -> dict[str, object]:
-    """Return `value` if it is a JSON object (string keys), else raise ValueError."""
-    if not isinstance(value, dict):
-        raise ValueError(f'{name} must be an object, got {_json_type(value)}')
+def _typed[T](value: object, kind: type[T], name: str) -> T:
+    """Return `value` if it is of the JSON type `kind` (`str`, `list` or `dict`), else raise ValueError."""
+    if not isinstance(value, kind):
+        raise ValueError(f'{name} must be {JSON_TYPES[kind]}, got {_json_type(value)}')
     return value
 
 

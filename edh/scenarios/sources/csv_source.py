@@ -14,29 +14,17 @@ from pathlib import Path
 
 # Local
 from ...exceptions import DataSourceError
-from ..config import league_dir
-from ..constants import NO_GOALS, RESULTS_COLUMNS, RESULTS_CSV, RESULTS_OPTIONAL_COLUMNS
+from ..config import league_path
+from ..constants import EVENT_JSON, NO_GOALS, RESULTS_COLUMNS, RESULTS_CSV, RESULTS_OPTIONAL_COLUMNS
 from ..models import EventInfo, LeagueConfig, Series
-from .event import event_path, read_event
-
-
-def results_path(config: LeagueConfig) -> Path:
-    """Return the league's results snapshot, `_data/<league>/results.csv`.
-
-    Args:
-        config: League format.
-
-    Returns:
-        The snapshot path (read from `paths` at call time).
-    """
-    return league_dir(config.slug) / RESULTS_CSV
+from .event import read_event
 
 
 class CsvSource:
     """Read league series from a CSV file: the league's results snapshot, or a given file."""
 
     def __init__(self, path: Path | None = None) -> None:
-        """Read results from `path`, or from the league's snapshot (`results_path`) when None.
+        """Read results from `path`, or from the league's snapshot (`results.csv`) when None.
 
         Args:
             path: CSV file (fixtures, manual input); None for the league's snapshot.
@@ -55,7 +43,7 @@ class CsvSource:
         Raises:
             DataSourceError: If the file is missing or a row is invalid.
         """
-        path = self.path or results_path(config)
+        path = self.path or league_path(config, RESULTS_CSV)
         try:
             with path.open(encoding='utf-8', newline='') as file:
                 reader = csv.DictReader(file)
@@ -68,7 +56,7 @@ class CsvSource:
 
     @staticmethod
     def fetch_event(config: LeagueConfig) -> EventInfo:
-        """Return the event details saved by the last Liquipedia run (`event_path`), whatever file `path` is.
+        """Return the event details saved by the last Liquipedia run (`event.json`), whatever file `path` is.
 
         Args:
             config: League format, locating its snapshot.
@@ -79,7 +67,7 @@ class CsvSource:
         Raises:
             DataSourceError: If the snapshot is invalid.
         """
-        return read_event(event_path(config))
+        return read_event(league_path(config, EVENT_JSON))
 
 
 def write_results(series: Iterable[Series], path: Path) -> None:

@@ -25,23 +25,26 @@ from pathlib import Path
 # Local
 from .. import paths
 from ..exceptions import ConfigurationError, DataSourceError, EsportsDataHubError
-from .config import league_dir, load_league
+from .config import league_path, load_league
 from .constants import (
     DEFAULT_SAMPLES,
+    EVENT_JSON,
     LEAGUE_JSON,
+    LOGOS_DIR,
     METHOD_AUTO,
     METHODS,
     OUTLOOK_DIR,
     OUTLOOK_JSON,
+    RESULTS_CSV,
     SOURCE_CSV,
     SOURCE_LIQUIPEDIA,
     SOURCES,
 )
 from .engine import evaluate
-from .logos import download_logos, logos_dir, read_logos
+from .logos import download_logos, read_logos
 from .models import EvaluationOptions, EventInfo, LeagueConfig, ScenarioReport, Series
 from .report import format_table, read_outlook, write_outlook
-from .sources import CsvSource, LiquipediaSource, ResultSource, event_path, results_path, write_event, write_results
+from .sources import CsvSource, LiquipediaSource, ResultSource, write_event, write_results
 from .visuals.export import export_cards
 
 logger = logging.getLogger(__name__)
@@ -164,7 +167,7 @@ def _run_league(league: str, args: argparse.Namespace) -> bool:
         else:
             report, event, as_of = _evaluate(args, config)
         if args.visual or args.visual_only:
-            event = replace(event, logos=read_logos(logos_dir(config)))
+            event = replace(event, logos=read_logos(league_path(config, LOGOS_DIR)))
             cards = export_cards(report, config, event, outlook_dir(config, as_of, report.method), as_of=as_of)
             logger.info('Outlook card saved to %s', ', '.join(str(path) for path in cards))
     except EsportsDataHubError as error:
@@ -184,7 +187,7 @@ def outlook_dir(config: LeagueConfig, day: date, method: str) -> Path:
     Returns:
         `_data/<league>/outlook/<YYYY-MM-DD>/<method>/`.
     """
-    return league_dir(config.slug) / OUTLOOK_DIR / day.isoformat() / method
+    return league_path(config, OUTLOOK_DIR, day.isoformat(), method)
 
 
 def league_day(series: Sequence[Series]) -> date:
@@ -218,9 +221,9 @@ def _evaluate(args: argparse.Namespace, config: LeagueConfig) -> tuple[ScenarioR
     event = source.fetch_event(config)
     day = league_day(series)
     if args.source == SOURCE_LIQUIPEDIA:
-        write_results(series, results_path(config))
-        write_event(event, event_path(config))
-        download_logos(event, logos_dir(config))
+        write_results(series, league_path(config, RESULTS_CSV))
+        write_event(event, league_path(config, EVENT_JSON))
+        download_logos(event, league_path(config, LOGOS_DIR))
     options = EvaluationOptions(method=args.method, samples=args.samples, seed=args.seed, workers=args.workers)
     report = evaluate(config, series, options)
     sys.stdout.write(format_table(report))
@@ -236,7 +239,7 @@ def _saved_outlook(config: LeagueConfig, method: str) -> tuple[ScenarioReport, d
     """
     pattern = f'*/{"*" if method == METHOD_AUTO else method}/{OUTLOOK_JSON}'
     saved = []
-    for path in (league_dir(config.slug) / OUTLOOK_DIR).glob(pattern):
+    for path in league_path(config, OUTLOOK_DIR).glob(pattern):
         try:
             day = date.fromisoformat(path.parent.parent.name)
         except ValueError:

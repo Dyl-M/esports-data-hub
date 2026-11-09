@@ -24,36 +24,22 @@ import httpxyz
 from PIL import Image, ImageStat
 
 # Local
-from .config import league_dir
 from .constants import (
     LOGO_MEDIA_TYPES,
     LOGO_TIMEOUT,
     LOGO_USER_AGENT,
-    LOGOS_DIR,
     LOGOS_JSON,
     MEDIA_TYPE_PNG,
     MEDIA_TYPE_SVG,
     OPAQUE_ALPHA,
     WATERMARK_FLOOR,
 )
-from .models import EventInfo, LeagueConfig, Logos
+from .models import EventInfo, Logos
 
 logger = logging.getLogger(__name__)
 
 EVENT_KEY = 'event'
 TEAMS_KEY = 'teams'
-
-
-def logos_dir(config: LeagueConfig) -> Path:
-    """Return the league's logos folder, `_data/<league>/logos/`.
-
-    Args:
-        config: League format.
-
-    Returns:
-        The folder path (read from `paths` at call time).
-    """
-    return league_dir(config.slug) / LOGOS_DIR
 
 
 def download_logos(event: EventInfo, folder: Path, *, client: httpxyz.Client | None = None) -> Logos:

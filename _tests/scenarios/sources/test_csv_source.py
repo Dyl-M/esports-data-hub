@@ -8,7 +8,7 @@ import pytest
 
 # Local
 from edh.exceptions import DataSourceError
-from edh.scenarios.sources import CsvSource, results_path, write_results
+from edh.scenarios.sources import CsvSource, write_results
 
 from ...conftest import CDF_DAY2_CSV, make_league, make_series
 
@@ -101,8 +101,7 @@ def test_fetch_league_snapshot(data_dir):
     """Test that without a file, the source reads the league's snapshot in _data/<league>/results.csv."""
     league = make_league(slug='some_league')
     series = [make_series(1, 'A', 'B', 3, 0), make_series(2, 'A', 'B')]
-    write_results(series, results_path(league))
-    assert results_path(league) == data_dir / 'some_league' / 'results.csv'
+    write_results(series, data_dir / 'some_league' / 'results.csv')
     assert CsvSource().fetch(league) == series
 
 
