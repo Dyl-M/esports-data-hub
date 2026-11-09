@@ -4,7 +4,8 @@
 import datetime as dt
 import json
 import logging
-from dataclasses import replace
+from dataclasses import dataclass, field, replace
+from typing import Any
 
 # Third-party
 import pytest
@@ -34,72 +35,53 @@ def _load(name):
     return json.loads((LPDB_DIR / f'cdf_slash_2026_{name}.json').read_text(encoding='utf-8'))
 
 
-class FakeStandingsTables:
+@dataclass
+class FakeEndpoint:
+    """Recorded responses of one LPDB endpoint: each query is recorded in `queries`, `error` raised when set."""
+
+    payload: Any
+    error: Exception | None = None
+    queries: list = field(default_factory=list)
+
+    def _answer(self, **query):
+        """Record the query, then raise `error` when set, else return the recorded payload."""
+        self.queries.append(query)
+        if self.error:
+            raise self.error
+        return self.payload
+
+
+class FakeStandingsTables(FakeEndpoint):
     """Recorded `/standingstable` responses, matching the source's `LpdbStandingsTables` protocol."""
 
-    def __init__(self, tables, error):
-        """Serve `tables`, or raise `error` when set; queries are recorded in `queries`."""
-        self.tables = tables
-        self.error = error
-        self.queries = []
-
     def list(self, wiki, *, pagename, order=None):
-        """Record the query, then return one response holding the recorded tables."""
-        self.queries.append({'wiki': wiki, 'pagename': pagename, 'order': order})
-        if self.error:
-            raise self.error
-        return ApiResponse(result=self.tables, warnings=[])
+        """Return one response holding the recorded tables."""
+        return ApiResponse(result=self._answer(wiki=wiki, pagename=pagename, order=order), warnings=[])
 
 
-class FakeMatches:
+class FakeMatches(FakeEndpoint):
     """Recorded `/match` responses, matching the source's `LpdbMatches` protocol."""
 
-    def __init__(self, matches, error):
-        """Serve `matches`, or raise `error` when set; queries are recorded in `queries`."""
-        self.matches = matches
-        self.error = error
-        self.queries = []
-
     def paginate(self, wiki, *, pagename, order=None, page_size=50):
-        """Record the query, then iterate over the recorded matches."""
-        self.queries.append({'wiki': wiki, 'pagename': pagename, 'order': order, 'page_size': page_size})
-        if self.error:
-            raise self.error
-        return iter(self.matches)
+        """Iterate over the recorded matches."""
+        return iter(self._answer(wiki=wiki, pagename=pagename, order=order, page_size=page_size))
 
 
-class FakeTournaments:
+class FakeTournaments(FakeEndpoint):
     """Recorded `/tournament` responses, matching the source's `LpdbTournaments` protocol."""
 
-    def __init__(self, tournaments, error):
-        """Serve `tournaments`, or raise `error` when set; queries are recorded in `queries`."""
-        self.tournaments = tournaments
-        self.error = error
-        self.queries = []
-
     def list(self, wiki, *, pagename, query=None):
-        """Record the query, then return one response holding the recorded tournaments."""
-        self.queries.append({'wiki': wiki, 'pagename': pagename, 'query': query})
-        if self.error:
-            raise self.error
-        return ApiResponse(result=self.tournaments, warnings=[])
+        """Return one response holding the recorded tournaments."""
+        return ApiResponse(result=self._answer(wiki=wiki, pagename=pagename, query=query), warnings=[])
 
 
-class FakeTeamTemplates:
-    """Recorded `/teamtemplate` responses, matching the source's `LpdbTeamTemplates` protocol."""
-
-    def __init__(self, templates, error):
-        """Serve `templates` (template name -> records), or raise `error` when set; queries are recorded."""
-        self.templates = templates
-        self.error = error
-        self.queries = []
+class FakeTeamTemplates(FakeEndpoint):
+    """Recorded `/teamtemplate` responses (template name -> records), matching the `LpdbTeamTemplates` protocol."""
 
     def get(self, wiki, template, *, date=None):
-        """Record the query, then return the recorded records of the template (none when unknown)."""
-        self.queries.append({'wiki': wiki, 'template': template, 'date': date})
-        if self.error:
-            raise self.error
-        return ApiResponse(result=self.templates.get(template, []), warnings=[])
+        """Return the recorded records of the template (none when unknown)."""
+        templates = self._answer(wiki=wiki, template=template, date=date)
+        return ApiResponse(result=templates.get(template, []), warnings=[])
 
 
 class FakeClient:
@@ -137,6 +119,27 @@ def _match_payload(match_id):
 def _match(match_id):
     """Return a recorded match by id."""
     return Match.model_validate(_match_payload(match_id))
+
+
+@pytest.fixture
+def opened_clients(monkeypatch):
+    """Make the source open a FakeClient with the `LPDB_API_KEY` env key; return the clients opened, as they open."""
+    calls = []
+
+    def open_client(app_name, *, api_key):
+        """Stand in for the LiquipediaClient constructor, recording how it was called."""
+        client = FakeClient()
+        calls.append({'app_name': app_name, 'api_key': api_key, 'client': client})
+        return client
+
+    monkeypatch.setenv('LPDB_API_KEY', 'env-key')
+    monkeypatch.setattr(liquipedia, 'LiquipediaClient', open_client)
+    return calls
+
+
+def _openings(calls):
+    """Summarize the clients opened as `(app_name, api_key, closed)`."""
+    return [(call['app_name'], call['api_key'], call['client'].closed) for call in calls]
 
 
 # === fetch ===
@@ -190,23 +193,11 @@ def test_fetch_table_without_rounds(cdf):
         LiquipediaSource(FakeClient(tables=[table])).fetch(cdf)
 
 
-def test_fetch_opens_and_closes_its_own_client(cdf, monkeypatch):
+def test_fetch_opens_and_closes_its_own_client(cdf, opened_clients):
     """Test that without an injected client, fetch opens one with the configured key and closes it afterwards."""
-    calls = []
-
-    def open_client(app_name, *, api_key):
-        """Stand in for the LiquipediaClient constructor, recording how it was called."""
-        client = FakeClient()
-        calls.append({'app_name': app_name, 'api_key': api_key, 'client': client})
-        return client
-
-    monkeypatch.setenv('LPDB_API_KEY', 'env-key')
-    monkeypatch.setattr(liquipedia, 'LiquipediaClient', open_client)
     series = LiquipediaSource().fetch(cdf)
     assert len(series) == 30
-    assert len(calls) == 1
-    call = calls[0]
-    assert (call['app_name'], call['api_key'], call['client'].closed) == ('esports-data-hub', 'env-key', True)
+    assert _openings(opened_clients) == [('esports-data-hub', 'env-key', True)]
 
 
 # === fetch_event ===
@@ -281,22 +272,10 @@ def test_fetch_event_api_error(cdf):
         LiquipediaSource(FakeClient(error=LiquipediaError('boom'))).fetch_event(cdf)
 
 
-def test_fetch_event_opens_its_own_client(cdf, monkeypatch):
+def test_fetch_event_opens_its_own_client(cdf, opened_clients):
     """Test that without an injected client, fetch_event opens one with the configured key and closes it afterwards."""
-    calls = []
-
-    def open_client(app_name, *, api_key):
-        """Stand in for the LiquipediaClient constructor, recording how it was called."""
-        client = FakeClient()
-        calls.append({'app_name': app_name, 'api_key': api_key, 'client': client})
-        return client
-
-    monkeypatch.setenv('LPDB_API_KEY', 'env-key')
-    monkeypatch.setattr(liquipedia, 'LiquipediaClient', open_client)
     assert LiquipediaSource().fetch_event(cdf).organizers == ('NEO',)
-    assert len(calls) == 1
-    call = calls[0]
-    assert (call['app_name'], call['api_key'], call['client'].closed) == ('esports-data-hub', 'env-key', True)
+    assert _openings(opened_clients) == [('esports-data-hub', 'env-key', True)]
 
 
 @pytest.mark.parametrize(

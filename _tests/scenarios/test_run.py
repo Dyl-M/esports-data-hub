@@ -39,21 +39,23 @@ class StaticSource:
     """Result source serving a fixed list of series and event details, standing in for Liquipedia."""
 
     def __init__(self, series, event=NEO):
-        """Serve `series` and `event`; the leagues asked for are recorded in `configs` / `event_configs`."""
+        """Serve `series` and `event`; each request is recorded in `requests` as `(method, league)`."""
         self.series = series
         self.event = event
-        self.configs = []
-        self.event_configs = []
+        self.requests = []
 
     def fetch(self, config):
-        """Record the league asked for, then return the stored series."""
-        self.configs.append(config)
-        return self.series
+        """Return the stored series."""
+        return self._serve('fetch', config, self.series)
 
     def fetch_event(self, config):
-        """Record the league asked for, then return the stored event details."""
-        self.event_configs.append(config)
-        return self.event
+        """Return the stored event details."""
+        return self._serve('fetch_event', config, self.event)
+
+    def _serve(self, method, config, value):
+        """Record the request, then return `value`."""
+        self.requests.append((method, config))
+        return value
 
 
 class CardRecorder:
@@ -116,7 +118,7 @@ def test_main_liquipedia_source_saves_snapshot(league_folder, monkeypatch):
     monkeypatch.setattr(run, 'export_cards', recorder)
     assert run.main(['test_league']) == 0
     league = run.load_league('test_league')
-    assert source.configs == source.event_configs == [league]
+    assert sorted(source.requests) == [('fetch', league), ('fetch_event', league)]
     assert CsvSource().fetch(league) == fetched
     assert CsvSource.fetch_event(league) == NEO
     assert not recorder.calls
