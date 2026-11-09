@@ -144,7 +144,7 @@ def test_evaluate_aliases_manual_tiebreakers():
 
 def _outlook(team, *shares):
     """Build an outlook from rank shares only."""
-    return TeamOutlook(team, shares, {}, {}, 0.0)
+    return TeamOutlook(team, shares, {}, {}, {}, 0.0)
 
 
 def test_project_ranks_resolves_collisions():
@@ -290,3 +290,29 @@ def test_tie_straddling_the_start_of_a_slot_is_undecided():
     totals.add([RankGroup(1, ('A',)), RankGroup(2, ('B', 'C')), RankGroup(4, ('D',))])
     assert {team: totals.undecided[team]['Play-in'] for team in 'ABCD'} == {'A': 0, 'B': 1, 'C': 1, 'D': 0}
     assert {team: totals.qualified[team]['Play-in'] for team in 'ABCD'} == {'A': 0, 'B': 0, 'C': 0, 'D': 1}
+
+
+def test_certain_outcomes_are_exact_despite_float_sums():
+    """Test that a rank or a slot held in every scenario is a share of exactly 1.
+
+    Its weights (0.1 + 0.2) and the total (0.3) don't add up to the same float.
+    """
+    totals = engine._Accumulator(('A', 'B'), [QualificationSlot('Top', 1, 1)])
+    first, second = RankGroup(1, ('A',)), RankGroup(2, ('B',))
+    totals.add_weighted(0.3, [(first, 0.1), (second, 0.1), (first, 0.2), (second, 0.2)])
+    outlooks = {outlook.team: outlook for outlook in totals.outlooks()}
+    assert outlooks['A'].rank_shares == (1.0, 0.0)
+    assert (outlooks['A'].qualified['Top'], outlooks['B'].qualified['Top']) == (1.0, 0.0)
+
+
+def test_slot_share_matches_the_rank_shares():
+    """Test that a slot's share is the sum of its rank shares, between the qualified share and qualified + tied."""
+    league = make_league(qualification={'Top 2': (1, 2), 'Bottom': (5, 6)})
+    series = CsvSource(CDF_DAY2_CSV).fetch(league)
+    report = evaluate(league, series, EvaluationOptions(method='montecarlo', samples=2000, seed=4))
+    assert any(outlook.undecided['Top 2'] for outlook in report.teams)  # some ties straddle the slot
+    for outlook in report.teams:
+        for slot in league.qualification:
+            share, qualified = outlook.slot_share[slot.label], outlook.qualified[slot.label]
+            assert share == pytest.approx(sum(outlook.rank_shares[slot.first - 1 : slot.last]))
+            assert qualified <= share <= qualified + outlook.undecided[slot.label] + 1e-12

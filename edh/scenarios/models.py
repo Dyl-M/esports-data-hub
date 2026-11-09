@@ -317,6 +317,9 @@ class TeamOutlook:
         qualified: Share of scenarios qualifying per slot label, ties straddling the slot excluded.
         undecided: Share of scenarios per slot label where the team sits in a tie straddling the slot (settled by
             goal difference or manual tiebreak once known).
+        slot_share: Share of scenarios ending inside each slot (per label), a tie straddling it spread evenly over its
+            ranks like the rank shares: the sum of the slot's rank shares, between `qualified` and `qualified` +
+            `undecided`. The share shown for a slot.
         unresolved: Share of scenarios where the team ends in a tie the tiebreakers cannot settle.
         projected_rank: Rank in the projected standings, where each rank goes to a single team (see
             `engine.project_ranks`); None until projected.
@@ -327,6 +330,7 @@ class TeamOutlook:
     rank_shares: tuple[float, ...]
     qualified: Mapping[str, float]
     undecided: Mapping[str, float]
+    slot_share: Mapping[str, float]
     unresolved: float
     projected_rank: int | None = None
 

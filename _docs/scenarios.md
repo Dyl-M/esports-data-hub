@@ -396,6 +396,9 @@ $w$:
   tie's outcome.
 - **Undecided** (per slot): the group straddles the slot's edge, so qualification depends on how the tie is settled.
 - **Unresolved**: the team ended in a tie of several teams.
+- **Slot share** (per slot, the share shown): the sum of the team's rank shares over the slot's ranks, so a tie
+  straddling the slot counts for the part of it inside the slot, as in the rank shares. It lies between *qualified*
+  and *qualified* + *undecided*, and equals *qualified* when no tie straddles the slot.
 
 Totals are divided by the total weight $W$ at the end ($N$ scenarios, $n$ samples, or 1 for winners-first). Writing
 $\mathcal{G}(t, \rho)$ for the weighted groups $(G, w)$ of the run that contain team $t$ and cover rank $\rho$
@@ -404,6 +407,12 @@ $\mathcal{G}(t, \rho)$ for the weighted groups $(G, w)$ of the run that contain 
 $$
 \mathrm{share}(t, \rho) = \frac{1}{W} \sum_{(G, w) \in \mathcal{G}(t, \rho)} \frac{w}{|G|}.
 $$
+
+A team's rank shares split the scenarios, and so do its qualified, undecided and **missed** totals for each slot
+(missed: the group lies outside the slot). When only one part of such a split was ever counted, its share is exactly 1.
+Summed in another order than $W$, winners-first probabilities can land a hair away from it (e.g. $0.9999999999999999$),
+which would hide a certain outcome such as a guaranteed slot (the IN badge). Weights only grow, so a part nevercounted
+is exactly 0.
 
 ### Projected standings
 
@@ -437,10 +446,12 @@ Measured on 16 cores: Monte Carlo 100k samples 10 s → 2 s; winners-first 12 le
 also printed on the card, is the league's progress rather than the day of the run: the last day a series finished, in
 the event's timezone (Liquipedia stores match times in UTC with the offset of the page's timezone).
 
-- One row per team, in projected standings order: its share of scenarios reaching the league's **first**
-  qualification slot, a qualified / tiebreak bar, and a strip of its share of each final rank (a gap after each slot
-  cutoff, the projected rank outlined). IN / OUT badges appear on exact runs only. Shares have one decimal; `-` and
-  `100%` are kept for exact 0 and 1, so a share that would round to them is written `<0.1` / `>99.9`.
+- One row per team, in projected standings order: its **slot share** of the league's **first** qualification slot
+  (consistent with the rank strip: the sum of the slot's rank cells, up to rounding), with the share of scenarios
+  where a tiebreak still settles the spot under it ("0.3% on tiebreak"), a qualified / tiebreak bar, and a strip of its
+  share of each final rank (a gap after each slot cutoff, the projected rank outlined). IN / OUT badges appear on exact
+  runs only. Shares have one decimal; `-` and  `100%` are kept for exact 0 and 1, so a share that would round to them is
+  written `<0.1` / `>99.9`.
 - The competition logo sits in the top right corner; each team's logo is a faint, slightly tilted watermark behind
   its name. Logos are cropped to what they actually draw and sized to cover the same area, so a wide logo doesn't look
   smaller than a square one; teams without branding of their own get Liquipedia's default logo of the game.
@@ -452,11 +463,11 @@ the event's timezone (Liquipedia stores match times in UTC with the offset of th
   Liquipedia, without the disambiguation of their page names, e.g. `BLAST (Organizer)` is shown as `BLAST`).
 
 The card is a Jinja2 HTML template rendered by a headless Chromium through
-[Playwright](https://playwright.dev/python/). The template
-([`edh/scenarios/visuals/templates/card.html.j2`](/edh/scenarios/visuals/templates/card.html.j2)) is public, so
-anyone can check how the card displays the results. The brand files it embeds (`edh/assets/`: profile picture, font,
-social icons) are kept out of git, so cards can only be rendered where those files exist locally; without them,
-`--visual` stops with an error naming the missing file.
+[Playwright](https://playwright.dev/python/). The template ([
+`edh/scenarios/visuals/templates/card.html.j2`](/edh/scenarios/visuals/templates/card.html.j2)) is public, so anyone can
+check how the card displays the results. The brand files it embeds (`edh/assets/`: profile picture, font, social icons)
+are kept out of git, so cards can only be rendered where those files exist locally; without them, `--visual` stops with
+an error naming the missing file.
 
 ## Module map
 

@@ -59,7 +59,10 @@ def format_table(report: ScenarioReport) -> str:
         )
     )
     if labels:
-        lines.append('  Qualification shares exclude those ties; "(+x%)" is the share still decided by them.')
+        lines.append(
+            '  Qualification shares split those ties evenly, like the rank shares; "(x% tied)" is the share still'
+            ' decided by them.'
+        )
     return '\n'.join(lines) + '\n'
 
 
@@ -89,6 +92,7 @@ def write_outlook(report: ScenarioReport, folder: Path) -> tuple[Path, Path]:
                 'expected_rank',
                 'projected_rank',
                 *(f'rank_{rank}' for rank in range(1, ranks + 1)),
+                *(f'{label}_share' for label in labels),
                 *(f'{label}_qualified' for label in labels),
                 *(f'{label}_undecided' for label in labels),
                 'unresolved',
@@ -101,6 +105,7 @@ def write_outlook(report: ScenarioReport, folder: Path) -> tuple[Path, Path]:
                     round(outlook.expected_rank, 4),
                     outlook.projected_rank,
                     *(round(share, 6) for share in outlook.rank_shares),
+                    *(round(outlook.slot_share[label], 6) for label in labels),
                     *(round(outlook.qualified[label], 6) for label in labels),
                     *(round(outlook.undecided[label], 6) for label in labels),
                     round(outlook.unresolved, 6),
@@ -129,6 +134,10 @@ def read_outlook(path: Path) -> ScenarioReport:
                 rank_shares=tuple(float(share) for share in team['rank_shares']),
                 qualified={str(label): float(share) for label, share in team['qualified'].items()},
                 undecided={str(label): float(share) for label, share in team['undecided'].items()},
+                # outlooks saved before slot_share existed: their qualified share is the closest value
+                slot_share={
+                    str(label): float(share) for label, share in team.get('slot_share', team['qualified']).items()
+                },
                 unresolved=float(team['unresolved']),
                 projected_rank=int(team['projected_rank']) if team.get('projected_rank') is not None else None,
             )
@@ -154,8 +163,8 @@ def _rank_cell(outlook: TeamOutlook, rank: int) -> str:
 
 
 def _slot_width(label: str) -> int:
-    """Column width of a qualification slot, wide enough for `>99.9% (+<0.1%)`."""
-    return max(len(label), 16)
+    """Column width of a qualification slot, wide enough for `>99.9% (<0.1% tied)`."""
+    return max(len(label), 19)
 
 
 def format_share(share: float) -> str:
@@ -181,11 +190,11 @@ def format_share(share: float) -> str:
 
 
 def _qualification(outlook: TeamOutlook, label: str, *, exact: bool) -> str:
-    """Format the qualification share of a slot, with the share still decided by goal-difference ties."""
+    """Format the share of a slot (ties split evenly), with the share still decided by goal-difference ties."""
     qualified, undecided = outlook.qualified[label], outlook.undecided[label]
     if exact and qualified == 1:
         return 'IN'
     if exact and qualified == 0 and undecided == 0:
         return 'OUT'
-    text = format_share(qualified)
-    return f'{text} (+{format_share(undecided)})' if undecided else text
+    text = format_share(outlook.slot_share[label])
+    return f'{text} ({format_share(undecided)} tied)' if undecided else text
