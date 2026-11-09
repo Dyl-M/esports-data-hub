@@ -41,6 +41,11 @@ html, body { margin: 0; padding: 0; background: var(--c-bg); }
 .portrait  { --event-logo: 118px; --pad: 72px; --gap: 36px; --title: 52px; --eyebrow: 19px; --meta: 20px; --row-font: 30px; --cell-font: 20px; --pct-font: 44px; --foot: 17px; --avatar: 64px; }
 .square    { --event-logo: 100px; --pad: 60px; --gap: 26px; --title: 44px; --eyebrow: 17px; --meta: 18px; --row-font: 26px; --cell-font: 18px; --pct-font: 38px; --foot: 16px; --avatar: 56px; }
 .landscape { --event-logo: 64px; --pad: 40px; --gap: 16px; --title: 32px; --eyebrow: 14px; --meta: 15px; --row-font: 20px; --cell-font: 14px; --pct-font: 28px; --foot: 13px; --avatar: 42px; --strip-col: 34%; --pct-col: 15%; }
+/* more than 8 ranks (e.g. 12 teams): smaller text, a wider rank strip and shorter shares, so the cells stay readable
+   and the tiebreak line fits under the share */
+.dense.portrait  { --title: 48px; --row-font: 24px; --cell-font: 15px; --pct-font: 30px; --strip-col: 52%; --pct-col: 16%; }
+.dense.square    { --row-font: 21px; --cell-font: 14px; --pct-font: 27px; --strip-col: 52%; --pct-col: 16%; }
+.dense.landscape { --row-font: 16px; --cell-font: 11.5px; --pct-font: 19px; --strip-col: 46%; --pct-col: 13%; }
 
 .hd { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
 .hd-text { display: flex; flex-direction: column; gap: calc(var(--gap) * 0.4); min-width: 0; }
@@ -87,12 +92,17 @@ html, body { margin: 0; padding: 0; background: var(--c-bg); }
 .strip i.low { color: var(--c-muted); }
 .strip i.proj { box-shadow: inset 0 0 0 2px var(--c-fg); font-weight: 700; }
 .strip i.gap { background: none; }
+.dense { --mark-size: calc(var(--row-font) * 2.6); } /* shorter rows: smaller watermarks, still cut by the row */
+.dense .legend, .dense .row { column-gap: 14px; }
+.dense .strip { gap: 2px; }
+.dense .strip i { letter-spacing: -0.06em; }
 /* right-aligned flex column: a line wider than the column (`+<0.1% on tiebreak`) spills left into the gutter instead of
    being cropped by the row; the negative letter-spacing also follows the last glyph, so the share gets that space back
    as padding to keep its `%` inside */
 .pct { display: flex; flex-direction: column; align-items: flex-end; font: 700 var(--pct-font)/1 var(--f-mono); letter-spacing: -0.04em; white-space: nowrap; }
 .pct .share { padding-right: 0.08em; }
 .pct small { font-size: 0.38em; font-weight: 500; color: var(--c-undecided); letter-spacing: 0; margin-top: 4px; }
+.dense .pct small { margin-top: 2px; font-size: 0.42em; }
 .badge { display: inline-block; font: 800 calc(var(--pct-font) * 0.6)/1 var(--f-mono); padding: 0.25em 0.5em; border-radius: 4px; letter-spacing: 0.08em; color: var(--c-bg); }
 .badge.in { background: var(--c-in); }
 .badge.out { background: var(--c-out); }
@@ -118,7 +128,7 @@ html, body { margin: 0; padding: 0; background: var(--c-bg); }
 </style>
 </head>
 <body>
-<div class="frame {{ format }}">
+<div class="frame {{ format }}{{ ' dense' if ranks > 8 }}">
   <div class="hd">
     <div class="hd-text">
     <div class="eyebrow">{{ eyebrow }}</div>
