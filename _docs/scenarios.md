@@ -162,8 +162,10 @@ league whose first tiebreaker reads game or goal margins, raises `ScenarioError`
 ## Exhaustive enumeration
 
 For each pending series, every reachable ending is built once as a finished `Series` (goals unknown). Scenarios are
-the Cartesian product (`itertools.product`) of those endings; each one is appended to the played series and ranked
-with `standings.rank`, and the ranking is counted with weight 1.
+the Cartesian product (`itertools.product`) of those endings; each one is ranked together with the played series, and
+the ranking is counted with weight 1. The played series are the same in every scenario, so their records are tallied
+once (`standings.Standings`, per chunk): a scenario only adds its own series to a copy of them before the tiebreakers
+run. Monte Carlo ranks its samples the same way.
 
 Cost grows as $(2k)^m$ for $m$ remaining series: about 7 Bo5 series fit under the $10^6$ limit, since
 $6^7 = 279{,}936$ and $6^8 = 1{,}679{,}616$.
@@ -463,7 +465,7 @@ social icons) are kept out of git, so cards can only be rendered where those fil
 | `config.py`    | `league.json` → `LeagueConfig`                                                        |
 | `models.py`    | Frozen, validated dataclasses (`Series`, `Tiebreaker`, `RankGroup`, `TeamOutlook`, …) |
 | `outcomes.py`  | Reachable final scores of a series                                                    |
-| `standings.py` | `tally`, `rank`, `TieResolver` (Liquipedia tiebreaker resolution)                     |
+| `standings.py` | `tally`, `rank`, `Standings` (played series tallied once), `TieResolver`              |
 | `engine.py`    | `evaluate`: method choice, chunks, exhaustive / Monte Carlo, aggregation, projection  |
 | `winners.py`   | Winners-first exact method                                                            |
 | `report.py`    | Console table, `outlook.csv` / `outlook.json`                                         |

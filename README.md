@@ -59,13 +59,18 @@ Several leagues (names, or patterns over the `_data/` folders holding a `league.
 the same options; a league that fails is logged with its name, the others still run, and the command exits with
 code 1 if any failed.
 
-Each run prints, per team, the share of scenarios ending at each rank and qualifying, and saves it (with its cards)
-to `_data/<league>/outlook/<YYYY-MM-DD>/<method>/` (`outlook.csv` / `outlook.json`, gitignored), so runs of other
-matchdays and methods are kept for comparison. The day is the league's progress: the last day a series finished, in the
-event's timezone (Liquipedia's), which is also the date shown on the card. `--visual-only --method <method>` renders the
-latest outlook of that method. A Liquipedia run also saves the results to `_data/<league>/results.csv` and the event 
-organizers to `_data/<league>/event.json`, and downloads the competition and team logos to `_data/<league>/logos/` 
-(gitignored, kept local).
+Each run:
+
+- prints, per team, the share of scenarios ending at each rank and qualifying
+- saves it (with its cards) to `_data/<league>/outlook/<YYYY-MM-DD>/<method>/` (`outlook.csv` / `outlook.json`,
+  gitignored), so runs of other matchdays and methods are kept for comparison
+- dates it by the league's progress: the last day a series finished, in the event's timezone (Liquipedia's), which is
+  also the date shown on the card
+- with the Liquipedia source, also saves the results to `_data/<league>/results.csv` and the event organizers to
+  `_data/<league>/event.json`, and downloads the competition and team logos to `_data/<league>/logos/` (gitignored,
+  kept local)
+
+`--visual-only --method <method>` renders the latest outlook of that method.
 
 `--visual` also renders the outlook as a shareable [card](_docs/scenarios.md#outlook-card) (PNG, three social media
 formats). It needs Playwright's Chromium, installed once with `uv run playwright install chromium`, and the card

@@ -20,7 +20,7 @@ from .models import RankGroup, Series, Tiebreaker
 TiebreakValue = int | tuple[int, int]
 
 
-@dataclass
+@dataclass(slots=True)
 class TeamRecord:
     """Series, game and goal record of a team over a set of finished series.
 
@@ -42,21 +42,39 @@ class TeamRecord:
     round_losses: int = 0
     rounds_known: bool = True
 
+    def copy(self) -> 'TeamRecord':
+        """Return an independent copy (built field by field: faster than `dataclasses.replace` in the hot loop)."""
+        return TeamRecord(
+            self.match_wins,
+            self.match_losses,
+            self.game_wins,
+            self.game_losses,
+            self.round_wins,
+            self.round_losses,
+            self.rounds_known,
+        )
+
 
 RecordsProvider = Callable[[tuple[str, ...]], Mapping[str, TeamRecord]]
 
 
-def tally(series: Iterable[Series], teams: Collection[str]) -> dict[str, TeamRecord]:
+def tally(
+    series: Iterable[Series], teams: Collection[str], base: Mapping[str, TeamRecord] | None = None
+) -> dict[str, TeamRecord]:
     """Compute the record of each team over the finished series among `teams`.
 
     Args:
         series: Series to count; unfinished ones and those involving a team outside `teams` are ignored.
         teams: Teams to compute a record for.
+        base: Records to start from (copied, never modified), e.g. those of the series already played; empty records
+            when None.
 
     Returns:
-        The record of each team in `teams`.
+        The record of each team in `teams`: `base` plus `series`.
     """
-    records = {team: TeamRecord() for team in teams}
+    records = (
+        {team: base[team].copy() for team in teams} if base is not None else {team: TeamRecord() for team in teams}
+    )
     for item in series:
         if not item.finished or item.team_1 not in records or item.team_2 not in records:
             continue
@@ -115,8 +133,50 @@ def rank(
     Returns:
         Groups of teams in ranking order; a group of several teams is a tie the tiebreakers cannot settle.
     """
-    resolver = TieResolver(tiebreakers, manual_tiebreakers or {}, tally(series, teams), mini_league_records(series))
-    return rank_groups(resolver.resolve(tuple(sorted(teams)), 0))
+    return Standings(series, teams, tiebreakers, manual_tiebreakers).rank(())
+
+
+class Standings:
+    """Rankings of many scenarios that share the same series already played.
+
+    The played series' records are tallied once; each scenario then only adds its own (simulated) series to a copy
+    of them, instead of re-counting every played series and its goals. Mini-league (`ml.`) records stay computed on
+    demand, over the played and the scenario's series.
+    """
+
+    def __init__(
+        self,
+        played: Sequence[Series],
+        teams: Collection[str],
+        tiebreakers: Sequence[Tiebreaker],
+        manual_tiebreakers: Mapping[str, int] | None = None,
+    ) -> None:
+        """Tally the series already played.
+
+        Args:
+            played: Series shared by every scenario; only finished ones count.
+            teams: Teams to rank.
+            tiebreakers: Ordered tiebreakers.
+            manual_tiebreakers: Manual tiebreak points per team (0 when absent).
+        """
+        self.played = tuple(played)
+        self.teams = tuple(sorted(teams))
+        self.tiebreakers = tiebreakers
+        self.manual = manual_tiebreakers or {}
+        self.records = tally(self.played, self.teams)
+
+    def rank(self, completed: Sequence[Series]) -> list[RankGroup]:
+        """Rank the teams once `completed` is added to the series already played.
+
+        Args:
+            completed: The scenario's own series (e.g. the pending series, finished with simulated scores).
+
+        Returns:
+            Groups of teams in ranking order, as `rank` gives them for the played series plus `completed`.
+        """
+        records = tally(completed, self.teams, base=self.records)
+        resolver = TieResolver(self.tiebreakers, self.manual, records, mini_league_records([*self.played, *completed]))
+        return rank_groups(resolver.resolve(self.teams, 0))
 
 
 def rank_groups(groups: Iterable[tuple[str, ...]], first: int = 1) -> list[RankGroup]:
