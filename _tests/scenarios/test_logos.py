@@ -58,6 +58,29 @@ def test_download_logos(tmp_path):
     assert read_logos(folder) == result
 
 
+def test_download_logos_new_folder_and_accented_names(tmp_path):
+    """Test that the logos folder is created with its parents, and the manifest keeps team names readable."""
+    folder = tmp_path / 'new_league' / 'logos'
+    with Server().client() as client:
+        download_logos(EventInfo(team_logo_urls={'Équipe Rouge': TEAM_URL}), folder, client=client)
+    assert 'Équipe Rouge' in (folder / 'logos.json').read_text(encoding='utf-8')
+
+
+def test_download_logos_follows_redirects(tmp_path):
+    """Test that a logo address redirecting elsewhere (a moved file) is followed to the image."""
+    moved = 'https://liquipedia.net/commons/images/1/11/Moved.png'
+
+    def answer(request):
+        """Redirect the team address to `moved`, serve `moved`."""
+        if str(request.url) == TEAM_URL:
+            return httpxyz.Response(301, headers={'Location': moved})
+        return httpxyz.Response(200, content=b'moved')
+
+    with httpxyz.Client(transport=httpxyz.MockTransport(answer)) as client:
+        result = download_logos(EventInfo(team_logo_urls={'Gentle Mates': TEAM_URL}), tmp_path, client=client)
+    assert result.teams['Gentle Mates'].read_bytes() == b'moved'
+
+
 def test_download_logos_shared_address_downloaded_once(tmp_path):
     """Test that teams sharing the game's default logo each get a file, from a single download."""
     default = 'https://liquipedia.net/commons/images/thumb/3/30/RL_default_darkmode.png/400px-RL_default_darkmode.png'
@@ -204,6 +227,30 @@ def test_trimmed_logo_watermark_stretches_tones(tmp_path):
     assert logo.aspect == 2.0  # transparent rows trimmed
 
 
+@pytest.mark.parametrize('name', ['absent.png', 'absent.svg'])
+def test_trimmed_logo_missing_file(tmp_path, name):
+    """Test that a missing logo file, raster or vector, is no logo."""
+    assert trimmed_logo(tmp_path / name) is None
+
+
+def test_trimmed_logo_watermark_mid_tone_is_proportional(tmp_path):
+    """Test that a tone halfway between the darkest and the lightest lands halfway between the floor and white."""
+    image = Image.open(_two_tone(tmp_path / 'three.png', 40, 200))
+    image.paste((120, 120, 120, 255), (0, 1, 5, 11))
+    image.save(tmp_path / 'three.png')
+    logo = _trimmed(tmp_path / 'three.png', watermark=True)
+    middle = Image.open(BytesIO(logo.content)).getpixel((1, 2))[0]
+    assert middle == round(WATERMARK_FLOOR + (255 - WATERMARK_FLOOR) / 2)
+
+
+def test_trimmed_logo_watermark_ignores_transparent_pixels(tmp_path):
+    """Test that transparent pixels inside the logo (black, as often stored) don't count as its darkest tone."""
+    image = Image.open(_two_tone(tmp_path / 'hole.png', 40, 200))
+    image.paste((0, 0, 0, 0), (9, 1, 11, 11))
+    image.save(tmp_path / 'hole.png')
+    assert _pixels(_trimmed(tmp_path / 'hole.png', watermark=True)) == (WATERMARK_FLOOR, 255)
+
+
 def test_trimmed_logo_watermark_single_tone_is_white(tmp_path):
     """Test that a single-tone logo becomes white, like the logos drawn in white already."""
     logo = _trimmed(_two_tone(tmp_path / 'flat.png', 60, 60), watermark=True)
@@ -223,5 +270,6 @@ def test_trimmed_logo_keeps_colors_by_default(tmp_path):
     """Test that a logo that is not a watermark (the competition logo) keeps its colors."""
     image = Image.new('RGBA', (4, 4), (200, 30, 30, 255))
     image.save(tmp_path / 'red.png')
-    logo = _trimmed(tmp_path / 'red.png')
+    logo = trimmed_logo(tmp_path / 'red.png')
+    assert logo is not None
     assert Image.open(BytesIO(logo.content)).getpixel((0, 0)) == (200, 30, 30, 255)
