@@ -314,5 +314,6 @@ def test_slot_share_matches_the_rank_shares():
     for outlook in report.teams:
         for slot in league.qualification:
             share, qualified = outlook.slot_share[slot.label], outlook.qualified[slot.label]
-            assert share == pytest.approx(sum(outlook.rank_shares[slot.first - 1 : slot.last]))
+            first, last = slot.first - 1, slot.last
+            assert share == pytest.approx(sum(outlook.rank_shares[first:last]))
             assert qualified <= share <= qualified + outlook.undecided[slot.label] + 1e-12

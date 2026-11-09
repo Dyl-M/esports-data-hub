@@ -218,9 +218,8 @@ def _partition_shares(weights: Sequence[float], total: float) -> list[float]:
     can land a hair away from it (e.g. 0.9999999999999999), which would hide a certain outcome. Weights only grow, so
     a part never counted is exactly 0.
     """
-    if sum(1 for weight in weights if weight) == 1:
-        return [1.0 if weight else 0.0 for weight in weights]
-    return [weight / total for weight in weights]
+    certain = sum(1 for weight in weights if weight) == 1
+    return [(1.0 if weight else 0.0) if certain else weight / total for weight in weights]
 
 
 def project_ranks(outlooks: Sequence[TeamOutlook]) -> dict[str, int]:
