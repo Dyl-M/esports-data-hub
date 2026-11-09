@@ -1,5 +1,5 @@
 {
-  "name": "RLCS 2027 Club League: North America",
+  "name": "RLCS Club League: NA",
   "wiki": "rocketleague",
   "pagename": "Rocket_League_Championship_Series/Club_Championship/2027/Club_League/North_America",
   "best_of": 5,
@@ -9,5 +9,15 @@
   },
   "walkover_games": 3,
   "team_aliases": {},
-  "manual_tiebreakers": {}
+  "manual_tiebreakers": {},
+  "theme": {
+    "background": "#0e0e10",
+    "surface": "#1b1b1f",
+    "line": "#2c2c32",
+    "text": "#f2f2f4",
+    "muted": "#8e8e97",
+    "heat": "#1f7fbf",
+    "accent": "#e8365d",
+    "glow": "#e8365d2e"
+  }
 }

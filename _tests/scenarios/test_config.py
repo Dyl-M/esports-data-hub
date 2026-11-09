@@ -147,6 +147,8 @@ def test_cdf_slash_2026_league_file():
 def test_rlcs_2027_league_files(region, spots):
     """Test that the committed RLCS 2027 Club League formats load with the rulebook's format and Finale spots."""
     league = load_league(f'rlcs_2027_{region}')
+    assert league.name == f'RLCS Club League: {region.upper()}'
+    assert league.theme.heat == '#1f7fbf'  # shared blue of the event's artwork, the accent is per region
     assert league.wiki == 'rocketleague'
     assert league.pagename.startswith('Rocket_League_Championship_Series/Club_Championship/2027/Club_League/')
     assert league.best_of == 5
