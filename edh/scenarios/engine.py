@@ -83,22 +83,32 @@ def choose_method(
     if method not in METHODS:
         raise ScenarioError(f'Unknown method {method!r} (expected one of {", ".join(METHODS)})')
     if method == METHOD_AUTO:
-        if scenarios <= limit:
-            return METHOD_EXHAUSTIVE
-        if combinations is not None and combinations <= combination_limit:
-            return METHOD_WINNERS_FIRST
-        return METHOD_MONTE_CARLO
+        return _auto_method(scenarios, combinations, limit, combination_limit)
     if method == METHOD_EXHAUSTIVE and scenarios > limit:
         raise ScenarioError(f'{scenarios:,} scenarios exceed the exhaustive limit ({limit:,}): use Monte Carlo')
     if method == METHOD_WINNERS_FIRST:
-        if combinations is None:
-            raise ScenarioError('The winners-first method needs a first tiebreaker on series winners')
-        if combinations > combination_limit:
-            raise ScenarioError(
-                f'{combinations:,} winner combinations exceed the winners-first limit ({combination_limit:,}): '
-                'use Monte Carlo'
-            )
+        _check_winners_first(combinations, combination_limit)
     return method
+
+
+def _auto_method(scenarios: int, combinations: int | None, limit: int, combination_limit: int) -> str:
+    """Pick the first method that fits: exhaustive, then winners-first, then Monte Carlo."""
+    if scenarios <= limit:
+        return METHOD_EXHAUSTIVE
+    if combinations is not None and combinations <= combination_limit:
+        return METHOD_WINNERS_FIRST
+    return METHOD_MONTE_CARLO
+
+
+def _check_winners_first(combinations: int | None, combination_limit: int) -> None:
+    """Raise ScenarioError if the winners-first method doesn't apply or exceeds its limit."""
+    if combinations is None:
+        raise ScenarioError('The winners-first method needs a first tiebreaker on series winners')
+    if combinations > combination_limit:
+        raise ScenarioError(
+            f'{combinations:,} winner combinations exceed the winners-first limit ({combination_limit:,}): '
+            'use Monte Carlo'
+        )
 
 
 class _Accumulator:
