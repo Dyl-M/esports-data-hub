@@ -38,11 +38,12 @@ def league_dir(slug: str) -> Path:
 
 
 def league_path(config: LeagueConfig, *parts: str) -> Path:
-    """Return a path inside the league's data folder, e.g. `league_path(config, RESULTS_CSV)`.
+    """Return a path inside the league's data folder.
 
     Args:
         config: League format.
-        *parts: Path segments below `_data/<league>/` (file or folder names from `constants`).
+        *parts: Path segments below `_data/<league>/`, file or folder names from `constants` (e.g. `RESULTS_CSV`,
+            or `OUTLOOK_DIR` followed by the day and the method).
 
     Returns:
         The path (read from `paths` at call time).
