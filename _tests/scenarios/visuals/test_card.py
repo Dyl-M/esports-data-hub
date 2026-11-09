@@ -227,7 +227,7 @@ def test_context_watermarks_team_logos_only(tmp_path):
     logos = Logos(event=tmp_path / 'red.png', teams={'A': tmp_path / 'red.png'})
     context = _context(event=replace(NEO, logos=logos))
     event_logo = context['event_logo']
-    team_logo = next(row.logo for row in context['rows'] if row.team == 'A')
+    team_logo = {row.team: row.logo for row in context['rows']}['A']
     assert event_logo is not None
     assert team_logo is not None
     assert _decoded(event_logo).getpixel((0, 0)) == (200, 30, 30, 255)
