@@ -138,3 +138,18 @@ def test_cdf_slash_2026_league_file():
         'manual',
     ]
     assert league.theme.background == '#061533'  # from the event banner
+
+
+@pytest.mark.parametrize(
+    ('region', 'spots'),
+    [('eu', 4), ('na', 4), ('mena', 2), ('sam', 2), ('apac', 1), ('oce', 1), ('ssa', 1)],
+)
+def test_rlcs_2027_league_files(region, spots):
+    """Test that the committed RLCS 2027 Club League formats load with the rulebook's format and Finale spots."""
+    league = load_league(f'rlcs_2027_{region}')
+    assert league.wiki == 'rocketleague'
+    assert league.pagename.startswith('Rocket_League_Championship_Series/Club_Championship/2027/Club_League/')
+    assert league.best_of == 5
+    assert [str(tiebreaker) for tiebreaker in league.tiebreakers] == ['matchscore', 'gamediff', 'rounddiff', 'manual']
+    assert [(slot.label, slot.first, slot.last) for slot in league.qualification] == [('Club Finale', 1, spots)]
+    assert league.walkover_games == 3
