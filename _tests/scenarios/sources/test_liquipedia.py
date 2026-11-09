@@ -305,6 +305,8 @@ def test_fetch_event_opens_its_own_client(cdf, monkeypatch):
         ('{"organizer1":"NEO"}', ('NEO',)),
         ('{"organizer10":"J","organizer2":"B","organizer1":"A"}', ('A', 'B', 'J')),
         ('{"organizer1":"A","organizer2":""}', ('A',)),
+        ('{"organizer2":"BLAST (Organizer)","organizer1":"Epic Games"}', ('Epic Games', 'BLAST')),
+        ('{"organizer1":"(A)B"}', ('(A)B',)),
         ('', ()),
         (None, ()),
         ('[]', ()),
@@ -312,7 +314,7 @@ def test_fetch_event_opens_its_own_client(cdf, monkeypatch):
     ],
 )
 def test_parse_organizers(text, organizers):
-    """Test that organizers are read in numeric key order, empty or unreadable values giving none."""
+    """Test that organizers are read in key order, without page disambiguation; empty or unreadable give none."""
     assert parse_organizers(text) == organizers
 
 

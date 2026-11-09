@@ -46,6 +46,9 @@ from ..models import EventInfo, LeagueConfig, Series
 
 logger = logging.getLogger(__name__)
 
+# Disambiguation at the end of a Liquipedia page name, e.g. ` (Organizer)` in `BLAST (Organizer)`
+PAGE_DISAMBIGUATION = re.compile(r'\s+\([^()]*\)$')
+
 
 class LpdbStandingsTables(Protocol):
     """The `/standingstable` queries the source needs (liquipydia's `client.standings_tables`)."""
@@ -238,7 +241,8 @@ def parse_organizers(text: str | None) -> tuple[str, ...]:
         text: Raw field value (None or empty when unset).
 
     Returns:
-        The organizer names in key order (`organizer1`, `organizer2`, ...); empty when unset or unreadable.
+        The organizer names in key order (`organizer1`, `organizer2`, ...), without the disambiguation of their page
+        name (`BLAST (Organizer)` -> `BLAST`); empty when unset or unreadable.
     """
     try:
         data = json.loads(text or '{}')
@@ -248,7 +252,8 @@ def parse_organizers(text: str | None) -> tuple[str, ...]:
     if not isinstance(data, dict):
         return ()
     numbered = sorted(data.items(), key=lambda item: int(re.sub(r'\D', '', str(item[0])) or 0))
-    return tuple(str(name) for _, name in numbered if name)
+    names = (PAGE_DISAMBIGUATION.sub('', str(name)) for _, name in numbered if name)
+    return tuple(name for name in names if name)
 
 
 def _fetch(client: LpdbClient, config: LeagueConfig) -> list[Series]:
