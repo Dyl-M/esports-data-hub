@@ -50,7 +50,7 @@ or CSV ───────┘
 | `tiebreakers`        | Ordered Liquipedia tiebreaker ids, e.g. `["matchscore", "gamediff", "ml.gamediff", ...]`  |
 | `qualification`      | Slots as `label: [first rank, last rank]`, e.g. `"Playoffs": [1, 4]`                      |
 | `team_aliases`       | Old name → current name, applied to every series (and manual points) before anything else |
-| `manual_tiebreakers` | Points set by hand by the organizer, read by the `manual` tiebreaker (0 when absent)      |
+| `manual_tiebreakers` | Points set by hand, read by the `manual` tiebreaker (0 when absent), e.g. RLCS seed order |
 | `walkover_games`     | Games credited to the winner of a walkover                                                |
 | `theme`              | Card colors (see [Outlook card](#outlook-card))                                           |
 
@@ -94,11 +94,12 @@ of how much a team depends on other results, **not** a betting-style probability
 model: in an exact run, **0% and 100%** (the IN / OUT badges of the card) mean that no reachable outcome changes the
 result. That holds under any model that gives every reachable score a non-zero probability.
 
-**One format so far.** The engine has been built and checked on Coupe de France Slash 2026: 6 teams in a double
-round robin (each pair meets twice, 30 Bo5 series over 6 days of 5 series, 10 series per team), one series length for
-every match, Liquipedia's tiebreakers, no disqualification and no goals for simulated games. Other formats (starting
-with the RLCS Clubs Championships League Play) will be checked against their
-Liquipedia page before use, and may need changes.
+**One format checked on real results so far.** The engine has been built and checked on Coupe de France Slash 2026:
+6 teams in a double round robin (each pair meets twice, 30 Bo5 series over 6 days of 5 series, 10 series per team),
+one series length for every match, Liquipedia's tiebreakers, no disqualification and no goals for simulated games. The
+RLCS Clubs Championships League Play is configured from its official rulebook (seven regions: single round robins of
+12 teams in EU / NA and 8 elsewhere, Bo5, ranked by match record, game difference, goal difference, then initial
+seed), but its schedule isn't out yet, so it hasn't run on real results.
 
 **Planned evolution** (in this order, not started):
 
@@ -441,9 +442,12 @@ the event's timezone (Liquipedia stores match times in UTC with the offset of th
 - The competition logo sits in the top right corner; each team's logo is a faint, slightly tilted watermark behind
   its name. Logos are cropped to what they actually draw and sized to cover the same area, so a wide logo doesn't look
   smaller than a square one; teams without branding of their own get Liquipedia's default logo of the game.
-- Colors come from the league's `theme` in `league.json` (a neutral palette by default).
+- Leagues with more than 8 ranks (the 12-team RLCS regions) get a denser layout: smaller text, a wider rank strip and
+  smaller watermarks, so every cell and the tiebreak share stay readable. Smaller leagues keep the regular layout.
+- Colors come from the league's `theme` in `league.json` (a neutral palette by default), picked by hand from the
+  event's artwork. The RLCS regions share a background and rank shading and each has its own accent color.
 - The footer names the evaluation method and the source of the results: the event's organizers (read from
-  Liquipedia).
+  Liquipedia, without the disambiguation of their page names, e.g. `BLAST (Organizer)` is shown as `BLAST`).
 
 The card is a Jinja2 HTML template rendered by a headless Chromium through
 [Playwright](https://playwright.dev/python/). The template

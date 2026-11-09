@@ -15,9 +15,9 @@
 **Esports Data Hub** (EDH) gathers several data projects built on esports competition results, each in its own
 subpackage of `edh`, sharing the same tooling and data sources.
 
-| Project                                         | Package         | Status            |
-|-------------------------------------------------|-----------------|-------------------|
-| [League play scenarios](#league-play-scenarios) | `edh.scenarios` | First version out |
+| Project                                         | Package         | Status |
+|-------------------------------------------------|-----------------|--------|
+| [League play scenarios](#league-play-scenarios) | `edh.scenarios` | In use |
 
 League play scenarios is the first of them; more projects will follow.
 
@@ -31,7 +31,8 @@ either exactly or by Monte Carlo sampling. Match data comes from [Liquipedia](ht
 Primary targets (Rocket League):
 
 - Coupe de France Slash 2026
-- The upcoming RLCS season, including the Clubs Championships league play
+- The upcoming RLCS season, including the Clubs Championships league play (its seven regional leagues are
+  configured, `_data/rlcs_2027_<region>/`, waiting for the schedule)
 
 It succeeds [`league-play-scenarios`](https://github.com/Dyl-M/league-play-scenarios).
 
@@ -51,14 +52,20 @@ uv run python -m edh.scenarios.run cdf_slash_2026 --method montecarlo --samples 
 uv run python -m edh.scenarios.run cdf_slash_2026 --workers 4        # cap worker processes (default: all CPUs)
 uv run python -m edh.scenarios.run cdf_slash_2026 --visual           # evaluate, then render the outlook card
 uv run python -m edh.scenarios.run cdf_slash_2026 --visual-only      # render the card from the latest saved outlook
+uv run python -m edh.scenarios.run 'rlcs_2027_*' --visual           # several leagues: names and / or patterns
 ```
+
+Several leagues (names, or patterns over the `_data/` folders holding a `league.json`) run one after the other with
+the same options; a league that fails is logged with its name, the others still run, and the command exits with
+code 1 if any failed.
 
 Each run prints, per team, the share of scenarios ending at each rank and qualifying, and saves it (with its cards)
 to `_data/<league>/outlook/<YYYY-MM-DD>/<method>/` (`outlook.csv` / `outlook.json`, gitignored), so runs of other
 matchdays and methods are kept for comparison. The day is the league's progress: the last day a series finished, in the
-event's timezone (Liquipedia's), which is also the date shown on the card. `--visual-only --method <method>` renders the latest outlook of that method. A Liquipedia run also saves the results to
-`_data/<league>/results.csv` and the event organizers to `_data/<league>/event.json`, and downloads the competition
-and team logos to `_data/<league>/logos/` (gitignored, kept local).
+event's timezone (Liquipedia's), which is also the date shown on the card. `--visual-only --method <method>` renders the
+latest outlook of that method. A Liquipedia run also saves the results to `_data/<league>/results.csv` and the event 
+organizers to `_data/<league>/event.json`, and downloads the competition and team logos to `_data/<league>/logos/` 
+(gitignored, kept local).
 
 `--visual` also renders the outlook as a shareable [card](_docs/scenarios.md#outlook-card) (PNG, three social media
 formats). It needs Playwright's Chromium, installed once with `uv run playwright install chromium`, and the card
