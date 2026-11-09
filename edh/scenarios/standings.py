@@ -208,9 +208,8 @@ def mini_league_records(series: Sequence[Series]) -> RecordsProvider:
     """
 
     def records(group: tuple[str, ...]) -> Mapping[str, TeamRecord]:
-        """Return the records of `group` over the series between its teams."""
-        members = set(group)
-        return tally((item for item in series if item.team_1 in members and item.team_2 in members), group)
+        """Return the records of `group` over the series between its teams (`tally` skips the others)."""
+        return tally(series, group)
 
     return records
 
