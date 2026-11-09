@@ -34,7 +34,7 @@ from .constants import (
 )
 from .models import EvaluationOptions, LeagueConfig, QualificationSlot, RankGroup, ScenarioReport, Series, TeamOutlook
 from .outcomes import reachable_scores
-from .standings import rank
+from .standings import Standings
 from .winners import WeightedGroup, WinnersFirst, count_winner_combinations, margin_free_prefix
 
 
@@ -352,8 +352,9 @@ def _run_chunk(chunk: _Chunk) -> _Accumulator:
         scenarios: Iterable[Sequence[Series]] = product(*decided, *endings[fixed:])
     else:
         scenarios = _samples(endings, chunk.samples, np.random.default_rng(chunk.seed))
+    standings = Standings(job.played, job.teams, config.tiebreakers, job.manual)  # played series tallied once
     for completed in scenarios:
-        accumulator.add(rank([*job.played, *completed], job.teams, config.tiebreakers, job.manual))
+        accumulator.add(standings.rank(completed))
     return accumulator
 
 
