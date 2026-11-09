@@ -336,6 +336,7 @@ def test_to_series_finished(cdf):
 def test_to_series_finished_with_lost_games(cdf):
     """Test that the goals of a series won 3-1 are kept: every game played counts, the lost one included."""
     series = to_series(_match('dprh3EmctD_0004'), 1, cdf)
+    assert series.goals is not None
     assert (series.score_1, series.score_2, len(series.goals)) == (3, 1, 4)
 
 

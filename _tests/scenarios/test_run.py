@@ -353,11 +353,12 @@ def test_main_visual_only_without_saved_outlook(league_folder, caplog, method, m
     assert message in caplog.text
 
 
-def test_help_describes_the_tool(capsys):
+def test_help_describes_the_tool():
     """Test that --help shows the first line of the module docstring as the description."""
-    with pytest.raises(SystemExit):
+    out = io.StringIO()
+    with redirect_stdout(out), pytest.raises(SystemExit):
         run.parse_args(['--help'])
-    assert 'Evaluate the league play scenarios' in capsys.readouterr().out
+    assert 'Evaluate the league play scenarios' in out.getvalue()
 
 
 def test_main_pattern_without_match(three_leagues):

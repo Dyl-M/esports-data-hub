@@ -245,30 +245,30 @@ def test_sample_chunks_draw_exactly_the_requested_samples(monkeypatch):
     assert [chunk.samples for chunk in engine._sample_chunks(job, 25, 1)] == [10, 10, 5]
 
 
-def _job(method, *, scenarios=0, combinations=None):
-    """An exact job on two pending series (36 scenarios, 4 winner combinations) with the given work counts."""
-    series = (make_series(1, 'A', 'B'), make_series(1, 'C', 'D'))
-    return engine._Job(make_league(), ('A', 'B', 'C', 'D'), (), series, {}, method, scenarios, combinations)
+FOUR_TEAMS_TWO_SERIES = (make_series(1, 'A', 'B'), make_series(1, 'C', 'D'))  # 36 scenarios, 4 winner combinations
 
 
 @pytest.mark.parametrize(
-    ('job', 'workers', 'expected'),
+    ('method', 'work', 'workers', 'expected'),
     [
-        pytest.param(_job('exhaustive', scenarios=99), 3, 1, id='exhaustive-small'),
-        pytest.param(_job('exhaustive', scenarios=100), 3, 3, id='exhaustive-at-threshold'),
-        pytest.param(_job('exhaustive', scenarios=100), None, 8, id='exhaustive-all-cores'),
-        pytest.param(_job('winnersfirst', combinations=4), 3, 1, id='winners-small'),
-        pytest.param(_job('winnersfirst', combinations=5), 3, 3, id='winners-weighted'),
+        pytest.param('exhaustive', (99, None), 3, 1, id='exhaustive-small'),
+        pytest.param('exhaustive', (100, None), 3, 3, id='exhaustive-at-threshold'),
+        pytest.param('exhaustive', (100, None), None, 8, id='exhaustive-all-cores'),
+        pytest.param('winnersfirst', (0, 4), 3, 1, id='winners-small'),
+        pytest.param('winnersfirst', (0, 5), 3, 3, id='winners-weighted'),
     ],
 )
-def test_plan_worker_count(monkeypatch, job, workers, expected):
+def test_plan_worker_count(monkeypatch, method, work, workers, expected):
     """Test that small work stays in-process and larger work uses the workers asked for, or all cores.
 
-    A winner combination weighs PARALLEL_WINNERS_COST scenarios against PARALLEL_MIN_WORK.
+    `work` is the job's (scenarios, winner combinations); a winner combination weighs PARALLEL_WINNERS_COST scenarios
+    against PARALLEL_MIN_WORK.
     """
     monkeypatch.setattr(engine, 'PARALLEL_MIN_WORK', 100)
     monkeypatch.setattr(engine, 'PARALLEL_WINNERS_COST', 20)
     monkeypatch.setattr(engine.os, 'cpu_count', lambda: 8)
+    teams = ('A', 'B', 'C', 'D')
+    job = engine._Job(make_league(), teams, (), FOUR_TEAMS_TWO_SERIES, {}, method, *work)
     chunks, count = engine._plan(job, EvaluationOptions(workers=workers))
     assert len(chunks) > 1
     assert count == expected
@@ -280,7 +280,8 @@ def test_plan_single_chunk_or_unknown_cores(monkeypatch):
     single = engine._Job(make_league(), ('A', 'B'), (), (), {}, 'exhaustive', 1)
     assert engine._plan(single, EvaluationOptions(workers=3))[1] == 1
     monkeypatch.setattr(engine.os, 'cpu_count', lambda: None)
-    assert engine._plan(_job('exhaustive', scenarios=36), EvaluationOptions())[1] == 1
+    job = engine._Job(make_league(), ('A', 'B', 'C', 'D'), (), FOUR_TEAMS_TWO_SERIES, {}, 'exhaustive', 36)
+    assert engine._plan(job, EvaluationOptions())[1] == 1
 
 
 def test_tie_straddling_the_start_of_a_slot_is_undecided():
