@@ -226,9 +226,12 @@ def test_context_watermarks_team_logos_only(tmp_path):
     image.save(tmp_path / 'red.png')
     logos = Logos(event=tmp_path / 'red.png', teams={'A': tmp_path / 'red.png'})
     context = _context(event=replace(NEO, logos=logos))
-    rows = {row.team: row.logo for row in context['rows']}
-    assert _decoded(context['event_logo']).getpixel((0, 0)) == (200, 30, 30, 255)
-    assert _decoded(rows['A']).mode == 'LA'
+    event_logo = context['event_logo']
+    team_logo = next(row.logo for row in context['rows'] if row.team == 'A')
+    assert event_logo is not None
+    assert team_logo is not None
+    assert _decoded(event_logo).getpixel((0, 0)) == (200, 30, 30, 255)
+    assert _decoded(team_logo).mode == 'LA'
 
 
 def test_card_logo_trims_margins_and_keeps_the_same_area(tmp_path):
