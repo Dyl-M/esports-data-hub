@@ -33,7 +33,7 @@ html, body { margin: 0; padding: 0; background: var(--c-bg); }
   --mark-size: calc(var(--row-font) * 4.2); --mark-x: calc(var(--mark-size) * 0.8); --mark-tilt: 12deg;
   width: {{ width }}px; height: {{ height }}px; overflow: hidden;
   display: flex; flex-direction: column; gap: var(--gap); padding: var(--pad);
-  background: var(--c-bg); color: var(--c-fg); font-family: var(--f-mono);
+  background: var(--c-bg); color: var(--c-fg); font-family: var(--f-mono), monospace;
   font-variant-numeric: tabular-nums;
   background-image: radial-gradient(130% 70% at 100% 0%, var(--c-glow), transparent 65%);
   --rank-col: calc(var(--row-font) * 1.6); --strip-col: 42%; --pct-col: 19%;
