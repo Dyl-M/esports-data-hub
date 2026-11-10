@@ -232,6 +232,9 @@ _drafts/
 _data/*/outlook/
 _data/*/logos/
 
+# Local caches of remote data (LPDB match history)
+.cache/
+
 # Brand files kept local (avatar, font, icons); the card templates are public, for transparency
 edh/assets/
 

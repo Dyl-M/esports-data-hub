@@ -13,68 +13,64 @@
 ## Projects
 
 **Esports Data Hub** (EDH) gathers several data projects built on esports competition results, each in its own
-subpackage of `edh`, sharing the same tooling and data sources.
+subpackage of `edh` with its own README, sharing the same tooling and data sources. Match data comes from
+[Liquipedia](https://liquipedia.net/) through [`liquipydia`](https://github.com/Dyl-M/liquipydia).
 
-| Project                                         | Package         | Status |
-|-------------------------------------------------|-----------------|--------|
-| [League play scenarios](#league-play-scenarios) | `edh.scenarios` | In use |
+| Project                                         | Package           | Status                                 |
+|-------------------------------------------------|-------------------|----------------------------------------|
+| [League play scenarios](#league-play-scenarios) | `edh.scenarios`   | In use                                 |
+| [Rating predictions](#rating-predictions)       | `edh.predictions` | Started: match history from Liquipedia |
 
-League play scenarios is the first of them; more projects will follow.
+### League play scenarios
 
-## League play scenarios
+Given the results already played in a round-robin league, works out how each team can finish once the remaining series
+are played, exactly or by Monte Carlo sampling, and renders the outlook as a shareable card. Every possible score of a
+remaining series counts as equally likely, so the shares describe what is still open, not predictions.
 
-This project computes ranking and qualification scenarios for teams during the league play stage of an esports
-event: given the results already played, it works out how each team can finish once the remaining matches are played,
-either exactly or by Monte Carlo sampling. Match data comes from [Liquipedia](https://liquipedia.net/) through
-[`liquipydia`](https://github.com/Dyl-M/liquipydia).
-
-Primary targets (Rocket League):
-
-- Coupe de France Slash 2026
-- The upcoming RLCS season, including the Clubs Championships league play (its seven regional leagues are
-  configured, `_data/rlcs_2027_<region>/`, waiting for the schedule)
-
-It succeeds [`league-play-scenarios`](https://github.com/Dyl-M/league-play-scenarios).
-
-The probability model, the tiebreakers, the methods, the outlook card and their limits are explained in
-**[How league play scenarios work](_docs/scenarios.md)**. In short, every possible score of a remaining series counts
-as equally likely, so the shares describe what is still open, not predictions.
-
-### Usage
-
-The Liquipedia source needs an [LPDB API key](https://liquipedia.net/api), read from the `LPDB_API_KEY` environment
-variable or from the `lpdb` field of `.tokens/local_keys.json` (gitignored).
+Targets: Coupe de France Slash 2026 and the RLCS Clubs Championships League Play (its seven regions are configured,
+waiting for the schedule). It succeeds [`league-play-scenarios`](https://github.com/Dyl-M/league-play-scenarios).
 
 ```bash
-uv run python -m edh.scenarios.run cdf_slash_2026                    # fetch from Liquipedia, then evaluate
-uv run python -m edh.scenarios.run cdf_slash_2026 --source csv       # offline, from the saved results.csv
-uv run python -m edh.scenarios.run cdf_slash_2026 --method montecarlo --samples 200000 --seed 1
-uv run python -m edh.scenarios.run cdf_slash_2026 --workers 4        # cap worker processes (default: all CPUs)
-uv run python -m edh.scenarios.run cdf_slash_2026 --visual           # evaluate, then render the outlook card
-uv run python -m edh.scenarios.run cdf_slash_2026 --visual-only      # render the card from the latest saved outlook
-uv run python -m edh.scenarios.run 'rlcs_2027_*' --visual           # several leagues: names and / or patterns
+uv run python -m edh.scenarios.run cdf_slash_2026 --visual     # fetch from Liquipedia, evaluate, render the card
+uv run python -m edh.scenarios.run cdf_slash_2026 --source csv # offline, from the saved results.csv
 ```
 
-Several leagues (names, or patterns over the `_data/` folders holding a `league.json`) run one after the other with
-the same options; a league that fails is logged with its name, the others still run, and the command exits with
-code 1 if any failed.
+- **[Running it](edh/scenarios/README.md)**: leagues and `league.json`, every option, method choice, outputs, the
+  outlook card
+- **[How it works](_docs/scenarios.md)**: probability model, tiebreakers, the math of the exhaustive, winners-first
+  and Monte Carlo methods, aggregation
 
-Each run:
+### Rating predictions
 
-- prints, per team, the share of scenarios ending at each rank and qualifying
-- saves it (with its cards) to `_data/<league>/outlook/<YYYY-MM-DD>/<method>/` (`outlook.csv` / `outlook.json`,
-  gitignored), so runs of other matchdays and methods are kept for comparison
-- dates it by the league's progress: the last day a series finished, in the event's timezone (Liquipedia's), which is
-  also the date shown on the card
-- with the Liquipedia source, also saves the results to `_data/<league>/results.csv` and the event organizers to
-  `_data/<league>/event.json`, and downloads the competition and team logos to `_data/<league>/logos/` (gitignored,
-  kept local)
+Per-game win probabilities learned from past results, to replace the equally likely scores of the league play scenarios.
+It starts with the match history: Rocket League tiers 1 and 2 since September 2024, fetched from Liquipedia and cached
+locally.
 
-`--visual-only --method <method>` renders the latest outlook of that method.
+```bash
+uv run python -m edh.predictions.run      # update the local match history, then summarize it
+```
 
-`--visual` also renders the outlook as a shareable [card](_docs/scenarios.md#outlook-card) (PNG, three social media
-formats). It needs Playwright's Chromium, installed once with `uv run playwright install chromium`, and the card
-template and brand files, which are kept out of git.
+- **[Running it](edh/predictions/README.md)**: history scope, cache, updates, reading the matches from Python
+
+## Setup
+
+The project uses [uv](https://docs.astral.sh/uv/) and Python 3.13.
+
+```bash
+uv sync                                   # install dependencies (dev tools included)
+uv run playwright install chromium        # once, only to render outlook cards
+```
+
+Liquipedia data needs an [LPDB API key](https://liquipedia.net/api), read from the `LPDB_API_KEY` environment variable,
+or else from the `lpdb` field of `.tokens/local_keys.json` (gitignored):
+
+```json
+{
+  "lpdb": "<your key>"
+}
+```
+
+Each project's README lists what it needs on top of this.
 
 ## Repository structure
 
@@ -82,9 +78,10 @@ template and brand files, which are kept out of git.
 esports-data-hub/
 ├── .github          # GitHub Actions workflows (tests & coverage, license year), Dependabot config, CODEOWNERS
 ├── _data            # One folder per league: league.json (format), results.csv and event.json (Liquipedia snapshots)
-├── _docs            # Project documentation (how league play scenarios work)
+├── _docs            # How each project works: models and math, independent of the code
 ├── _tests           # Pytest test suite, CSV / recorded Liquipedia / placeholder visual fixtures, shared configuration
-└── edh              # Main application package: exceptions, paths, brand (one subpackage per project)
+└── edh              # Main application package: exceptions, paths, brand, lpdb (shared Liquipedia access)
+    ├── predictions  # Rating predictions: match history (cached in .cache/lpdb/, gitignored), run.py (CLI)
     └── scenarios    # League play scenarios: models, config, standings / tiebreakers, engine, report, run.py (CLI)
         ├── sources  # Result sources: Liquipedia (through liquipydia) and CSV, event details snapshot
         └── visuals  # Outlook card: HTML rendering (Jinja2) and PNG export (Playwright)
@@ -92,10 +89,7 @@ esports-data-hub/
 
 ## Development
 
-The project uses [uv](https://docs.astral.sh/uv/) and Python 3.13.
-
 ```bash
-uv sync                                              # install dependencies (dev tools included)
 uv run pytest -m "not integration and not browser"   # tests run by CI (see below)
 uv run ruff check .                                  # lint
 uv run ruff format --check .                         # format check
@@ -105,4 +99,4 @@ uv run mypy edh                                      # type check
 Two opt-in test markers stay out of CI: `integration` calls the live Liquipedia API (needs an LPDB API key), `browser`
 renders cards with Playwright's Chromium.
 
-Code is reviewed by the [DeepSource](https://deepsource.io/) bot.
+> Code is reviewed by the [DeepSource](https://deepsource.io/) bot.

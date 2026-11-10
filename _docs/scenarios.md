@@ -1,8 +1,9 @@
 # League play scenarios: how it works
 
-This page explains what `edh.scenarios` computes and how: the probability model, the standings rules, the three
-evaluation methods (exhaustive, winners-first, Monte Carlo), how results are aggregated and the outlook card. For the
-command line, see the [README](/README.md#league-play-scenarios).
+This page explains what `edh.scenarios` computes and why it is right: the probability model, the standings rules, the
+three evaluation methods (exhaustive, winners-first, Monte Carlo), how results are aggregated and why parallel runs give
+the same results. To run it (setup, `league.json`, command line, outputs, outlook card), see
+the [league play scenarios README](/edh/scenarios/README.md).
 
 > [!IMPORTANT]
 > The shares are **shares of scenarios, not predictions**: every possible score of a remaining series is assumed
@@ -12,17 +13,14 @@ command line, see the [README](/README.md#league-play-scenarios).
 ## Contents
 
 - [Pipeline](#pipeline)
-- [Inputs](#inputs)
 - [Probability model](#probability-model)
 - [Standings and tiebreakers](#standings-and-tiebreakers)
-- [Choosing a method](#choosing-a-method)
+- [Three methods](#three-methods)
 - [Exhaustive enumeration](#exhaustive-enumeration)
 - [Monte Carlo sampling](#monte-carlo-sampling)
 - [Winners-first (semi-exhaustive, exact)](#winners-first-semi-exhaustive-exact)
 - [Aggregating the results](#aggregating-the-results)
 - [Parallel execution](#parallel-execution)
-- [Outlook card](#outlook-card)
-- [Module map](#module-map)
 
 ## Pipeline
 
@@ -34,25 +32,13 @@ or CSV ───────┘
 ```
 
 1. **Format**: `_data/<league>/league.json` gives the series length, the ordered tiebreakers, the qualification slots
-   and the team aliases.
+   and the team aliases ([fields](/edh/scenarios/README.md#leagues)).
 2. **Results**: a source returns every series of the league, played or not (Liquipedia through `liquipydia`, or the
    saved `results.csv`). The engine never knows where they come from.
 3. **Evaluation**: every remaining series is given its possible final scores; each scenario (one final score per
    remaining series) is ranked with the league's tiebreakers, and the rankings are summed into per-team shares.
 4. **Output**: per team, the share of scenarios ending at each rank, qualifying for each slot, or stuck in a tie the
    tiebreakers can't settle; then the outlook card.
-
-## Inputs
-
-| `league.json` field  | Meaning                                                                                   |
-|----------------------|-------------------------------------------------------------------------------------------|
-| `best_of`            | Series length (odd); a series of $2k-1$ games is won at $k$ games (`wins_needed`)         |
-| `tiebreakers`        | Ordered Liquipedia tiebreaker ids, e.g. `["matchscore", "gamediff", "ml.gamediff", ...]`  |
-| `qualification`      | Slots as `label: [first rank, last rank]`, e.g. `"Playoffs": [1, 4]`                      |
-| `team_aliases`       | Old name → current name, applied to every series (and manual points) before anything else |
-| `manual_tiebreakers` | Points set by hand, read by the `manual` tiebreaker (0 when absent), e.g. RLCS seed order |
-| `walkover_games`     | Games credited to the winner of a walkover                                                |
-| `theme`              | Card colors (see [Outlook card](#outlook-card))                                           |
 
 A series is `team_1`, `team_2`, the current score, whether it is finished and, when known, the goals of each game.
 Series are split into **played** (finished) and **pending** (upcoming, or in progress at their current score).
@@ -101,12 +87,13 @@ RLCS Clubs Championships League Play is configured from its official rulebook (s
 12 teams in EU / NA and 8 elsewhere, Bo5, ranked by match record, game difference, goal difference, then initial
 seed), but its schedule isn't out yet, so it hasn't run on real results.
 
-**Planned evolution** (in this order, not started):
+**Planned evolution** (in this order):
 
-1. **Team strengths**: per-team (per-map) win probabilities, e.g. a Bayesian model fitted on past results, turning
-   the uniform weights into weighted outcomes. The simulator stays the same: exact methods weight each scenario by
-   its probability instead of counting it (winners-first already weighs winner combinations), and Monte Carlo draws
-   each ending with its own probability.
+1. **Team strengths**: per-game win probabilities from ratings fitted on past results
+   (the [rating predictions](/edh/predictions/README.md) project, which so far holds the match history), turned into a
+   distribution of final scores per series. The simulator stays the same: exact methods weight each scenario by its
+   probability instead of counting it (winners-first already weighs winner combinations), and Monte Carlo draws each
+   ending with its own probability.
 2. **Series importance**: which remaining series swings each team's qualification share the most, computed from the
    simulator's own results.
 
@@ -119,8 +106,8 @@ seed), but its schedule isn't out yet, so it hasn't run on real results.
 2. Every team starts in **one tied group**.
 3. The first tiebreaker splits the group by value, best value first. Each subgroup still tied moves on to the **next**
    tiebreaker; earlier tiebreakers are not applied again (no restart).
-4. A group still tied after the last tiebreaker shares its ranks: a group of $k$ teams starting at rank $r$
-   covers ranks $r$ to $r+k-1$.
+4. A group still tied after the last tiebreaker shares its ranks: a group of $k$ teams starting at rank $r$ covers
+   ranks $r$ to $r+k-1$.
 
 | Tiebreaker   | Value (higher is better)               |
 |--------------|----------------------------------------|
@@ -143,21 +130,18 @@ tiebreaker and the ones after it are skipped), and is counted as unresolved.
 
 **Example** (Coupe de France Slash 2026: `matchscore`, `gamediff`, `ml.gamediff`, `ml.rounddiff`, `manual`): three
 teams finishing 6-4 in series are first split by their game difference over the whole league; two of them still level
-then compare their game difference in the two series they played against each other, then the goals of those two
-series.
+then compare their game difference in the two series they played against each other, then the goals of those two series.
 
-## Choosing a method
+## Three methods
 
-`engine.choose_method` resolves `--method` (default `auto`):
+| Method                                                                  | Exact | Applies when                                        |
+|-------------------------------------------------------------------------|-------|-----------------------------------------------------|
+| [Exhaustive](#exhaustive-enumeration)                                   | yes   | always, while the scenarios can be listed           |
+| [Winners-first](#winners-first-semi-exhaustive-exact) (Semi-exhaustive) | yes   | the first tiebreaker depends on series winners only |
+| [Monte Carlo](#monte-carlo-sampling)                                    | no    | always: a random sample of the scenarios            |
 
-| Method                                 | Exact | Applies when                                        | `auto` limit                                                 |
-|----------------------------------------|-------|-----------------------------------------------------|--------------------------------------------------------------|
-| `exhaustive`                           | yes   | always                                              | $\le 10^6$ scenarios (`MAX_EXHAUSTIVE_SCENARIOS`)            |
-| `winnersfirst` (shown Semi-exhaustive) | yes   | the first tiebreaker depends on series winners only | $\le 2^{15}$ winner combinations (`MAX_WINNER_COMBINATIONS`) |
-| `montecarlo`                           | no    | always                                              | fallback, 100,000 samples by default                         |
-
-`auto` takes the first that fits, in that order. An explicit exact method above its limit, or `winnersfirst` on a
-league whose first tiebreaker reads game or goal margins, raises `ScenarioError`.
+The two exact methods give the same shares; Monte Carlo estimates them within a margin. The default `auto` takes the
+first that fits, under the limits given in the [README](/edh/scenarios/README.md#choosing-a-method).
 
 ## Exhaustive enumeration
 
@@ -376,14 +360,14 @@ States sharing the same full-league part only differ in their mini-league record
 
 ### Correctness and limits
 
-The shares equal the exhaustive engine's (up to float rounding), which the tests check on random leagues for every
-kind of tiebreaker chain. On CDF Slash 2026 with 7 series left, 30 s exhaustive becomes 0.02 s.
+The shares equal the exhaustive engine's (up to float rounding), which the tests check on random leagues for every kind
+of tiebreaker chain.
 
 The cost lies in **large ties on wins with many series between their teams**: their internal margins are still
-enumerated: up to $3^{s}$ margin combinations for $s$ internal Bo5 series at 0-0 (3-0, 3-1 or 3-2 for the fixed
-winner), before states merge. All 6 CDF teams tied with 12 internal series take about a minute; on the real CDF
-standings at 15 left, all $6^{15} = 470{,}184{,}984{,}576$ scenarios took about 4 minutes on 16 cores, matching a
-1,000,000-sample Monte Carlo within 0.1 point. Run time depends on the standings, hence the $2^{15}$ cap for `auto`.
+enumerated: up to $3^{s}$ margin combinations for $s$ internal Bo5 series at 0-0 (3-0, 3-1 or 3-2 for the fixed winner),
+before states merge. Run time therefore depends on the standings, not only on the number of series left, hence
+the $2^{15}$ cap for `auto`. On the real CDF standings at 15 left, the exact shares over
+all $6^{15} = 470{,}184{,}984{,}576$ scenarios matched a 1,000,000-sample Monte Carlo within 0.1 point.
 
 ## Aggregating the results
 
@@ -411,7 +395,7 @@ $$
 A team's rank shares split the scenarios, and so do its qualified, undecided and **missed** totals for each slot
 (missed: the group lies outside the slot). When only one part of such a split was ever counted, its share is exactly 1.
 Summed in another order than $W$, winners-first probabilities can land a hair away from it (e.g. $0.9999999999999999$),
-which would hide a certain outcome such as a guaranteed slot (the IN badge). Weights only grow, so a part nevercounted
+which would hide a certain outcome such as a guaranteed slot (the IN badge). Weights only grow, so a part never counted
 is exactly 0.
 
 ### Projected standings
@@ -433,54 +417,7 @@ shares go to the better rank, then to the team with the better expected rank. Sh
 
 Chunks run in a `ProcessPoolExecutor` and their accumulators are merged **in chunk order**, so a run gives the same
 result whatever `--workers` is. Runs below 50,000 units of work (`PARALLEL_MIN_WORK`; a winner combination counts as
-200 scenarios) stay in-process, since starting workers costs about a second.
+200 scenarios) stay in-process, since starting workers has a fixed cost.
 
-Measured on 16 cores: Monte Carlo 100k samples 10 s → 2 s; winners-first 12 left 75 s → 27 s, 13 left 328 s → 78 s
-(bounded by the largest tied case, which stays serial, and by per-worker caches).
-
-## Outlook card
-
-`--visual` turns the outlook into a card to share on social media, saved as `card_portrait.png` (1080×1350),
-`card_square.png` (1080×1080) and `card_landscape.png` (1200×675) next to the run's outlook, in
-`_data/<league>/outlook/<YYYY-MM-DD>/<method>/` (one folder per day and method, so methods can be compared). The day,
-also printed on the card, is the league's progress rather than the day of the run: the last day a series finished, in
-the event's timezone (Liquipedia stores match times in UTC with the offset of the page's timezone).
-
-- One row per team, in projected standings order: its **slot share** of the league's **first** qualification slot
-  (consistent with the rank strip: the sum of the slot's rank cells, up to rounding), with the share of scenarios
-  where a tiebreak still settles the spot under it ("0.3% on tiebreak"), a qualified / tiebreak bar, and a strip of its
-  share of each final rank (a gap after each slot cutoff, the projected rank outlined). IN / OUT badges appear on exact
-  runs only. Shares have one decimal; `-` and  `100%` are kept for exact 0 and 1, so a share that would round to them is
-  written `<0.1` / `>99.9`.
-- The competition logo sits in the top right corner; each team's logo is a faint, slightly tilted watermark behind
-  its name. Logos are cropped to what they actually draw and sized to cover the same area, so a wide logo doesn't look
-  smaller than a square one; teams without branding of their own get Liquipedia's default logo of the game.
-- Leagues with more than 8 ranks (the 12-team RLCS regions) get a denser layout: smaller text, a wider rank strip and
-  smaller watermarks, so every cell and the tiebreak share stay readable. Smaller leagues keep the regular layout.
-- Colors come from the league's `theme` in `league.json` (a neutral palette by default), picked by hand from the
-  event's artwork. The RLCS regions share a background and rank shading and each has its own accent color.
-- The footer names the evaluation method and the source of the results: the event's organizers (read from
-  Liquipedia, without the disambiguation of their page names, e.g. `BLAST (Organizer)` is shown as `BLAST`).
-
-The card is a Jinja2 HTML template rendered by a headless Chromium through
-[Playwright](https://playwright.dev/python/). The template ([
-`edh/scenarios/visuals/templates/card.html.j2`](/edh/scenarios/visuals/templates/card.html.j2)) is public, so anyone can
-check how the card displays the results. The brand files it embeds (`edh/assets/`: profile picture, font, social icons)
-are kept out of git, so cards can only be rendered where those files exist locally; without them, `--visual` stops with
-an error naming the missing file.
-
-## Module map
-
-| Module         | Role                                                                                  |
-|----------------|---------------------------------------------------------------------------------------|
-| `config.py`    | `league.json` → `LeagueConfig`                                                        |
-| `models.py`    | Frozen, validated dataclasses (`Series`, `Tiebreaker`, `RankGroup`, `TeamOutlook`, …) |
-| `outcomes.py`  | Reachable final scores of a series                                                    |
-| `standings.py` | `tally`, `rank`, `Standings` (played series tallied once), `TieResolver`              |
-| `engine.py`    | `evaluate`: method choice, chunks, exhaustive / Monte Carlo, aggregation, projection  |
-| `winners.py`   | Winners-first exact method                                                            |
-| `report.py`    | Console table, `outlook.csv` / `outlook.json`                                         |
-| `sources/`     | Liquipedia and CSV result sources, event details snapshot                             |
-| `logos.py`     | Logo downloads and trimming                                                           |
-| `visuals/`     | Card context / HTML rendering and PNG export                                          |
-| `run.py`       | Command line entry point                                                              |
+For winners-first, the gain from more workers is bounded by the largest tied case, which stays serial, and by caches
+that each worker builds on its own.
