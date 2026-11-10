@@ -2,8 +2,11 @@
 
 # Standard library
 import logging
+import runpy
+import sys
 
 # Third-party
+import pytest
 from liquipydia import RateLimitError
 
 # Local
@@ -56,6 +59,16 @@ def test_main_offline_reads_the_cache_only(monkeypatch, tmp_path, caplog):
         assert run.main(['--offline']) == 0
     assert opened == []
     assert '1 finished team matches' in caplog.text
+
+
+def test_module_entry_point(monkeypatch, tmp_path):
+    """Test that `python -m edh.predictions.run` exits with main's code (0 for an empty offline summary)."""
+    monkeypatch.setattr(paths, 'LPDB_CACHE_DIR', tmp_path)
+    monkeypatch.setattr(sys, 'argv', ['run', '--offline'])
+    monkeypatch.delitem(sys.modules, 'edh.predictions.run')  # run a fresh copy as __main__, not the imported one
+    with pytest.raises(SystemExit) as exit_info:
+        runpy.run_module('edh.predictions.run', run_name='__main__')
+    assert exit_info.value.code == 0
 
 
 def test_main_reports_errors(monkeypatch, tmp_path, caplog):

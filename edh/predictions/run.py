@@ -8,6 +8,7 @@ again. LPDB rate-limits bulk reads: a run stopped by it keeps what arrived, and 
 import argparse
 import datetime as dt
 import logging
+import sys
 from collections import Counter
 from collections.abc import Sequence
 
@@ -68,4 +69,4 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 
 if __name__ == '__main__':
-    raise SystemExit(main())
+    sys.exit(main())
