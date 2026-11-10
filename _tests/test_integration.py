@@ -5,10 +5,11 @@ import pytest
 
 # Local
 from edh.exceptions import ConfigurationError
+from edh.lpdb import load_api_key
 from edh.scenarios.config import load_league
 from edh.scenarios.engine import evaluate
 from edh.scenarios.models import EvaluationOptions
-from edh.scenarios.sources.liquipedia import LiquipediaSource, load_api_key
+from edh.scenarios.sources.liquipedia import LiquipediaSource
 
 
 def _has_key():

@@ -1,0 +1,291 @@
+{
+  "match2id": "ZoPW1vwAjk_0001",
+  "pagename": "Rocket_League_Championship_Series/2026/Paris_Major",
+  "date": "2026-05-20 12:00:00",
+  "dateexact": 1,
+  "finished": 1,
+  "status": "",
+  "winner": "1",
+  "walkover": "",
+  "resulttype": "",
+  "bestof": 0,
+  "mode": "3v3",
+  "type": "Offline",
+  "tournament": "RLCS 2026 - Paris Major",
+  "parent": "Rocket_League_Championship_Series/2026/Paris_Major",
+  "liquipediatier": "1",
+  "liquipediatiertype": "",
+  "extradata": {
+    "matchsection": "Group B",
+    "hasopponent2": true,
+    "timezoneoffset": "+02:00",
+    "casters": {
+      "1": {
+        "flag": "united states",
+        "name": "Jamesbot",
+        "displayName": "Jamesbot"
+      },
+      "2": {
+        "flag": "united states",
+        "name": "Jorby",
+        "displayName": "Jorby"
+      }
+    },
+    "hasopponent1": true,
+    "timestamp": 1779278400,
+    "isfeatured": true,
+    "timezoneid": "CEST"
+  },
+  "match2opponents": [
+    {
+      "id": 1,
+      "type": "team",
+      "name": "Manchester City Esports",
+      "template": "manchester city esports",
+      "icon": "Manchester City allmode.png",
+      "score": 3,
+      "status": "S",
+      "placement": 1,
+      "match2players": [
+        {
+          "id": 1,
+          "opid": 1,
+          "name": "Ejby",
+          "displayname": "ejby",
+          "flag": "Denmark",
+          "extradata": []
+        },
+        {
+          "id": 2,
+          "opid": 1,
+          "name": "Accro",
+          "displayname": "accro",
+          "flag": "England",
+          "extradata": []
+        },
+        {
+          "id": 3,
+          "opid": 1,
+          "name": "Seikoo",
+          "displayname": "Seikoo",
+          "flag": "France",
+          "extradata": []
+        }
+      ],
+      "extradata": [],
+      "teamtemplate": {
+        "template": "manchester city esports",
+        "page": "Manchester City Esports",
+        "name": "Man City Esports",
+        "shortname": "MCI",
+        "bracketname": "Manchester City",
+        "image": "Manchester City allmode.png",
+        "imagedark": "Manchester City allmode.png",
+        "legacyimage": "",
+        "legacyimagedark": "",
+        "imageurl": "https://liquipedia.net/commons/images/thumb/3/3a/Manchester_City_FC_2016_allmode.png/400px-Manchester_City_FC_2016_allmode.png",
+        "imagedarkurl": "https://liquipedia.net/commons/images/thumb/3/3a/Manchester_City_FC_2016_allmode.png/400px-Manchester_City_FC_2016_allmode.png",
+        "legacyimageurl": "",
+        "legacyimagedarkurl": ""
+      }
+    },
+    {
+      "id": 2,
+      "type": "team",
+      "name": "MIBR",
+      "template": "mibr mibr orig",
+      "icon": "MIBR_2018_lightmode.png",
+      "score": 1,
+      "status": "S",
+      "placement": 2,
+      "match2players": [
+        {
+          "id": 1,
+          "opid": 2,
+          "name": "Sad",
+          "displayname": "Sad",
+          "flag": "Brazil",
+          "extradata": []
+        },
+        {
+          "id": 2,
+          "opid": 2,
+          "name": "Reysbull",
+          "displayname": "Reysbull",
+          "flag": "Chile",
+          "extradata": []
+        },
+        {
+          "id": 3,
+          "opid": 2,
+          "name": "Aztro",
+          "displayname": "Aztrø",
+          "flag": "Brazil",
+          "extradata": []
+        }
+      ],
+      "extradata": [],
+      "teamtemplate": {
+        "template": "mibr mibr orig",
+        "page": "MIBR",
+        "name": "MIBR",
+        "shortname": "MIBR",
+        "bracketname": "MIBR",
+        "image": "MIBR_2018_lightmode.png",
+        "imagedark": "MIBR_2018_darkmode.png",
+        "legacyimage": "",
+        "legacyimagedark": "",
+        "imageurl": "https://liquipedia.net/commons/images/thumb/8/85/MIBR_2018_lightmode.png/400px-MIBR_2018_lightmode.png",
+        "imagedarkurl": "https://liquipedia.net/commons/images/thumb/7/72/MIBR_2018_darkmode.png/400px-MIBR_2018_darkmode.png",
+        "legacyimageurl": "",
+        "legacyimagedarkurl": ""
+      }
+    }
+  ],
+  "match2games": [
+    {
+      "map": "Parc de Paris",
+      "subgroup": "1",
+      "match2gameid": 1,
+      "scores": [
+        0,
+        1
+      ],
+      "participants": [],
+      "opponents": [
+        {
+          "status": "S",
+          "score": 0
+        },
+        {
+          "status": "S",
+          "score": 1
+        }
+      ],
+      "status": "",
+      "winner": "2",
+      "walkover": "",
+      "resulttype": "",
+      "date": "2026-05-20 12:00:00",
+      "mode": "3v3",
+      "type": "Offline",
+      "game": "rl",
+      "patch": "",
+      "vod": "https://www.twitch.tv/videos/2776499732?t=00h48m07s",
+      "length": "",
+      "extradata": {
+        "dateexact": true,
+        "timestamp": 1779278400
+      }
+    },
+    {
+      "map": "Forbidden Temple",
+      "subgroup": "2",
+      "match2gameid": 2,
+      "scores": [
+        1,
+        0
+      ],
+      "participants": [],
+      "opponents": [
+        {
+          "status": "S",
+          "score": 1
+        },
+        {
+          "status": "S",
+          "score": 0
+        }
+      ],
+      "status": "",
+      "winner": "1",
+      "walkover": "",
+      "resulttype": "",
+      "date": "2026-05-20 12:00:00",
+      "mode": "3v3",
+      "type": "Offline",
+      "game": "rl",
+      "patch": "",
+      "vod": "https://www.twitch.tv/videos/2776499732?t=00h55m00s",
+      "length": "",
+      "extradata": {
+        "otlength": "+3:09",
+        "timestamp": 1779278400,
+        "dateexact": true,
+        "ot": "true"
+      }
+    },
+    {
+      "map": "Mannfield (Dusk)",
+      "subgroup": "3",
+      "match2gameid": 3,
+      "scores": [
+        2,
+        1
+      ],
+      "participants": [],
+      "opponents": [
+        {
+          "status": "S",
+          "score": 2
+        },
+        {
+          "status": "S",
+          "score": 1
+        }
+      ],
+      "status": "",
+      "winner": "1",
+      "walkover": "",
+      "resulttype": "",
+      "date": "2026-05-20 12:00:00",
+      "mode": "3v3",
+      "type": "Offline",
+      "game": "rl",
+      "patch": "",
+      "vod": "https://www.twitch.tv/videos/2776499732?t=01h04m57s",
+      "length": "",
+      "extradata": {
+        "otlength": "+4:25",
+        "timestamp": 1779278400,
+        "dateexact": true,
+        "ot": "true"
+      }
+    },
+    {
+      "map": "Utopia Coliseum (Dusk)",
+      "subgroup": "4",
+      "match2gameid": 4,
+      "scores": [
+        3,
+        1
+      ],
+      "participants": [],
+      "opponents": [
+        {
+          "status": "S",
+          "score": 3
+        },
+        {
+          "status": "S",
+          "score": 1
+        }
+      ],
+      "status": "",
+      "winner": "1",
+      "walkover": "",
+      "resulttype": "",
+      "date": "2026-05-20 12:00:00",
+      "mode": "3v3",
+      "type": "Offline",
+      "game": "rl",
+      "patch": "",
+      "vod": "https://www.twitch.tv/videos/2776528291?t=00h09m44s",
+      "length": "",
+      "extradata": {
+        "dateexact": true,
+        "timestamp": 1779278400
+      }
+    }
+  ]
+}

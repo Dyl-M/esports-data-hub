@@ -10,6 +10,8 @@ __author__ = 'Dylan "dyl-m" Monfret'
 __all__ = [
     'brand',
     'exceptions',
+    'lpdb',
     'paths',
+    'predictions',
     'scenarios',
 ]

@@ -12,13 +12,11 @@ import pytest
 from liquipydia import ApiResponse, LiquipediaError, Match, TeamTemplate
 
 # Local
-from edh import paths
-from edh.exceptions import ConfigurationError, DataSourceError
+from edh import lpdb
+from edh.exceptions import DataSourceError
 from edh.scenarios.config import load_league
-from edh.scenarios.sources import liquipedia
 from edh.scenarios.sources.liquipedia import (
     LiquipediaSource,
-    load_api_key,
     parse_organizers,
     parse_utc_offset,
     team_logo_url,
@@ -62,9 +60,9 @@ class FakeStandingsTables(FakeEndpoint):
 class FakeMatches(FakeEndpoint):
     """Recorded `/match` responses, matching the source's `LpdbMatches` protocol."""
 
-    def paginate(self, wiki, *, pagename, order=None, page_size=50):
+    def paginate(self, wiki, *, conditions=None, query=None, order=None, page_size=50):
         """Iterate over the recorded matches."""
-        return iter(self._answer(wiki=wiki, pagename=pagename, order=order, page_size=page_size))
+        return iter(self._answer(wiki=wiki, conditions=conditions, query=query, order=order, page_size=page_size))
 
 
 class FakeTournaments(FakeEndpoint):
@@ -126,14 +124,14 @@ def opened_clients(monkeypatch):
     """Make the source open a FakeClient with the `LPDB_API_KEY` env key; return the clients opened, as they open."""
     calls = []
 
-    def open_client(app_name, *, api_key):
+    def open_client(app_name, *, api_key, **_retries):
         """Stand in for the LiquipediaClient constructor, recording how it was called."""
         client = FakeClient()
         calls.append({'app_name': app_name, 'api_key': api_key, 'client': client})
         return client
 
     monkeypatch.setenv('LPDB_API_KEY', 'env-key')
-    monkeypatch.setattr(liquipedia, 'LiquipediaClient', open_client)
+    monkeypatch.setattr(lpdb, 'LiquipediaClient', open_client)
     return calls
 
 
@@ -162,7 +160,15 @@ def test_fetch_queries(cdf):
     LiquipediaSource(client).fetch(cdf)
     page = {'wiki': 'rocketleague', 'pagename': 'NEO/Coupe_de_France_Slash/2026'}
     assert client.standings_tables.queries == [page | {'order': 'standingsindex ASC'}]
-    assert client.matches.queries == [page | {'order': 'date ASC', 'page_size': 100}]
+    assert client.matches.queries == [
+        {
+            'wiki': 'rocketleague',
+            'conditions': '[[pagename::NEO/Coupe_de_France_Slash/2026]]',
+            'query': None,
+            'order': 'date ASC',
+            'page_size': 100,
+        }
+    ]
 
 
 def test_fetch_warns_on_tiebreaker_mismatch(caplog):
@@ -421,35 +427,3 @@ def test_to_series_requires_named_opponents(cdf):
     """Test that a match with an undetermined opponent (TBD) is rejected."""
     with pytest.raises(DataSourceError, match='two named opponents'):
         to_series(_match('xsUsGxjSqt_R01-M001'), 1, cdf)
-
-
-# === load_api_key ===
-
-
-def test_load_api_key_from_env(monkeypatch):
-    """Test that the environment variable wins."""
-    monkeypatch.setenv('LPDB_API_KEY', 'env-key')
-    assert load_api_key() == 'env-key'
-
-
-def test_load_api_key_from_file(monkeypatch, tmp_path):
-    """Test the fallback on the token file's `lpdb` field."""
-    monkeypatch.delenv('LPDB_API_KEY', raising=False)
-    tokens = tmp_path / 'tokens.json'
-    tokens.write_text('{"lpdb": "file-key"}', encoding='utf-8')
-    monkeypatch.setattr(paths, 'TOKENS_JSON', tokens)
-    assert load_api_key() == 'file-key'
-
-
-@pytest.mark.parametrize(
-    ('content', 'message'), [(None, 'No LPDB API key'), ('{}', 'No LPDB API key'), ('[', 'Invalid')]
-)
-def test_load_api_key_errors(monkeypatch, tmp_path, content, message):
-    """Test that a missing, keyless or malformed token file is a configuration error."""
-    monkeypatch.delenv('LPDB_API_KEY', raising=False)
-    tokens = tmp_path / 'tokens.json'
-    if content is not None:
-        tokens.write_text(content, encoding='utf-8')
-    monkeypatch.setattr(paths, 'TOKENS_JSON', tokens)
-    with pytest.raises(ConfigurationError, match=message):
-        load_api_key()

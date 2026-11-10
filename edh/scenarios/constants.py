@@ -1,5 +1,8 @@
 """Constants for league play scenarios."""
 
+# Local
+from ..lpdb import LPDB_APP_NAME
+
 # === Methods ===
 
 METHOD_AUTO = 'auto'  # exhaustive when the scenario count allows it, then winners-first, then Monte Carlo
@@ -42,8 +45,6 @@ SOURCE_LIQUIPEDIA = 'liquipedia'
 SOURCE_CSV = 'csv'
 SOURCES = (SOURCE_LIQUIPEDIA, SOURCE_CSV)
 
-LPDB_API_KEY_ENV = 'LPDB_API_KEY'  # takes precedence over paths.TOKENS_JSON
-LPDB_APP_NAME = 'esports-data-hub'  # User-Agent application name
 LPDB_PAGE_SIZE = 100
 # Logo downloads (liquipedia.net/commons): Liquipedia asks for a User-Agent naming the tool and a contact
 LOGO_USER_AGENT = f'{LPDB_APP_NAME} (https://github.com/Dyl-M/esports-data-hub)'
@@ -66,11 +67,6 @@ LOGO_MEDIA_TYPES = {
     '.webp': 'image/webp',
 }
 
-# LPDB opponent statuses
-STATUS_SCORED = 'S'  # regular (scored) result
-STATUS_WALKOVER_WIN = 'W'
-STATUS_WALKOVER_LOSSES = frozenset({'FF', 'DQ', 'L'})  # forfeit, disqualified, loss
-STATUS_WALKOVERS = STATUS_WALKOVER_LOSSES | {STATUS_WALKOVER_WIN}
 
 # === Files ===
 

@@ -12,16 +12,12 @@ opponent uses (`/teamtemplate`, the logo of the period, e.g. `karmine corp 2024`
 import datetime as dt
 import json
 import logging
-import os
 import re
-from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import Any, Protocol
+from typing import Any
 
 # Third-party
 from liquipydia import (
-    ApiResponse,
-    LiquipediaClient,
     LiquipediaError,
     Match,
     StandingsTable,
@@ -30,19 +26,16 @@ from liquipydia import (
 )
 
 # Local
-from ... import paths
-from ...exceptions import ConfigurationError, DataSourceError
-from ..constants import (
-    CONTEXT_FULL,
-    LPDB_API_KEY_ENV,
-    LPDB_APP_NAME,
-    LPDB_PAGE_SIZE,
-    STATUS_SCORED,
-    STATUS_WALKOVER_LOSSES,
-    STATUS_WALKOVER_WIN,
+from ...exceptions import DataSourceError
+from ...lpdb import (
     STATUS_WALKOVERS,
-    TIEBREAKER_DISQUALIFIED,
+    LpdbClient,
+    decided_goals,
+    first_wins_walkover,
+    open_client,
+    page_condition,
 )
+from ..constants import CONTEXT_FULL, LPDB_PAGE_SIZE, TIEBREAKER_DISQUALIFIED
 from ..models import EventInfo, LeagueConfig, Series
 
 logger = logging.getLogger(__name__)
@@ -51,97 +44,13 @@ logger = logging.getLogger(__name__)
 PAGE_DISAMBIGUATION = re.compile(r'\s+\([^()]*\)$')
 
 
-class LpdbStandingsTables(Protocol):
-    """The `/standingstable` queries the source needs (liquipydia's `client.standings_tables`)."""
-
-    def list(self, wiki: str, *, pagename: str, order: str | None = None) -> ApiResponse:
-        """Return one page of the standings tables stored on pagename."""
-        ...
-
-
-class LpdbMatches(Protocol):
-    """The `/match` queries the source needs (liquipydia's `client.matches`)."""
-
-    def paginate(
-        self, wiki: str, *, pagename: str, order: str | None = None, page_size: int = 50
-    ) -> Iterator[dict[str, Any]]:
-        """Iterate over every match stored on pagename, page by page."""
-        ...
-
-
-class LpdbTournaments(Protocol):
-    """The `/tournament` queries the source needs (liquipydia's `client.tournaments`)."""
-
-    def list(self, wiki: str, *, pagename: str, query: str | None = None) -> ApiResponse:
-        """Return the tournament stored on pagename."""
-        ...
-
-
-class LpdbTeamTemplates(Protocol):
-    """The `/teamtemplate` queries the source needs (liquipydia's `client.team_templates`)."""
-
-    def get(self, wiki: str, template: str, *, date: str | None = None) -> ApiResponse:
-        """Return the team template named template."""
-        ...
-
-
-class LpdbClient(Protocol):
-    """The part of an LPDB client the source uses; `liquipydia.LiquipediaClient` satisfies it."""
-
-    @property
-    def standings_tables(self) -> LpdbStandingsTables:
-        """Standings table queries."""
-        ...
-
-    @property
-    def matches(self) -> LpdbMatches:
-        """Match queries."""
-        ...
-
-    @property
-    def tournaments(self) -> LpdbTournaments:
-        """Tournament queries."""
-        ...
-
-    @property
-    def team_templates(self) -> LpdbTeamTemplates:
-        """Team template queries."""
-        ...
-
-
-def load_api_key() -> str:
-    """Return the LPDB API key, from `LPDB_API_KEY` or the `lpdb` field of `paths.TOKENS_JSON`.
-
-    Returns:
-        The API key.
-
-    Raises:
-        ConfigurationError: If neither holds a key.
-    """
-    key = os.environ.get(LPDB_API_KEY_ENV)
-    if key:
-        return key
-    tokens = paths.TOKENS_JSON
-    try:
-        key = json.loads(tokens.read_text(encoding='utf-8')).get('lpdb')
-    except FileNotFoundError:
-        key = None
-    except (json.JSONDecodeError, AttributeError) as error:
-        raise ConfigurationError(f'Invalid token file: {tokens}', file_path=str(tokens)) from error
-    if not key:
-        raise ConfigurationError(
-            f'No LPDB API key: set {LPDB_API_KEY_ENV} or add "lpdb" to {tokens}', file_path=str(tokens)
-        )
-    return str(key)
-
-
 @dataclass(frozen=True)
 class LiquipediaSource:
     """Fetch league series from Liquipedia.
 
     Attributes:
         client: An open LPDB client (tests pass a fake one); None to open a liquipydia client per fetch, with the key
-            from `load_api_key()`.
+            from `edh.lpdb.load_api_key()`.
     """
 
     client: LpdbClient | None = None
@@ -161,7 +70,7 @@ class LiquipediaSource:
         """
         if self.client is not None:
             return _fetch(self.client, config)
-        with LiquipediaClient(LPDB_APP_NAME, api_key=load_api_key()) as client:
+        with open_client() as client:
             return _fetch(client, config)
 
     def fetch_event(self, config: LeagueConfig) -> EventInfo:
@@ -180,7 +89,7 @@ class LiquipediaSource:
         """
         if self.client is not None:
             return _fetch_event(self.client, config)
-        with LiquipediaClient(LPDB_APP_NAME, api_key=load_api_key()) as client:
+        with open_client() as client:
             return _fetch_event(client, config)
 
 
@@ -207,7 +116,9 @@ def _fetch_event(client: LpdbClient, config: LeagueConfig) -> EventInfo:
 def _team_logo_urls(client: LpdbClient, config: LeagueConfig) -> dict[str, str]:
     """Logo address of each team of the league page, from the team template of its latest match."""
     templates: dict[str, str] = {}
-    records = client.matches.paginate(config.wiki, pagename=config.pagename, order='date ASC', page_size=LPDB_PAGE_SIZE)
+    records = client.matches.paginate(
+        config.wiki, conditions=page_condition(config.pagename), order='date ASC', page_size=LPDB_PAGE_SIZE
+    )
     for record in records:
         for opponent in Match.model_validate(record).match2opponents or []:
             name, template = opponent.get('name'), opponent.get('template')
@@ -262,7 +173,7 @@ def _fetch(client: LpdbClient, config: LeagueConfig) -> list[Series]:
     try:
         tables = client.standings_tables.list(config.wiki, pagename=config.pagename, order='standingsindex ASC')
         records = client.matches.paginate(
-            config.wiki, pagename=config.pagename, order='date ASC', page_size=LPDB_PAGE_SIZE
+            config.wiki, conditions=page_condition(config.pagename), order='date ASC', page_size=LPDB_PAGE_SIZE
         )
         matches = {match.match2id: match for match in (Match.model_validate(record) for record in records)}
     except LiquipediaError as error:
@@ -378,8 +289,7 @@ def _opponents(match: Match) -> tuple[dict[str, Any], dict[str, Any]]:
 
 def _walkover_scores(statuses: tuple[str, str], walkover_games: int) -> tuple[int, int]:
     """Series score of a walkover: `walkover_games` to the winner, 0 to the forfeiting team."""
-    first_wins = statuses[0] == STATUS_WALKOVER_WIN or statuses[1] in STATUS_WALKOVER_LOSSES
-    return (walkover_games, 0) if first_wins else (0, walkover_games)
+    return (walkover_games, 0) if first_wins_walkover(statuses) else (0, walkover_games)
 
 
 def _score(opponent: dict[str, Any]) -> int:
@@ -389,27 +299,10 @@ def _score(opponent: dict[str, Any]) -> int:
 
 def _goals(match: Match, *, expected_games: int | None) -> tuple[tuple[int, int], ...] | None:
     """Goals of each decided game, or None when fewer games are scored than `expected_games` (partial data)."""
-    goals = tuple(_game_goals(game) for game in match.match2games or [] if _is_decided(game))
+    goals = decided_goals(match)
     if expected_games is not None and len(goals) != expected_games:
         return None
     return goals
-
-
-def _is_decided(game: dict[str, Any]) -> bool:
-    """Whether a game has a winner and regular scores for both opponents."""
-    opponents = game.get('opponents') or []
-    return (
-        bool(game.get('winner'))
-        and game.get('status') != 'notplayed'
-        and len(game.get('scores') or []) == 2
-        and all(isinstance(opponent, dict) and opponent.get('status') == STATUS_SCORED for opponent in opponents)
-    )
-
-
-def _game_goals(game: dict[str, Any]) -> tuple[int, int]:
-    """Goals of a decided game, `(team_1, team_2)`."""
-    first, second = game['scores']
-    return int(first), int(second)
 
 
 def _check_tiebreakers(table: StandingsTable, config: LeagueConfig) -> None:

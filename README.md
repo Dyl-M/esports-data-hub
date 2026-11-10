@@ -15,11 +15,13 @@
 **Esports Data Hub** (EDH) gathers several data projects built on esports competition results, each in its own
 subpackage of `edh`, sharing the same tooling and data sources.
 
-| Project                                         | Package         | Status |
-|-------------------------------------------------|-----------------|--------|
-| [League play scenarios](#league-play-scenarios) | `edh.scenarios` | In use |
+| Project                                         | Package           | Status                                 |
+|-------------------------------------------------|-------------------|----------------------------------------|
+| [League play scenarios](#league-play-scenarios) | `edh.scenarios`   | In use                                 |
+| Rating predictions                              | `edh.predictions` | Started: match history from Liquipedia |
 
-League play scenarios is the first of them; more projects will follow.
+League play scenarios is the first of them. Rating predictions will feed it per-match win probabilities in place of
+equally likely scores; more projects will follow.
 
 ## League play scenarios
 
@@ -84,7 +86,8 @@ esports-data-hub/
 ├── _data            # One folder per league: league.json (format), results.csv and event.json (Liquipedia snapshots)
 ├── _docs            # Project documentation (how league play scenarios work)
 ├── _tests           # Pytest test suite, CSV / recorded Liquipedia / placeholder visual fixtures, shared configuration
-└── edh              # Main application package: exceptions, paths, brand (one subpackage per project)
+└── edh              # Main application package: exceptions, paths, brand, lpdb (one subpackage per project)
+    ├── predictions  # Rating predictions: LPDB match history cached in .cache/lpdb/ (gitignored), run.py (CLI)
     └── scenarios    # League play scenarios: models, config, standings / tiebreakers, engine, report, run.py (CLI)
         ├── sources  # Result sources: Liquipedia (through liquipydia) and CSV, event details snapshot
         └── visuals  # Outlook card: HTML rendering (Jinja2) and PNG export (Playwright)
