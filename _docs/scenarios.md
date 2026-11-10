@@ -3,7 +3,7 @@
 This page explains what `edh.scenarios` computes and why it is right: the probability model, the standings rules, the
 three evaluation methods (exhaustive, winners-first, Monte Carlo), how results are aggregated and why parallel runs give
 the same results. To run it (setup, `league.json`, command line, outputs, outlook card), see
-the[league play scenarios README](/edh/scenarios/README.md).
+the [league play scenarios README](/edh/scenarios/README.md).
 
 > [!IMPORTANT]
 > The shares are **shares of scenarios, not predictions**: every possible score of a remaining series is assumed

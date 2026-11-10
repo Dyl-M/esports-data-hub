@@ -24,7 +24,7 @@ subpackage of `edh` with its own README, sharing the same tooling and data sourc
 ### League play scenarios
 
 Given the results already played in a round-robin league, works out how each team can finish once the remaining series
-are played, exactly or by Monte Carlo sampling, and renders the outlook as a shareable card. Every possiblescore of a
+are played, exactly or by Monte Carlo sampling, and renders the outlook as a shareable card. Every possible score of a
 remaining series counts as equally likely, so the shares describe what is still open, not predictions.
 
 Targets: Coupe de France Slash 2026 and the RLCS Clubs Championships League Play (its seven regions are configured,
@@ -43,7 +43,7 @@ uv run python -m edh.scenarios.run cdf_slash_2026 --source csv # offline, from t
 ### Rating predictions
 
 Per-game win probabilities learned from past results, to replace the equally likely scores of the league play scenarios.
-It starts with the match history: Rocket League tiers 1 and 2 since September 2024, fetched from Liquipediaand cached
+It starts with the match history: Rocket League tiers 1 and 2 since September 2024, fetched from Liquipedia and cached
 locally.
 
 ```bash
