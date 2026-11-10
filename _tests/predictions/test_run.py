@@ -33,6 +33,7 @@ def _fake_open_client(monkeypatch, records=(), error=None):
     opened = []
 
     def open_client(**retries):
+        """Stand in for `edh.lpdb.open_client`, recording the retry settings."""
         opened.append(retries)
         return _Opened(records, error)
 
