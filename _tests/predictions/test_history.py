@@ -57,7 +57,7 @@ def test_scope_conditions():
 
 
 @pytest.mark.parametrize('tiers', [(), ('1', '')])
-def test_scope_needs_tiers(tiers):
+def test_scope_needs_tiers(tiers: tuple[str, ...]):
     """Test that a scope without tiers, or with an empty one, is rejected."""
     with pytest.raises(ValueError, match='tiers'):
         HistoryScope(tiers=tiers)

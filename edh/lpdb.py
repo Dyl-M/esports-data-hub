@@ -73,17 +73,21 @@ class LpdbTeamTemplates(Protocol):
         ...
 
 
-class LpdbClient(Protocol):
+class LpdbMatchClient(Protocol):
+    """An LPDB client used for its matches only (e.g. the match history); `liquipydia.LiquipediaClient` satisfies it."""
+
+    @property
+    def matches(self) -> LpdbMatches:
+        """Match queries."""
+        ...
+
+
+class LpdbClient(LpdbMatchClient, Protocol):
     """The part of an LPDB client used here; `liquipydia.LiquipediaClient` satisfies it."""
 
     @property
     def standings_tables(self) -> LpdbStandingsTables:
         """Standings table queries."""
-        ...
-
-    @property
-    def matches(self) -> LpdbMatches:
-        """Match queries."""
         ...
 
     @property

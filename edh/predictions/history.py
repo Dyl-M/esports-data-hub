@@ -31,7 +31,7 @@ from ..exceptions import DataSourceError
 from ..lpdb import (
     LPDB_MAX_PAGE_SIZE,
     STATUS_WALKOVERS,
-    LpdbClient,
+    LpdbMatchClient,
     decided_goals,
     first_wins_walkover,
 )
@@ -110,7 +110,7 @@ class HistoryUpdate:
 
 
 def update_history(
-    client: LpdbClient,
+    client: LpdbMatchClient,
     *,
     today: dt.date,
     scope: HistoryScope | None = None,
@@ -160,7 +160,9 @@ def history_dir(wiki: str = WIKI) -> Path:
     return paths.LPDB_CACHE_DIR / wiki
 
 
-def _batches(client: LpdbClient, scope: HistoryScope, since: dt.date, until: dt.date) -> Iterator[list[dict[str, Any]]]:
+def _batches(
+    client: LpdbMatchClient, scope: HistoryScope, since: dt.date, until: dt.date
+) -> Iterator[list[dict[str, Any]]]:
     """Yield the scope's matches from since to until in date order, one LPDB page at a time."""
     records = client.matches.paginate(
         scope.wiki,
@@ -207,10 +209,15 @@ class _PageWriter:
             path = page_file(self.folder, page)
             merged = {str(record['match2id']): record for record in _read_page(path)}
             merged |= {str(record['match2id']): record for record in page_records}
-            ordered = sorted(merged.values(), key=lambda record: (str(record['date']), str(record['match2id'])))
+            ordered = sorted(merged.values(), key=_record_order)
             _write_json(path, {'fetched_at': fetched_at, 'matches': ordered})
         self.matches += len(records)
         self.pages.update(by_page)
+
+
+def _record_order(record: dict[str, Any]) -> tuple[str, str]:
+    """Sort key of a cached record: date, then id."""
+    return str(record['date']), str(record['match2id'])
 
 
 def page_file(folder: Path, page: str) -> Path:
