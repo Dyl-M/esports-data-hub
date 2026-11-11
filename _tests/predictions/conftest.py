@@ -1,12 +1,24 @@
-"""Shared helpers for the predictions tests: LPDB match records and a fake client serving them."""
+"""Shared helpers for the predictions tests: LPDB match records, a fake client serving them, played matches."""
 
 # Standard library
 import datetime as dt
 
-# Third-party
+# Local
+from edh.predictions.models import Opponent, PlayedMatch, Player
 
 TODAY = dt.date(2026, 11, 10)
 PAGE = 'Rocket_League_Championship_Series/2026/Paris_Major'
+PLAYED_AT = dt.datetime(2026, 5, 20, 15, tzinfo=dt.UTC)
+
+
+def make_opponent(name, score=0, players='', *, national=False):
+    """An opponent whose players are given as their space-separated pages."""
+    return Opponent(name, name.lower(), score, tuple(Player(page, page) for page in players.split()), national)
+
+
+def make_match(first, second, *, match_id='m1', played_at=PLAYED_AT, page='Some/Page'):
+    """A played match of tier 1 between two opponents."""
+    return PlayedMatch(match_id, page, played_at, '1', None, (first, second))
 
 
 def _games(score_1, score_2):

@@ -44,4 +44,25 @@ HISTORY_RETRY_BACKOFF = 5.0  # seconds, doubled per retry (liquipydia caps one w
 PAGES_FOLDER = 'pages'  # one JSON file per tournament page
 MANIFEST_FILE = 'manifest.json'  # scope and last synced day
 PAGE_FILE_SUFFIX = '.json'
+
+# === Match parsing ===
+
 LAN_TYPE = 'Offline'  # match `type` of a LAN match (online ones are `Online`)
+NATIONAL_ICON_PREFIX = 'Flag of '  # national teams take a flag as their team icon (`Flag of France 4 by 3.png`)
+
+# === Lineup identity ===
+
+CORE_PLAYERS = 2  # players kept together for a roster to carry a lineup on (2 of 3 in Rocket League)
+CARRYOVER_DAYS = 120  # a new lineup inherits only from a lineup that played this recently
+CARRYOVER = dt.timedelta(days=CARRYOVER_DAYS)
+COLLEGE_PAGE_ROOTS = ('Collegiate_Rocket_League',)  # first part of the pages of college events
+KIND_CLUB, KIND_NATIONAL, KIND_COLLEGE = 'club', 'national', 'college'
+TEAM_KINDS = (KIND_CLUB, KIND_NATIONAL, KIND_COLLEGE)
+# First day of each RLCS season: the day after the previous World Championship final, so off-season events (where new
+# rosters form) count in the coming season; days before the first one belong to the season before it
+SEASON_STARTS = (
+    (2025, dt.date(2024, 9, 16)),
+    (2026, dt.date(2025, 9, 13)),
+    (2027, dt.date(2026, 9, 21)),
+)
+SEASON_FIRST_DAYS = tuple(start for _, start in SEASON_STARTS)

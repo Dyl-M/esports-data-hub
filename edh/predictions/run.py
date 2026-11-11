@@ -15,8 +15,9 @@ from collections.abc import Sequence
 # Local
 from ..exceptions import EsportsDataHubError
 from ..lpdb import open_client
-from .constants import HISTORY_MAX_RETRIES, HISTORY_RETRY_BACKOFF
+from .constants import HISTORY_MAX_RETRIES, HISTORY_RETRY_BACKOFF, TEAM_KINDS
 from .history import read_history, update_history
+from .lineups import identify_lineups, season_of
 
 logger = logging.getLogger(__name__)
 
@@ -57,13 +58,21 @@ def main(argv: Sequence[str] | None = None) -> int:
     except EsportsDataHubError as error:
         logger.error('%s', error)
         return 1
-    per_year = Counter(match.played_at.year for match in matches)
+    per_season = Counter(season_of(match.played_at.date()) for match in matches)
     teams = {opponent.name for match in matches for opponent in match.opponents}
     logger.info(
         'Cached history: %d finished team matches, %d teams (%s)',
         len(matches),
         len(teams),
-        ', '.join(f'{year}: {count}' for year, count in sorted(per_year.items())),
+        ', '.join(f'RLCS {season}: {count}' for season, count in sorted(per_season.items())),
+    )
+    lineups = identify_lineups(matches).lineups
+    kinds = Counter(lineup.kind for lineup in lineups)
+    logger.info(
+        'Lineups: %d, %d from a predecessor (%s)',
+        len(lineups),
+        sum(lineup.predecessor is not None for lineup in lineups),
+        ', '.join(f'{kind}: {kinds[kind]}' for kind in TEAM_KINDS),
     )
     return 0
 
