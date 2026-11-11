@@ -251,24 +251,26 @@ FOUR_TEAMS_TWO_SERIES = (make_series(1, 'A', 'B'), make_series(1, 'C', 'D'))  # 
 @pytest.mark.parametrize(
     ('method', 'work', 'workers', 'expected'),
     [
-        pytest.param('exhaustive', (99, None), 3, 1, id='exhaustive-small'),
-        pytest.param('exhaustive', (100, None), 3, 3, id='exhaustive-at-threshold'),
-        pytest.param('exhaustive', (100, None), None, 8, id='exhaustive-all-cores'),
-        pytest.param('winnersfirst', (0, 4), 3, 1, id='winners-small'),
-        pytest.param('winnersfirst', (0, 5), 3, 3, id='winners-weighted'),
+        pytest.param('exhaustive', (99, 0), 3, 1, id='exhaustive-small'),
+        pytest.param('exhaustive', (100, 0), 3, 3, id='exhaustive-at-threshold'),
+        pytest.param('exhaustive', (100, 0), None, 8, id='exhaustive-all-cores'),
+        pytest.param('winnersfirst', (0, 24), 3, 1, id='winners-small'),
+        pytest.param('winnersfirst', (0, 25), 3, 3, id='winners-weighted'),
     ],
 )
 def test_plan_worker_count(monkeypatch, method, work, workers, expected):
     """Test that small work stays in-process and larger work uses the workers asked for, or all cores.
 
-    `work` is the job's (scenarios, winner combinations); a winner combination weighs PARALLEL_WINNERS_COST scenarios
-    against PARALLEL_MIN_WORK.
+    `work` is the job's scenario count and PARALLEL_WINNERS_COST: exhaustive work is the scenario count, winners-first
+    work the 4 winner combinations of the pending series, each weighing PARALLEL_WINNERS_COST scenarios, both against
+    PARALLEL_MIN_WORK.
     """
+    scenarios, cost = work
     monkeypatch.setattr(engine, 'PARALLEL_MIN_WORK', 100)
-    monkeypatch.setattr(engine, 'PARALLEL_WINNERS_COST', 20)
+    monkeypatch.setattr(engine, 'PARALLEL_WINNERS_COST', cost)
     monkeypatch.setattr(engine.os, 'cpu_count', lambda: 8)
     teams = ('A', 'B', 'C', 'D')
-    job = engine._Job(make_league(), teams, (), FOUR_TEAMS_TWO_SERIES, {}, method, *work)
+    job = engine._Job(make_league(), teams, (), FOUR_TEAMS_TWO_SERIES, {}, method, scenarios)
     chunks, count = engine._plan(job, EvaluationOptions(workers=workers))
     assert len(chunks) > 1
     assert count == expected

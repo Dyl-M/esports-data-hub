@@ -66,6 +66,17 @@ def test_context_rows_follow_projected_standings():
     assert [(cell.label, cell.low) for cell in first.cells] == [('88.9', False), ('5.6', False), ('5.6', False)]
 
 
+def test_context_low_share_threshold(monkeypatch):
+    """Test that a rank share is dimmed only below `LOW_SHARE`, not at it."""
+    league = _league()
+    report = _report(league)
+    share = next(outlook for outlook in report.teams if outlook.team == 'A').rank_shares[1]
+    monkeypatch.setattr(card, 'LOW_SHARE', share)
+    first = card_context(report, league, NEO, fmt='portrait', as_of=AS_OF)['rows'][0]
+    assert first.team == 'A'
+    assert [cell.low for cell in first.cells] == [False, False, False]
+
+
 def test_context_exact_badges_and_tiebreak_share():
     """Test that an exact evaluation shows IN / OUT badges and the share left to goal difference."""
     rows = {row.team: row for row in _context()['rows']}
@@ -123,6 +134,12 @@ def test_render_card_formats(fmt, size):
     assert 'data:image/png;base64,' in html
     assert 'data:image/svg+xml;base64,' in html
     assert html.count('class="row"') == 3
+
+
+def test_render_card_block_tags_leave_no_blank_line():
+    """Test that a block tag on its own line (`{% for %}`, `{% endfor %}`) leaves no empty line in the HTML."""
+    html = render_card(_report(_league()), _league(), NEO, fmt='portrait', as_of=AS_OF)
+    assert '\n\n' not in html
 
 
 def test_render_card_applies_theme_and_escapes_names():
