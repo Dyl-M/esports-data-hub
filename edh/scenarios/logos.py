@@ -20,7 +20,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 # Third-party
-import httpxyz
+import httpx2
 from PIL import Image, ImageStat
 
 # Local
@@ -42,7 +42,7 @@ EVENT_KEY = 'event'
 TEAMS_KEY = 'teams'
 
 
-def download_logos(event: EventInfo, folder: Path, *, client: httpxyz.Client | None = None) -> Logos:
+def download_logos(event: EventInfo, folder: Path, *, client: httpx2.Client | None = None) -> Logos:
     """Download the competition and team logos of `event` into `folder`, then rewrite its manifest.
 
     Args:
@@ -59,7 +59,7 @@ def download_logos(event: EventInfo, folder: Path, *, client: httpxyz.Client | N
     previous = _read_manifest(folder)
     folder.mkdir(parents=True, exist_ok=True)
     if client is None:
-        with httpxyz.Client(headers={'User-Agent': LOGO_USER_AGENT}, timeout=LOGO_TIMEOUT) as own:
+        with httpx2.Client(headers={'User-Agent': LOGO_USER_AGENT}, timeout=LOGO_TIMEOUT) as own:
             entries = _download_all(own, wanted, previous, folder)
     else:
         entries = _download_all(client, wanted, previous, folder)
@@ -192,7 +192,7 @@ def _file_name(key: tuple[str, str], url: str) -> str:
 
 
 def _download_all(
-    client: httpxyz.Client,
+    client: httpx2.Client,
     wanted: dict[tuple[str, str], str],
     previous: dict[tuple[str, str], dict[str, str]],
     folder: Path,
@@ -213,7 +213,7 @@ def _download_all(
             try:
                 response = client.get(url, follow_redirects=True)
                 response.raise_for_status()
-            except httpxyz.HTTPError as error:
+            except httpx2.HTTPError as error:
                 logger.warning('Logo download failed for %s: %s', url, error)
                 if old and (folder / old['file']).is_file():
                     entries[key] = old

@@ -6,7 +6,7 @@ import logging
 from io import BytesIO
 
 # Third-party
-import httpxyz
+import httpx2
 import pytest
 from PIL import Image
 
@@ -33,12 +33,12 @@ class Server:
         """Record the request, then answer it."""
         self.requests.append(request)
         if str(request.url) in self.failing:
-            return httpxyz.Response(404)
-        return httpxyz.Response(200, content=request.url.path.encode())
+            return httpx2.Response(404)
+        return httpx2.Response(200, content=request.url.path.encode())
 
     def client(self):
         """Open an HTTP client on this transport."""
-        return httpxyz.Client(transport=httpxyz.MockTransport(self))
+        return httpx2.Client(transport=httpx2.MockTransport(self))
 
 
 def test_download_logos(tmp_path):
@@ -73,10 +73,10 @@ def test_download_logos_follows_redirects(tmp_path):
     def answer(request):
         """Redirect the team address to `moved`, serve `moved`."""
         if str(request.url) == TEAM_URL:
-            return httpxyz.Response(301, headers={'Location': moved})
-        return httpxyz.Response(200, content=b'moved')
+            return httpx2.Response(301, headers={'Location': moved})
+        return httpx2.Response(200, content=b'moved')
 
-    with httpxyz.Client(transport=httpxyz.MockTransport(answer)) as client:
+    with httpx2.Client(transport=httpx2.MockTransport(answer)) as client:
         result = download_logos(EventInfo(team_logo_urls={'Gentle Mates': TEAM_URL}), tmp_path, client=client)
     assert result.teams['Gentle Mates'].read_bytes() == b'moved'
 
@@ -150,14 +150,14 @@ def test_download_logos_opens_its_own_client(tmp_path, monkeypatch):
     """Test that without a client, one is opened with the tool's User-Agent."""
     server = Server()
     opened = []
-    real_client = httpxyz.Client
+    real_client = httpx2.Client
 
     def open_client(**kwargs):
-        """Stand in for httpxyz.Client, recording its options and answering through the mock transport."""
+        """Stand in for httpx2.Client, recording its options and answering through the mock transport."""
         opened.append(kwargs)
-        return real_client(transport=httpxyz.MockTransport(server), **kwargs)
+        return real_client(transport=httpx2.MockTransport(server), **kwargs)
 
-    monkeypatch.setattr(logos.httpxyz, 'Client', open_client)
+    monkeypatch.setattr(logos.httpx2, 'Client', open_client)
     download_logos(EventInfo(logo_url=EVENT_URL), tmp_path / 'logos')
     assert opened[0]['headers']['User-Agent'].startswith('esports-data-hub (https://github.com/')
     assert server.requests[0].headers['User-Agent'] == opened[0]['headers']['User-Agent']

@@ -134,8 +134,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     """
     args = parse_args(argv)
     logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
-    # one INFO line per request otherwise: httpx under liquipydia (API), httpxyz for logo downloads
-    for name in ('httpx', 'httpxyz'):
+    # one INFO line per request otherwise: httpx2 (and its httpcore2) for the API calls and the logo downloads
+    for name in ('httpx2', 'httpcore2'):
         logging.getLogger(name).setLevel(logging.WARNING)
     try:
         leagues = resolve_leagues(args.leagues)

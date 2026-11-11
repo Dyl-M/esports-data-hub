@@ -21,9 +21,9 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-    "httpxyz>=0.42,<1",
+    "httpx2>=2.16,<3",
     "jinja2>=3.1,<4",
-    "liquipydia>=0.1.2,<1",
+    "liquipydia>=0.2,<1",
     "numpy>=2.5,<3",
     "pillow>=13.0,<14",
     "playwright>=1.64,<2"
