@@ -12,7 +12,7 @@ from collections.abc import Iterable, Iterator, Sequence
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass, replace
 from itertools import product
-from operator import add, getitem
+from operator import add
 
 # Third-party
 import numpy as np
@@ -415,7 +415,7 @@ def _samples(endings: Sequence[Sequence[Series]], samples: int, rng: np.random.G
     counts = np.array([len(options) for options in endings], dtype=np.int64)
     picks = rng.integers(0, counts, size=(samples, len(endings)))
     for row in picks.tolist():
-        yield list(map(getitem, endings, row))
+        yield [endings[position][index] for position, index in enumerate(row)]
 
 
 def _complete(series: Series, score: tuple[int, int]) -> Series:

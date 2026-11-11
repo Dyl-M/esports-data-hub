@@ -67,7 +67,8 @@ def test_help_describes_the_command(capsys):
     """Test that `--help` opens with the first line of the module docstring."""
     with pytest.raises(SystemExit):
         run.parse_args(['--help'])
-    assert run.__doc__.splitlines()[0] in capsys.readouterr().out
+    help_text: str = capsys.readouterr().out
+    assert run.__doc__.splitlines()[0] in help_text
 
 
 def test_module_entry_point(monkeypatch, tmp_path):

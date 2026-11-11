@@ -145,12 +145,9 @@ class _Tracker:
     def _predecessor(self, kind: str, roster: frozenset[str], when: dt.datetime) -> int | None:
         """The recent lineup sharing a core with roster: club first, then most players in common, then the latest."""
         shared = Counter(lineup_id for player in roster for lineup_id in self._by_player.get(player, ()))
+        cores = (self.tracks[lineup_id] for lineup_id, count in shared.items() if count >= CORE_PLAYERS)
         candidates = [
-            track
-            for lineup_id, count in shared.items()
-            if count >= CORE_PLAYERS
-            and (track := self.tracks[lineup_id]).recent(when)
-            and (kind != KIND_CLUB or track.lineup.kind == KIND_CLUB)
+            track for track in cores if track.recent(when) and (kind != KIND_CLUB or track.lineup.kind == KIND_CLUB)
         ]
         if not candidates:
             return None
