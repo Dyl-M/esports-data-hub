@@ -37,14 +37,14 @@ def identify_lineups(matches: Iterable[PlayedMatch]) -> Lineups:
         matches: Played matches, in any order (they are taken by start time, then id).
 
     Returns:
-        The lineups and the lineup ids of each match.
+        The lineups, and the lineup ids and rosters of each match.
     """
     tracker = _Tracker()
     sides = {
         match.match_id: tracker.place(match)
         for match in sorted(matches, key=lambda match: (match.played_at, match.match_id))
     }
-    return Lineups(tuple(track.lineup for track in tracker.tracks), sides)
+    return Lineups(tuple(track.lineup for track in tracker.tracks), sides, tracker.rosters)
 
 
 def side_kind(match: PlayedMatch, opponent: Opponent) -> str:
@@ -106,6 +106,7 @@ class _Tracker:
         self._by_name: dict[str, int] = {}  # latest lineup of each name
         self._rostered: dict[str, int] = {}  # latest lineup of each name that had a roster
         self._by_player: dict[str, set[int]] = {}
+        self.rosters: dict[str, tuple[frozenset[str], frozenset[str]]] = {}  # roster each side played with, by match
 
     def place(self, match: PlayedMatch) -> tuple[int, int]:
         """Return the lineup ids of both opponents of a match, then record that they played."""
@@ -113,6 +114,7 @@ class _Tracker:
         first, second = map(partial(self._lineup, match), match.opponents, rosters)
         for lineup_id, roster in ((first, rosters[0]), (second, rosters[1])):
             self._play(lineup_id, roster, match.played_at)
+        self.rosters[match.match_id] = (self.tracks[first].roster, self.tracks[second].roster)
         return first, second
 
     def _lineup(self, match: PlayedMatch, opponent: Opponent, roster: frozenset[str]) -> int:

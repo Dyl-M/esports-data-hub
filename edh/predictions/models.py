@@ -3,7 +3,7 @@
 # Standard library
 import datetime as dt
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 # Local
 from .constants import TEAM_KINDS
@@ -134,10 +134,13 @@ class Lineups:
     Attributes:
         by_id: Every lineup, indexed by `lineup_id`.
         sides: Lineup ids of the two opponents of each match, by `match_id`.
+        rosters: Player pages of the two opponents of each match, by `match_id`: the recorded roster, or the lineup's
+            latest one when too few players were recorded (empty when the lineup never had one).
     """
 
     by_id: tuple[Lineup, ...]
     sides: Mapping[str, tuple[int, int]]
+    rosters: Mapping[str, tuple[frozenset[str], frozenset[str]]] = field(default_factory=dict)
 
     def of(self, match: PlayedMatch) -> tuple[Lineup, Lineup]:
         """Return the lineups of the two opponents of a match.
