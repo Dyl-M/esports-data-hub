@@ -3,4 +3,4 @@
 Run `python -m edh.predictions.run` to fetch the LPDB match history into the local cache (`.cache/lpdb/`).
 """
 
-__all__ = ['constants', 'history', 'models', 'run']
+__all__ = ['constants', 'history', 'lineups', 'models', 'run']

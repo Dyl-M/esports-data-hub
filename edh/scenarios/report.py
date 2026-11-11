@@ -79,8 +79,8 @@ def write_outlook(report: ScenarioReport, folder: Path) -> tuple[Path, Path]:
     folder.mkdir(parents=True, exist_ok=True)
     csv_path, json_path = folder / OUTLOOK_CSV, folder / OUTLOOK_JSON
     data = asdict(report)
-    for team, outlook in zip(data['teams'], report.teams, strict=True):
-        team['expected_rank'] = outlook.expected_rank
+    for index, outlook in enumerate(report.teams):
+        data['teams'][index]['expected_rank'] = outlook.expected_rank
     json_path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
 
     labels, ranks = report.slot_labels, report.rank_count

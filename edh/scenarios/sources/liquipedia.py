@@ -163,7 +163,8 @@ def parse_organizers(text: str | None) -> tuple[str, ...]:
         return ()
     if not isinstance(data, dict):
         return ()
-    numbered = sorted(data.items(), key=lambda item: int(re.sub(r'\D', '', str(item[0])) or 0))
+    # `organizer2` before `organizer10`: shorter keys first, then in text order
+    numbered = sorted(data.items(), key=lambda item: (len(str(item[0])), str(item[0])))
     names = (PAGE_DISAMBIGUATION.sub('', str(name)) for _, name in numbered if name)
     return tuple(name for name in names if name)
 

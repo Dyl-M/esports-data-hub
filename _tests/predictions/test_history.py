@@ -138,13 +138,31 @@ def test_update_without_matches(tmp_path, caplog):
 def test_interrupted_update_keeps_its_progress(tmp_path, monkeypatch):
     """Test that a rate limit mid-run saves every match received, records the last day reached, and resumes there."""
     monkeypatch.setattr(history, 'LPDB_MAX_PAGE_SIZE', 2)
-    records = [make_record(f'm{day}', f'2025-01-{day:02d}') for day in (1, 2, 3)]
-    with pytest.raises(DataSourceError, match=r'after 3 matches.*run again'):
+    records = [make_record(f'm{day}', f'2025-01-{day:02d}') for day in (1, 2, 3, 4)]
+    with pytest.raises(DataSourceError, match=r'after 4 matches.*run again'):
         _update(tmp_path, records, error=RateLimitError('Rate limit exceeded'))
-    assert len(_cached(tmp_path)) == 3
-    assert _manifest(tmp_path)['synced_through'] == '2025-01-03'
+    assert len(_cached(tmp_path)) == 4
+    assert _manifest(tmp_path)['synced_through'] == '2025-01-04'  # the last day of the last page saved
     _, update = _update(tmp_path)
-    assert update.since == dt.date(2025, 1, 3) - dt.timedelta(days=REFETCH_DAYS)
+    assert update.since == dt.date(2025, 1, 4) - dt.timedelta(days=REFETCH_DAYS)
+
+
+def test_interrupted_update_keeps_a_partial_page(tmp_path, monkeypatch):
+    """Test that records received after the last full page are saved too when LPDB fails."""
+    monkeypatch.setattr(history, 'LPDB_MAX_PAGE_SIZE', 2)
+    records = [make_record(f'm{day}', f'2025-01-{day:02d}') for day in (1, 2, 3)]
+    with pytest.raises(DataSourceError, match='after 3 matches'):
+        _update(tmp_path, records, error=RateLimitError('Rate limit exceeded'))
+    assert [record['match2id'] for record in _cached(tmp_path)] == ['m1', 'm2', 'm3']
+    assert _manifest(tmp_path)['synced_through'] == '2025-01-03'
+
+
+def test_records_come_in_full_pages(monkeypatch):
+    """Test that records are grouped by LPDB page, the last one possibly partial."""
+    monkeypatch.setattr(history, 'LPDB_MAX_PAGE_SIZE', 2)
+    records = [make_record(f'm{day}', f'2025-01-{day:02d}') for day in (1, 2, 3)]
+    batches = history._batches(FakeClient(records), HistoryScope(), HISTORY_START, TODAY)
+    assert [len(batch) for batch in batches] == [2, 1]
 
 
 def test_full_last_page(tmp_path, monkeypatch):
@@ -173,6 +191,12 @@ def test_no_temporary_file_left(tmp_path):
     """Test that files are written through a temporary file that does not remain."""
     _update(tmp_path, [make_record('m1', '2026-05-20')])
     assert not list(tmp_path.rglob('*.tmp'))
+
+
+def test_cache_keeps_names_readable(tmp_path):
+    """Test that non-ASCII names are stored as UTF-8 text, not escaped (cache files stay readable and smaller)."""
+    _update(tmp_path, [make_record('m1', '2026-05-20', names=('Équipe A', 'Team B'))])
+    assert '"Équipe A"' in page_file(tmp_path, PAGE).read_text(encoding='utf-8')
 
 
 # === Read ===
@@ -241,6 +265,24 @@ def test_to_played_match_walkover(statuses, scores):
     assert match.games == ()
 
 
+def test_to_played_match_sweep_and_unnamed_player():
+    """Test that a team without a game won scores 0, and a roster entry without player page is left out."""
+    record = make_record('m1', '2026-05-20', (0, 3))
+    record['match2opponents'][0]['match2players'].append({'displayname': 'Unknown'})
+    match = to_played_match(Match.model_validate(record))
+    assert (match.opponents[0].score, match.opponents[1].score, match.winner) == (0, 3, 1)
+    assert [player.page for player in match.opponents[0].players] == ['Team A_p1', 'Team A_p2']
+
+
+def test_to_played_match_national():
+    """Test that a team with a flag as its icon is a national team, any other one is not."""
+    record = make_record('m1', '2026-05-20')
+    record['match2opponents'][0]['icon'] = 'Flag of France 4 by 3.png'
+    record['match2opponents'][1]['icon'] = 'Team B allmode.png'
+    match = to_played_match(Match.model_validate(record))
+    assert [opponent.national for opponent in match.opponents] == [True, False]
+
+
 def test_to_played_match_without_date():
     """Test that a match without a date (LPDB's null date) is skipped."""
     assert to_played_match(Match.model_validate(make_record('m1', '0000-01-01'))) is None
@@ -252,5 +294,5 @@ def test_recorded_rlcs_match():
     assert set(record) <= set(MATCH_FIELDS)
     match = to_played_match(Match.model_validate(record))
     assert match.tier == '1'
-    assert all(len(opponent.players) == 3 for opponent in match.opponents)
+    assert all(len(opponent.players) == 3 and not opponent.national for opponent in match.opponents)
     assert len(match.games) == match.opponents[0].score + match.opponents[1].score

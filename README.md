@@ -19,7 +19,7 @@ subpackage of `edh` with its own README, sharing the same tooling and data sourc
 | Project                                         | Package           | Status                                 |
 |-------------------------------------------------|-------------------|----------------------------------------|
 | [League play scenarios](#league-play-scenarios) | `edh.scenarios`   | In use                                 |
-| [Rating predictions](#rating-predictions)       | `edh.predictions` | Started: match history from Liquipedia |
+| [Rating predictions](#rating-predictions)       | `edh.predictions` | Started: match history, lineups        |
 
 ### League play scenarios
 
@@ -27,8 +27,8 @@ Given the results already played in a round-robin league, works out how each tea
 are played, exactly or by Monte Carlo sampling, and renders the outlook as a shareable card. Every possible score of a
 remaining series counts as equally likely, so the shares describe what is still open, not predictions.
 
-Targets: Coupe de France Slash 2026 and the RLCS Clubs Championships League Play (its seven regions are configured,
-waiting for the schedule). It succeeds [`league-play-scenarios`](https://github.com/Dyl-M/league-play-scenarios).
+Targets: Coupe de France Slash 2026 and the League Play of the RLCS 2027 Club Championship (its seven regional leagues
+are configured, waiting for the schedule). It succeeds [`league-play-scenarios`](https://github.com/Dyl-M/league-play-scenarios).
 
 ```bash
 uv run python -m edh.scenarios.run cdf_slash_2026 --visual     # fetch from Liquipedia, evaluate, render the card
@@ -43,14 +43,16 @@ uv run python -m edh.scenarios.run cdf_slash_2026 --source csv # offline, from t
 ### Rating predictions
 
 Per-game win probabilities learned from past results, to replace the equally likely scores of the league play scenarios.
-It starts with the match history: Rocket League tiers 1 and 2 since September 2024, fetched from Liquipedia and cached
-locally.
+It starts with the match history (Rocket League tiers 1 and 2 since September 2024, fetched from Liquipedia and cached
+locally) and the lineups ratings will follow: a core of players kept together, whatever the team is called.
 
 ```bash
 uv run python -m edh.predictions.run      # update the local match history, then summarize it
 ```
 
-- **[Running it](edh/predictions/README.md)**: history scope, cache, updates, reading the matches from Python
+- **[Running it](edh/predictions/README.md)**: history scope, cache, updates, reading the matches and lineups from
+  Python
+- **[How it works](_docs/predictions.md)**: lineup identity (renames, roster changes, national teams), seasons
 
 ## Setup
 
@@ -76,13 +78,13 @@ Each project's README lists what it needs on top of this.
 
 ```
 esports-data-hub/
-├── .github          # GitHub Actions workflows (tests & coverage, license year), Dependabot config, CODEOWNERS
-├── _data            # One folder per league: league.json (format), results.csv and event.json (Liquipedia snapshots)
+├── .github          # Workflows (tests & coverage, license year, release), Dependabot, PR template, CODEOWNERS, banner
+├── _data            # One folder per league: league.json (format), then results.csv / event.json once fetched
 ├── _docs            # How each project works: models and math, independent of the code
 ├── _tests           # Pytest test suite, CSV / recorded Liquipedia / placeholder visual fixtures, shared configuration
 └── edh              # Main application package: exceptions, paths, brand, lpdb (shared Liquipedia access)
-    ├── predictions  # Rating predictions: match history (cached in .cache/lpdb/, gitignored), run.py (CLI)
-    └── scenarios    # League play scenarios: models, config, standings / tiebreakers, engine, report, run.py (CLI)
+    ├── predictions  # Rating predictions: match history (cached in .cache/lpdb/, gitignored), lineups, run.py (CLI)
+    └── scenarios    # League play scenarios: config, standings / tiebreakers, engine, winners-first, report, logos, CLI
         ├── sources  # Result sources: Liquipedia (through liquipydia) and CSV, event details snapshot
         └── visuals  # Outlook card: HTML rendering (Jinja2) and PNG export (Playwright)
 ```

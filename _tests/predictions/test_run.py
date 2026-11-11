@@ -42,13 +42,14 @@ def _fake_open_client(monkeypatch, records=(), error=None):
 
 
 def test_main_updates_then_summarizes(monkeypatch, tmp_path, caplog):
-    """Test a run: patient retries, the fetched matches cached, then a summary per year."""
+    """Test a run: patient retries, the fetched matches cached, then a summary per season and of the lineups."""
     monkeypatch.setattr(paths, 'LPDB_CACHE_DIR', tmp_path)
-    opened = _fake_open_client(monkeypatch, [make_record('m1', '2025-05-20'), make_record('m2', '2026-05-20')])
+    opened = _fake_open_client(monkeypatch, [make_record('m1', '2025-05-20'), make_record('m2', '2025-10-20')])
     with caplog.at_level(logging.INFO):
         assert run.main([]) == 0
     assert opened == [{'max_retries': HISTORY_MAX_RETRIES, 'retry_backoff_factor': HISTORY_RETRY_BACKOFF}]
-    assert '2 finished team matches, 2 teams (2025: 1, 2026: 1)' in caplog.text
+    assert '2 finished team matches, 2 teams (RLCS 2025: 1, RLCS 2026: 1)' in caplog.text
+    assert 'Lineups: 2, 0 from a predecessor (club: 2, national: 0, college: 0)' in caplog.text
 
 
 def test_main_offline_reads_the_cache_only(monkeypatch, tmp_path, caplog):
@@ -60,6 +61,14 @@ def test_main_offline_reads_the_cache_only(monkeypatch, tmp_path, caplog):
         assert run.main(['--offline']) == 0
     assert opened == []
     assert '1 finished team matches' in caplog.text
+
+
+def test_help_describes_the_command(capsys):
+    """Test that `--help` opens with the first line of the module docstring."""
+    with pytest.raises(SystemExit):
+        run.parse_args(['--help'])
+    help_text: str = capsys.readouterr().out
+    assert run.__doc__.splitlines()[0] in help_text
 
 
 def test_module_entry_point(monkeypatch, tmp_path):

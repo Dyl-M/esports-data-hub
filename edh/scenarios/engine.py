@@ -12,6 +12,7 @@ from collections.abc import Iterable, Iterator, Sequence
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass, replace
 from itertools import product
+from operator import add
 
 # Third-party
 import numpy as np
@@ -128,9 +129,7 @@ class _Accumulator:
         """Add the totals of another accumulator (same teams and slots), e.g. a chunk evaluated in a worker."""
         self.total += other.total
         for team, shares in other.rank_shares.items():
-            self.rank_shares[team] = [
-                mine + theirs for mine, theirs in zip(self.rank_shares[team], shares, strict=True)
-            ]
+            self.rank_shares[team] = list(map(add, self.rank_shares[team], shares))
             self.unresolved[team] += other.unresolved[team]
             for label in self.qualified[team]:
                 self.qualified[team][label] += other.qualified[team][label]
@@ -305,7 +304,6 @@ def _prepare(config: LeagueConfig, series: Sequence[Series], method: str) -> '_J
         manual={aliases.get(team, team): points for team, points in config.manual_tiebreakers.items()},
         method=choose_method(method, scenarios, combinations),
         scenarios=scenarios,
-        combinations=combinations,
     )
 
 
@@ -316,7 +314,10 @@ def _plan(job: '_Job', options: EvaluationOptions) -> tuple[list['_Chunk'], int]
         work = options.samples
     else:
         chunks = _prefix_chunks(job)
-        work = job.scenarios if job.method == METHOD_EXHAUSTIVE else (job.combinations or 0) * PARALLEL_WINNERS_COST
+        if job.method == METHOD_EXHAUSTIVE:
+            work = job.scenarios
+        else:
+            work = count_winner_combinations(job.pending, job.config.wins_needed) * PARALLEL_WINNERS_COST
     if work < PARALLEL_MIN_WORK or len(chunks) == 1:
         return chunks, 1
     return chunks, options.workers or os.cpu_count() or 1
@@ -333,7 +334,6 @@ class _Job:
     manual: dict[str, int]
     method: str
     scenarios: int = 0  # scenarios left
-    combinations: int | None = None  # winner combinations left (None: winners-first doesn't apply)
 
 
 @dataclass(frozen=True)
@@ -360,17 +360,21 @@ def _prefix_chunks(job: _Job) -> list[_Chunk]:
         counts = [count_winner_combinations([item], wins_needed) for item in job.pending]
     else:
         counts = [len(reachable_scores(item, wins_needed)) for item in job.pending]
-    fixed = 0
-    while fixed < len(counts) and math.prod(counts[:fixed]) < PARALLEL_CHUNKS:
-        fixed += 1
-    return [_Chunk(job, prefix) for prefix in product(*(range(count) for count in counts[:fixed]))]
+    fixed: list[range] = []  # outcomes of the first pending series, fixed per chunk
+    chunks = 1
+    for count in counts:
+        if chunks >= PARALLEL_CHUNKS:
+            break
+        fixed.append(range(count))
+        chunks *= count
+    return [_Chunk(job, prefix) for prefix in product(*fixed)]
 
 
 def _sample_chunks(job: _Job, samples: int, seed: int | None) -> list[_Chunk]:
     """Cut a Monte Carlo run into chunks of `SAMPLE_BATCH` samples, each with its own seed spawned from `seed`."""
     sizes = [min(SAMPLE_BATCH, samples - start) for start in range(0, samples, SAMPLE_BATCH)]
     seeds = np.random.SeedSequence(seed).spawn(len(sizes))
-    return [_Chunk(job, samples=size, seed=chunk_seed) for size, chunk_seed in zip(sizes, seeds, strict=True)]
+    return [_Chunk(job, samples=size, seed=seeds[index]) for index, size in enumerate(sizes)]
 
 
 def _run_chunks(chunks: Sequence[_Chunk], workers: int) -> Iterator[_Accumulator]:
@@ -411,7 +415,7 @@ def _samples(endings: Sequence[Sequence[Series]], samples: int, rng: np.random.G
     counts = np.array([len(options) for options in endings], dtype=np.int64)
     picks = rng.integers(0, counts, size=(samples, len(endings)))
     for row in picks.tolist():
-        yield [options[index] for options, index in zip(endings, row, strict=True)]
+        yield [endings[position][index] for position, index in enumerate(row)]
 
 
 def _complete(series: Series, score: tuple[int, int]) -> Series:

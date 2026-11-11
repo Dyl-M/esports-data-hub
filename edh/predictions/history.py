@@ -42,6 +42,7 @@ from .constants import (
     MANIFEST_FILE,
     MATCH_FIELDS,
     MATCH_ORDER,
+    NATIONAL_ICON_PREFIX,
     PAGE_FILE_SUFFIX,
     PAGES_FOLDER,
     REFETCH_DAYS,
@@ -320,7 +321,7 @@ def to_played_match(match: Match) -> PlayedMatch | None:
     if scores[0] == scores[1]:
         logger.debug('Skipped match %s: %s-%s', match.match2id, *scores)
         return None
-    first, second = (_opponent(opponent, score) for opponent, score in zip(opponents, scores, strict=True))
+    first, second = map(_opponent, opponents, scores)
     return PlayedMatch(
         match_id=str(match.match2id),
         page=str(match.pagename),
@@ -357,7 +358,8 @@ def _opponent(opponent: dict[str, Any], score: int) -> Opponent:
         for player in opponent.get('match2players') or []
         if isinstance(player, dict) and player.get('name')
     )
-    return Opponent(str(opponent['name']), str(opponent.get('template') or ''), score, players)
+    national = str(opponent.get('icon') or '').startswith(NATIONAL_ICON_PREFIX)
+    return Opponent(str(opponent['name']), str(opponent.get('template') or ''), score, players, national)
 
 
 def _is_lan(match_type: str | None) -> bool | None:
