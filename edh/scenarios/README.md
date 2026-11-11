@@ -57,7 +57,7 @@ The tiebreaker ids and how they apply are listed in
 slot.
 
 `results.csv` columns: `round, team_1, team_2, score_1, score_2, finished, goals, date`. `finished` is `1` or `0`,
-`goals` lists each game's goals (`7-2;2-0;4-1`, empty when unknown), `date` is the series' day in the event's
+`goals` lists each game's goals (`7-2;2-0;4-1`, `-` for a walkover without goals, empty when unknown), `date` is the series' day in the event's
 timezone (optional, older snapshots don't have it). It can be edited by hand to try a result, then evaluated with
 `--source csv`.
 
@@ -94,15 +94,17 @@ Windows' spawn method, which imports the main module again.
 
 `--method auto` takes the first method that fits, in this order:
 
-| Method                                 | Exact | Applies when                                        | `auto` limit                                                 |
-|----------------------------------------|-------|-----------------------------------------------------|--------------------------------------------------------------|
-| `exhaustive`                           | yes   | always                                              | $\le 10^6$ scenarios (`MAX_EXHAUSTIVE_SCENARIOS`)            |
-| `winnersfirst` (shown Semi-exhaustive) | yes   | the first tiebreaker depends on series winners only | $\le 2^{15}$ winner combinations (`MAX_WINNER_COMBINATIONS`) |
-| `montecarlo`                           | no    | always                                              | fallback                                                     |
+| Method                                 | Exact | Applies when                                                         | `auto` limit                                                 |
+|----------------------------------------|-------|----------------------------------------------------------------------|--------------------------------------------------------------|
+| `exhaustive`                           | yes   | always                                                               | $\le 10^6$ scenarios (`MAX_EXHAUSTIVE_SCENARIOS`)            |
+| `winnersfirst` (shown Semi-exhaustive) | yes   | the first tiebreaker depends on series winners only (or is `manual`) | $\le 2^{15}$ winner combinations (`MAX_WINNER_COMBINATIONS`) |
+| `montecarlo`                           | no    | always                                                               | fallback                                                     |
 
 An explicit exact method above its limit, or `winnersfirst` on a league whose first tiebreaker reads game or goal
-margins, stops with an error. Roughly, exhaustive covers the last 7 Bo5 series of a league, winners-first the last 15;
-how each method works and why the exact ones agree is explained in
+margins, stops with an error. Roughly, exhaustive covers the last 7 Bo5 series of a league (6 final scores each:
+$6^7 \approx 2.8 \times 10^5$, while $6^8 \approx 1.7 \times 10^6$), winners-first the last 15 (2 winners each: $2^{15}$);
+series already under way have fewer final scores left, so exhaustive fits a few more. How each method works and why the exact ones agree is
+explained in
 [How league play scenarios work](/_docs/scenarios.md).
 
 ## Outputs
@@ -117,8 +119,9 @@ and saves the outlook to `_data/<league>/outlook/<YYYY-MM-DD>/<method>/`:
 - `outlook.json`: the whole report (league, method, scenarios or samples, remaining series, per team: rank shares,
   qualified / undecided / slot shares per slot, unresolved share, expected and projected rank). `--visual-only`
   renders from it.
-- `outlook.csv`: one row per team: `team`, `expected_rank`, `projected_rank`, `rank_1` … `rank_N`, then per slot
-  `<slot>_share`, `<slot>_qualified`, `<slot>_undecided`, and `unresolved`.
+- `outlook.csv`: one row per team: `team`, `expected_rank`, `projected_rank`, `rank_1` … `rank_N`, then
+  `<slot>_share` for every slot, `<slot>_qualified` for every slot, `<slot>_undecided` for every slot, and
+  `unresolved`.
 
 With the Liquipedia source, a run also rewrites `results.csv` and `event.json` and refreshes `logos/` (an address
 already downloaded is not fetched again).

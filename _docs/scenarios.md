@@ -83,14 +83,15 @@ result. That holds under any model that gives every reachable score a non-zero p
 **One format checked on real results so far.** The engine has been built and checked on Coupe de France Slash 2026:
 6 teams in a double round robin (each pair meets twice, 30 Bo5 series over 6 days of 5 series, 10 series per team),
 one series length for every match, Liquipedia's tiebreakers, no disqualification and no goals for simulated games. The
-RLCS Clubs Championships League Play is configured from its official rulebook (seven regions: single round robins of
-12 teams in EU / NA and 8 elsewhere, Bo5, ranked by match record, game difference, goal difference, then initial
-seed), but its schedule isn't out yet, so it hasn't run on real results.
+League Play of the RLCS 2027 Club Championship is configured from its official rulebook (seven regional leagues: single
+round robins of 12 teams in EU / NA and 8 elsewhere, Bo5, ranked by match record, game difference, goal difference, then
+initial seed), but its schedule isn't out yet, so it hasn't run on real results.
 
 **Planned evolution** (in this order):
 
 1. **Team strengths**: per-game win probabilities from ratings fitted on past results
-   (the [rating predictions](/edh/predictions/README.md) project, which so far holds the match history), turned into a
+   (the [rating predictions](/edh/predictions/README.md) project, which so far holds the match history and the lineups
+   ratings will follow), turned into a
    distribution of final scores per series. The simulator stays the same: exact methods weight each scenario by its
    probability instead of counting it (winners-first already weighs winner combinations), and Monte Carlo draws each
    ending with its own probability.
@@ -182,17 +183,17 @@ random and counts how often $A$ happens.
 ### Drawing a scenario
 
 A sample picks **one ending per pending series, independently and uniformly** among that series' reachable endings
-(`engine._samples`: one numpy `Generator.integers` call draws an $n \times m$ table of indices, column $i$ bounded
-by $|E_i|$). Because the picks are independent, a given scenario $\omega = (e_1, \dots, e_m)$ comes out with
-probability
+(`engine._samples`: for each chunk of samples, one numpy `Generator.integers` call draws a table of indices, one row per
+sample and one column per pending series, column $i$ bounded by $|E_i|$). Because the picks are independent, a given
+scenario $\omega = (e_1, \dots, e_m)$ comes out with probability
 
 $$
 \Pr(\omega) = \prod_{i=1}^{m} \frac{1}{|E_i|} = \frac{1}{N},
 $$
 
 so each sample is a uniform draw from $\Omega$, without ever building $\Omega$. Samples are independent of each
-other and drawn **with replacement**: the same scenario can come out twice, which is expected and doesn't bias
-anything. Each sample is then ranked with `standings.rank`, exactly like an exhaustive scenario.
+other and drawn **with replacement**: the same scenario can come out twice, which is expected and doesn't bias anything.
+Each sample is then ranked exactly like an exhaustive scenario.
 
 ### The estimator
 
