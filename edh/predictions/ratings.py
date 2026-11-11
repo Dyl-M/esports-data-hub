@@ -72,7 +72,8 @@ class _Steps:
 class Uniform(_Steps):
     """The baseline: every game is a coin flip, so every score of a series is as likely as under fair games."""
 
-    def game_probability(self, first: Members, second: Members) -> float:
+    @staticmethod
+    def game_probability(first: Members, second: Members) -> float:
         """Return 1/2, whoever plays."""
         return 0.5
 
@@ -189,6 +190,7 @@ def _volatility(state: GlickoState, variance: float, delta: float, tau: float) -
     phi2, target = state.phi**2, math.log(state.sigma**2)
 
     def f(x: float) -> float:
+        """Glickman's function of x = ln(sigma^2), decreasing, whose root gives the new volatility."""
         ex = math.exp(x)
         return ex * (delta**2 - phi2 - variance - ex) / (2 * (phi2 + variance + ex) ** 2) - (x - target) / tau**2
 
@@ -247,7 +249,7 @@ class Glicko2(_Steps):
         """Expected score of the first side, both deviations combined."""
         mu_1, phi_1 = self._side(first)
         mu_2, phi_2 = self._side(second)
-        return _expected(mu_1, mu_2, _g(math.sqrt(phi_1**2 + phi_2**2)))
+        return _expected(mu_1, mu_2, _g(math.hypot(phi_1, phi_2)))
 
     def update(self, first: Members, second: Members, games: tuple[int, int], when: dt.datetime) -> None:
         """Run one rating period for every member of both sides (both sides read before either changes)."""

@@ -137,6 +137,7 @@ def _predecessors(identity: str, lineups: Lineups) -> Callable[[str], str | None
         return lambda _: None
 
     def predecessor(member: str) -> str | None:
+        """The lineup id a lineup took its core from, as a member; None for a new core."""
         inherited = lineups.by_id[int(member)].predecessor
         return None if inherited is None else str(inherited)
 

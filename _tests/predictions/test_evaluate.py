@@ -68,7 +68,9 @@ def test_rerun_replaces_the_report(history):
     """Test that a second run on the same history writes over the first one's report."""
     assert evaluate.main(['--models', 'uniform', '--identities', 'name']) == 0
     assert evaluate.main(['--models', 'uniform', '--identities', 'lineup']) == 0
-    report = next((history / 'predictions').glob('*/evaluation.json')).read_text(encoding='utf-8')
+    reports = list((history / 'predictions').glob('*/evaluation.json'))
+    assert len(reports) == 1
+    report = reports[0].read_text(encoding='utf-8')
     assert [row['identity'] for row in json.loads(report)['results']] == ['lineup']
 
 

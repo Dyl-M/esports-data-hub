@@ -36,16 +36,20 @@ class _Spy(Uniform):
         self.calls = []
 
     def introduce(self, member, predecessor):
+        """Record a new member and its predecessor."""
         self.calls.append(('introduce', member, predecessor))
 
     def new_season(self, member):
+        """Record a member's new season."""
         self.calls.append(('new_season', member))
 
     def game_probability(self, first, second):
+        """Record a prediction, a coin flip."""
         self.calls.append(('predict', first, second))
         return 0.5
 
     def update(self, first, second, games, when):
+        """Record what was learned."""
         self.calls.append(('update', first, second, games))
 
 
@@ -129,7 +133,8 @@ def test_heir_of_an_earlier_season_starts_the_new_season():
 def test_series_probability_uses_the_winning_score():
     """Test that the series probability is computed for the series' length (the winner's score)."""
     _, predictions = _walk([_match(0, A, B, (4, 2)), _match(1, A, B, (2, 0))], model=Elo(k=100))
-    first, second = predictions
+    assert len(predictions) == 2
+    first, second = predictions[0], predictions[1]
     assert first.series_probability == 0.5
     assert second.series_probability == pytest.approx(second.game_probability**2 * (3 - 2 * second.game_probability))
 
