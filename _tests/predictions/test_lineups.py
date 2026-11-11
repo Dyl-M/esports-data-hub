@@ -166,6 +166,15 @@ def test_two_players_are_a_usable_roster():
     assert lineups[2].predecessor is None  # c left with the 2-player roster: only b is in common
 
 
+def test_rosters_fall_back_to_the_lineups_latest():
+    """Test that each side keeps the roster it played with, or its lineup's latest one when too few were recorded."""
+    matches = [_match(0, 'Team', 'a b c'), _match(10, 'Team', 'a'), _match(20, 'Other', '')]
+    rosters = identify_lineups(matches).rosters
+    assert rosters['0000_Team'] == (frozenset('abc'), frozenset({'r1', 'r2', 'r3'}))
+    assert rosters['0010_Team'][0] == frozenset('abc')
+    assert rosters['0020_Other'][0] == frozenset()
+
+
 def test_sides_of_a_match_placed_independently():
     """Test that a side never inherits from the other side of the same match (players listed on both sides)."""
     match = make_match(make_opponent('A', 3, 'a b c'), make_opponent('B', 0, 'a b c'))
@@ -203,6 +212,8 @@ def test_side_kind(national, page, kind):
 @pytest.mark.parametrize(
     ('day', 'season'),
     [
+        (dt.date(2023, 8, 13), 2023),
+        (dt.date(2023, 8, 14), 2024),
         (dt.date(2024, 9, 15), 2024),
         (dt.date(2024, 9, 16), 2025),
         (dt.date(2025, 9, 12), 2025),

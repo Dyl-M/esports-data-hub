@@ -1,9 +1,9 @@
 # Rating predictions (`edh.predictions`)
 
 Per-game win probabilities learned from past results, meant to replace the "every score is equally likely" model of
-the [league play scenarios](/edh/scenarios/README.md). So far it holds the first building blocks: the **match
-history**, fetched from Liquipedia and cached locally, and the **lineups** a rating follows. Ratings and their
-evaluation come next. How it works: [`_docs/predictions.md`](/_docs/predictions.md).
+the [league play scenarios](/edh/scenarios/README.md). It holds the **match history**, fetched from Liquipedia and
+cached locally, the **lineups** a rating follows, and the **rating baselines** (uniform, Elo, Glicko-2, Bradley–Terry)
+with their walk-forward evaluation. How it works: [`_docs/predictions.md`](/_docs/predictions.md).
 
 ## Contents
 
@@ -12,6 +12,7 @@ evaluation come next. How it works: [`_docs/predictions.md`](/_docs/predictions.
 - [Running](#running)
 - [Reading the history](#reading-the-history)
 - [Lineups](#lineups)
+- [Rating baselines](#rating-baselines)
 - [Module map](#module-map)
 
 ## Setup
@@ -23,13 +24,14 @@ The [shared setup](/README.md#setup), including an LPDB API key. Nothing else: t
 | Scope  | Value                                                                                               |
 |--------|-----------------------------------------------------------------------------------------------------|
 | Game   | Rocket League (Liquipedia wiki `rocketleague`)                                                      |
-| Period | From September 1, 2024 (`HISTORY_START`): RLCS 2024 Worlds, RLCS 2025, 2026 and 2027 so far        |
+| Period | From September 1, 2023 (`HISTORY_START`): RLCS 2024, 2025, 2026 and 2027 so far                     |
 | Tiers  | Liquipedia tiers 1 and 2 (`HISTORY_TIERS`)                                                          |
 | Mode   | 3v3 when read (`TEAM_MODE`); other modes (1v1, 2v2, a few 4v4 show matches) are cached but left out |
 
-RLCS 2025 warms the ratings up, RLCS 2026 evaluates them, and RLCS 2027 is what they will predict.
+RLCS 2024 warms the ratings up, RLCS 2025 tunes them, RLCS 2026 evaluates them, and RLCS 2027 is what they will
+predict.
 
-**Cache.** Matches are stored in `.cache/lpdb/<wiki>/` (gitignored, about 3.3 KB per match, some 67 MB for the scope
+**Cache.** Matches are stored in `.cache/lpdb/<wiki>/` (gitignored, about 3.4 KB per match, some 86 MB for the scope
 in November 2026):
 
 - `pages/<page>.json`: one file per tournament page (its name percent-encoded), holding LPDB match records restricted
@@ -68,7 +70,8 @@ matches = read_history()  # finished 3v3 matches of the default scope, oldest fi
 Each `PlayedMatch` has its LPDB id and page, its start time in UTC, the tier, whether it was played on LAN (None when
 unknown), the two `Opponent`s (team name, team template of the period, series score, roster as `Player`s whose
 Liquipedia page is their identity across teams) and the goals of each decided game. Walkovers are kept, flagged,
-scored 1-0 and without games. Matches not finished, without a date, without two named teams, or without a winner are left out.
+scored 1-0 and without games. Matches not finished, without a date, without two named teams, or without a winner are
+left out.
 
 Team names are used as Liquipedia gives them: a renamed team appears under each of its names. A team whose icon is a
 flag is marked `national`.
@@ -89,20 +92,55 @@ season_of(matches[-1].played_at.date())  # RLCS season of a day, e.g. 2027
 ```
 
 Each `Lineup` has its id (its index in `lineups.by_id`, in order of first match), its team name, its kind (`club`,
-`national` or `college`), the start of its first match and its predecessor's id (None when it took its core from no earlier lineup).
+`national` or `college`), the start of its first match and its predecessor's id (None when it took its core from no
+earlier lineup). `lineups.rosters` gives, per match, the players of each side: the recorded roster, or the lineup's
+latest one when too few players were recorded.
 
 The rules' settings are in `constants.py`, *Lineup identity* (`CORE_PLAYERS`, `CARRYOVER_DAYS`, `COLLEGE_PAGE_ROOTS`,
 `SEASON_STARTS`). The summary of `run.py` gives the matches per season and the lineups per kind.
 
+## Rating baselines
+
+```bash
+uv run python -m edh.predictions.evaluate                               # every model, every identity
+uv run python -m edh.predictions.evaluate --models elo glicko2 --identities players
+```
+
+| Option         | Default | Effect                                                            |
+|----------------|---------|-------------------------------------------------------------------|
+| `--models`     | all     | `uniform`, `elo`, `glicko2`, `bradley_terry`                      |
+| `--identities` | all     | `name`, `lineup`, `players`: who the ratings follow               |
+
+It reads the cached history only (run `python -m edh.predictions.run` first to update it; a history without played
+matches in the tuning or evaluation season is an error). How models are tuned and scored:
+[Walk-forward evaluation](/_docs/predictions.md#walk-forward-evaluation); the settings are in `constants.py`
+(`ELO_GRID`, `GLICKO2_GRID`, `BT_GRID`, `TUNING_SEASON`, `EVALUATION_SEASON`, `EXPERIENCED_MATCHES`,
+`CALIBRATION_BINS`). It logs a table, best first, with the share of series won by the team listed first, and writes
+`_data/predictions/<last match day>/` (committed, to compare evaluations over time):
+
+- `evaluation.json`: the seasons, `first_team_share`, and per model and identity the hyperparameters picked, the
+  tuning season's scores, and the evaluation season's scores by group (`all`, `tier <n>`, `experienced`,
+  `inexperienced`). Scores: `log_loss` and `brier` (series winner), `accuracy`, `game_log_loss`, `matches`.
+- `calibration.csv`: per model and identity, the evaluation season's series predictions by bin of predicted
+  probability: `low`, `high`, `matches`, `predicted` (mean), `observed` (share won by the first team).
+
+From Python, `edh.predictions.series` turns a per-game probability into a series' score distribution
+(`score_distribution(p, wins_needed, current)`) or win probability (`series_probability`), and the models of
+`edh.predictions.ratings` can be used directly (`introduce`, `prepare`, `game_probability`, `update`).
+
 ## Module map
 
-| Module         | Role                                                                                  |
-|----------------|---------------------------------------------------------------------------------------|
-| `constants.py` | History scope, queried fields, retry settings, cache file names, lineup rules         |
-| `models.py`    | `Player`, `Opponent`, `PlayedMatch`, `Lineup`, `Lineups` (frozen, validated)          |
-| `history.py`   | `HistoryScope`, `update_history` (fetch and cache), `read_history`, `to_played_match` |
-| `lineups.py`   | `identify_lineups`, `side_kind`, `season_of`                                          |
-| `run.py`       | Command line entry point                                                              |
+| Module          | Role                                                                                  |
+|-----------------|---------------------------------------------------------------------------------------|
+| `constants.py`  | History scope, queried fields, retries, cache files, lineup rules, rating grids       |
+| `models.py`     | `Player`, `Opponent`, `PlayedMatch`, `Lineup`, `Lineups` (frozen, validated)          |
+| `history.py`    | `HistoryScope`, `update_history` (fetch and cache), `read_history`, `to_played_match` |
+| `lineups.py`    | `identify_lineups`, `side_kind`, `season_of`                                          |
+| `series.py`     | Per-game probability → series score distribution and win probability                  |
+| `ratings.py`    | `Uniform`, `Elo`, `Glicko2`, `BradleyTerry` (the `RatingModel` protocol)              |
+| `evaluation.py` | `walk_forward`, `score`, `calibration`, `breakdown`, `tune`, `evaluate_all`           |
+| `evaluate.py`   | Evaluation command line entry point and report                                        |
+| `run.py`        | History command line entry point                                                      |
 
 Liquipedia access shared with the other projects (API key, client, match parsing) lives in
 [`edh/lpdb.py`](/edh/lpdb.py).

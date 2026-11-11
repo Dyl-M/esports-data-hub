@@ -1,0 +1,628 @@
+{
+  "tuning_season": 2025,
+  "evaluation_season": 2026,
+  "first_team_share": 0.6473253618628068,
+  "results": [
+    {
+      "model": "uniform",
+      "identity": "name",
+      "params": {},
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.6931471805600335,
+        "brier": 0.25,
+        "accuracy": 0.5,
+        "game_log_loss": 0.6931471805599758
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.6931471805600383,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.6931471805599657
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.6931471805600279,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.6931471805599816
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.6931471805600143,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.693147180560004
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.6931471805599355,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.6931471805599423
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.693147180559913,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.693147180559934
+        }
+      }
+    },
+    {
+      "model": "uniform",
+      "identity": "lineup",
+      "params": {},
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.6931471805600335,
+        "brier": 0.25,
+        "accuracy": 0.5,
+        "game_log_loss": 0.6931471805599758
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.6931471805600383,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.6931471805599657
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.6931471805600279,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.6931471805599816
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.6931471805600143,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.693147180560004
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.6931471805599355,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.6931471805599423
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.693147180559913,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.693147180559934
+        }
+      }
+    },
+    {
+      "model": "uniform",
+      "identity": "players",
+      "params": {},
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.6931471805600335,
+        "brier": 0.25,
+        "accuracy": 0.5,
+        "game_log_loss": 0.6931471805599758
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.6931471805600383,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.6931471805599657
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.6931471805600279,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.6931471805599816
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.6931471805600143,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.693147180560004
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.6931471805599355,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.6931471805599423
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.693147180559913,
+          "brier": 0.25,
+          "accuracy": 0.5,
+          "game_log_loss": 0.693147180559934
+        }
+      }
+    },
+    {
+      "model": "elo",
+      "identity": "name",
+      "params": {
+        "k": 24,
+        "shrink": 0.25,
+        "offset": -100
+      },
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.5723102744804452,
+        "brier": 0.19707959223848687,
+        "accuracy": 0.6753905728401656,
+        "game_log_loss": 0.6378530567091104
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.5598158889664624,
+          "brier": 0.1918430432175305,
+          "accuracy": 0.6908747640025173,
+          "game_log_loss": 0.6306726567224294
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.564572276674518,
+          "brier": 0.19428780112463875,
+          "accuracy": 0.6822909246331387,
+          "game_log_loss": 0.6339045512803888
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.5760174175286381,
+          "brier": 0.19903756342893048,
+          "accuracy": 0.6730895375532961,
+          "game_log_loss": 0.6362899049562664
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.5237628810584325,
+          "brier": 0.17331198949183158,
+          "accuracy": 0.755939524838013,
+          "game_log_loss": 0.6027716411754914
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.5063254064693629,
+          "brier": 0.16808983030517743,
+          "accuracy": 0.749593936112615,
+          "game_log_loss": 0.6135375742117036
+        }
+      }
+    },
+    {
+      "model": "elo",
+      "identity": "lineup",
+      "params": {
+        "k": 24,
+        "shrink": 0.25,
+        "offset": -50
+      },
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.5664456228186747,
+        "brier": 0.1944417521021676,
+        "accuracy": 0.6818667378822273,
+        "game_log_loss": 0.6351715025024803
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.5508968550358854,
+          "brier": 0.1876473877439257,
+          "accuracy": 0.6998741346758968,
+          "game_log_loss": 0.6264851335465863
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.5580220008170458,
+          "brier": 0.19072881830357946,
+          "accuracy": 0.6921926200313435,
+          "game_log_loss": 0.630900057506532
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.56515217837424,
+          "brier": 0.19362070170270823,
+          "accuracy": 0.6851426697277796,
+          "game_log_loss": 0.6312685893984047
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.4968888655780429,
+          "brier": 0.16429041031605202,
+          "accuracy": 0.7580993520518359,
+          "game_log_loss": 0.5883709996118388
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.5038319055408753,
+          "brier": 0.16792607289787373,
+          "accuracy": 0.7485110990795886,
+          "game_log_loss": 0.6118934852349524
+        }
+      }
+    },
+    {
+      "model": "elo",
+      "identity": "players",
+      "params": {
+        "k": 24,
+        "shrink": 0.25,
+        "offset": -100
+      },
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.5199421063942049,
+        "brier": 0.1749709559309424,
+        "accuracy": 0.7272666577647215,
+        "game_log_loss": 0.6149633466293236
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.49083505859189686,
+          "brier": 0.16317018386252025,
+          "accuracy": 0.7504719949653871,
+          "game_log_loss": 0.5992492533790573
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.49745260519391366,
+          "brier": 0.16601000986973222,
+          "accuracy": 0.7448354466448212,
+          "game_log_loss": 0.6044584749707473
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.48970463428497263,
+          "brier": 0.16331261392297539,
+          "accuracy": 0.7495080354214496,
+          "game_log_loss": 0.5973552571197503
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.44067462705890115,
+          "brier": 0.1416445480691897,
+          "accuracy": 0.7931965442764579,
+          "game_log_loss": 0.5542779308278962
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.49456723369943223,
+          "brier": 0.16269994103162763,
+          "accuracy": 0.7536545749864645,
+          "game_log_loss": 0.6050267766123559
+        }
+      }
+    },
+    {
+      "model": "glicko2",
+      "identity": "name",
+      "params": {
+        "tau": 0.9,
+        "start_rd": 200,
+        "shrink": 0
+      },
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.5886971193968177,
+        "brier": 0.20060048339484324,
+        "accuracy": 0.6854052610495394,
+        "game_log_loss": 0.638605034306986
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.5726388838019091,
+          "brier": 0.19396968276346246,
+          "accuracy": 0.6957205789804909,
+          "game_log_loss": 0.6301072987007065
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.5781414935959949,
+          "brier": 0.19629523396682597,
+          "accuracy": 0.6904829747827326,
+          "game_log_loss": 0.6345728741953846
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.596647377810727,
+          "brier": 0.20291372770716176,
+          "accuracy": 0.6795670711708757,
+          "game_log_loss": 0.6377740417941804
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.5309295769501765,
+          "brier": 0.17634220555352026,
+          "accuracy": 0.7354211663066955,
+          "game_log_loss": 0.5915558889722355
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.49337315750749017,
+          "brier": 0.16444029128177667,
+          "accuracy": 0.7490525175961018,
+          "game_log_loss": 0.6067203537008605
+        }
+      }
+    },
+    {
+      "model": "glicko2",
+      "identity": "lineup",
+      "params": {
+        "tau": 0.9,
+        "start_rd": 200,
+        "shrink": 0
+      },
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.5677050007685859,
+        "brier": 0.19287371178180995,
+        "accuracy": 0.6949525971424756,
+        "game_log_loss": 0.6314851754846663
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.5466747230500816,
+          "brier": 0.1849342209996708,
+          "accuracy": 0.7091252359974827,
+          "game_log_loss": 0.6194368711844321
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.557866005023099,
+          "brier": 0.18905248745115819,
+          "accuracy": 0.7015244336800114,
+          "game_log_loss": 0.6260963473139696
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.5626407892903511,
+          "brier": 0.19084681982846202,
+          "accuracy": 0.6986716956379141,
+          "game_log_loss": 0.6242735855935266
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.4618457725440068,
+          "brier": 0.15371811708715255,
+          "accuracy": 0.7667386609071274,
+          "game_log_loss": 0.5619454698739581
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.49396163591788045,
+          "brier": 0.1654133614122505,
+          "accuracy": 0.7436383324309691,
+          "game_log_loss": 0.6046827608032391
+        }
+      }
+    },
+    {
+      "model": "glicko2",
+      "identity": "players",
+      "params": {
+        "tau": 0.9,
+        "start_rd": 200,
+        "shrink": 0
+      },
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.540406169699164,
+        "brier": 0.1830068419609432,
+        "accuracy": 0.7172519695553479,
+        "game_log_loss": 0.6206092108072261
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.5053874415076598,
+          "brier": 0.16883874260280482,
+          "accuracy": 0.74235368156073,
+          "game_log_loss": 0.6035008018752771
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.5130256330635522,
+          "brier": 0.17181955442585284,
+          "accuracy": 0.7374982191195327,
+          "game_log_loss": 0.6090677144464953
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.5121186503277498,
+          "brier": 0.17151442350792218,
+          "accuracy": 0.7366349622827156,
+          "game_log_loss": 0.6044565797805237
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.447490609400953,
+          "brier": 0.14624444650563836,
+          "accuracy": 0.7791576673866091,
+          "game_log_loss": 0.5554415253695998
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.48316388363819346,
+          "brier": 0.160004794492676,
+          "accuracy": 0.7612344342176502,
+          "game_log_loss": 0.6005852580740138
+        }
+      }
+    },
+    {
+      "model": "bradley_terry",
+      "identity": "name",
+      "params": {
+        "half_life": 180,
+        "l2": 1
+      },
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.5745730851384013,
+        "brier": 0.19633836644033437,
+        "accuracy": 0.6821337962344772,
+        "game_log_loss": 0.6349878076778077
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.5633725809937394,
+          "brier": 0.1925333969144524,
+          "accuracy": 0.6908747640025173,
+          "game_log_loss": 0.6289025930591314
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.5675888245948567,
+          "brier": 0.19417602671290882,
+          "accuracy": 0.6874198603789714,
+          "game_log_loss": 0.6324647969334857
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.5855041221062027,
+          "brier": 0.20136133177360027,
+          "accuracy": 0.6736634962282716,
+          "game_log_loss": 0.6364135704871471
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.531413818751555,
+          "brier": 0.18008240495401473,
+          "accuracy": 0.7170626349892009,
+          "game_log_loss": 0.5981500100471246
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.49030374628674733,
+          "brier": 0.16338735101781962,
+          "accuracy": 0.7476989713048187,
+          "game_log_loss": 0.6059908019814352
+        }
+      }
+    },
+    {
+      "model": "bradley_terry",
+      "identity": "lineup",
+      "params": {
+        "half_life": 180,
+        "l2": 1
+      },
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.5693278369009018,
+        "brier": 0.1932423542579581,
+        "accuracy": 0.6930831886767259,
+        "game_log_loss": 0.6320091242089115
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.5588731871657394,
+          "brier": 0.18918424229803257,
+          "accuracy": 0.7007551919446192,
+          "game_log_loss": 0.62464939972527
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.5686313521954083,
+          "brier": 0.1926259461072496,
+          "accuracy": 0.6953982048724889,
+          "game_log_loss": 0.6306148709298024
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.5783275962999889,
+          "brier": 0.1962679894426329,
+          "accuracy": 0.6876844867169564,
+          "game_log_loss": 0.6311903366003033
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.4849071392788727,
+          "brier": 0.16309642476358718,
+          "accuracy": 0.7413606911447084,
+          "game_log_loss": 0.5731493579269892
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.494643091388452,
+          "brier": 0.1657967544324294,
+          "accuracy": 0.7439090416892258,
+          "game_log_loss": 0.6046966598096647
+        }
+      }
+    },
+    {
+      "model": "bradley_terry",
+      "identity": "players",
+      "params": {
+        "half_life": 365,
+        "l2": 1
+      },
+      "tuning": {
+        "matches": 7489,
+        "log_loss": 0.5089327723792461,
+        "brier": 0.17073533143868985,
+        "accuracy": 0.7348778208038457,
+        "game_log_loss": 0.6112113223446136
+      },
+      "evaluation": {
+        "all": {
+          "matches": 7945,
+          "log_loss": 0.48835582248438597,
+          "brier": 0.1629507006612959,
+          "accuracy": 0.7452485840151039,
+          "game_log_loss": 0.599384244719717
+        },
+        "tier 2": {
+          "matches": 7019,
+          "log_loss": 0.49417028854798567,
+          "brier": 0.16535673503343876,
+          "accuracy": 0.741202450491523,
+          "game_log_loss": 0.6039308235692546
+        },
+        "inexperienced": {
+          "matches": 6098,
+          "log_loss": 0.4910654379239626,
+          "brier": 0.16432370102975175,
+          "accuracy": 0.7420465726467694,
+          "game_log_loss": 0.5992439026216263
+        },
+        "tier 1": {
+          "matches": 926,
+          "log_loss": 0.4442826720519739,
+          "brier": 0.14471316798519482,
+          "accuracy": 0.7759179265658748,
+          "game_log_loss": 0.5601335312785755
+        },
+        "experienced": {
+          "matches": 1847,
+          "log_loss": 0.4794098371294625,
+          "brier": 0.1584176436787058,
+          "accuracy": 0.7558202490525175,
+          "game_log_loss": 0.5998123499645643
+        }
+      }
+    }
+  ]
+}
