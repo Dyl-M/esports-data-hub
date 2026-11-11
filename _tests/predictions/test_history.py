@@ -147,6 +147,16 @@ def test_interrupted_update_keeps_its_progress(tmp_path, monkeypatch):
     assert update.since == dt.date(2025, 1, 4) - dt.timedelta(days=REFETCH_DAYS)
 
 
+def test_interrupted_update_keeps_a_partial_page(tmp_path, monkeypatch):
+    """Test that records received after the last full page are saved too when LPDB fails."""
+    monkeypatch.setattr(history, 'LPDB_MAX_PAGE_SIZE', 2)
+    records = [make_record(f'm{day}', f'2025-01-{day:02d}') for day in (1, 2, 3)]
+    with pytest.raises(DataSourceError, match='after 3 matches'):
+        _update(tmp_path, records, error=RateLimitError('Rate limit exceeded'))
+    assert [record['match2id'] for record in _cached(tmp_path)] == ['m1', 'm2', 'm3']
+    assert _manifest(tmp_path)['synced_through'] == '2025-01-03'
+
+
 def test_records_come_in_full_pages(monkeypatch):
     """Test that records are grouped by LPDB page, the last one possibly partial."""
     monkeypatch.setattr(history, 'LPDB_MAX_PAGE_SIZE', 2)
