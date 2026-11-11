@@ -88,7 +88,7 @@ first, second = lineups.of(matches[-1])  # the Lineup of each opponent
 season_of(matches[-1].played_at.date())  # RLCS season of a day, e.g. 2027
 ```
 
-Each `Lineup` has its id (its index in `lineups.lineups`, in order of first match), its team name, its kind (`club`,
+Each `Lineup` has its id (its index in `lineups.by_id`, in order of first match), its team name, its kind (`club`,
 `national` or `college`), the start of its first match and its predecessor's id (None when it took its core from no earlier lineup).
 
 The rules' settings are in `constants.py`, *Lineup identity* (`CORE_PLAYERS`, `CARRYOVER_DAYS`, `COLLEGE_PAGE_ROOTS`,

@@ -132,11 +132,11 @@ class Lineups:
     """Lineup identity over a match history.
 
     Attributes:
-        lineups: Every lineup, indexed by `lineup_id`.
+        by_id: Every lineup, indexed by `lineup_id`.
         sides: Lineup ids of the two opponents of each match, by `match_id`.
     """
 
-    lineups: tuple[Lineup, ...]
+    by_id: tuple[Lineup, ...]
     sides: Mapping[str, tuple[int, int]]
 
     def of(self, match: PlayedMatch) -> tuple[Lineup, Lineup]:
@@ -149,4 +149,4 @@ class Lineups:
             The lineups of the first and second opponents.
         """
         first, second = self.sides[match.match_id]
-        return self.lineups[first], self.lineups[second]
+        return self.by_id[first], self.by_id[second]

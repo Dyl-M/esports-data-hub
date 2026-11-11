@@ -70,7 +70,7 @@ def test_context_low_share_threshold(monkeypatch):
     """Test that a rank share is dimmed only below `LOW_SHARE`, not at it."""
     league = _league()
     report = _report(league)
-    share = next(outlook for outlook in report.teams if outlook.team == 'A').rank_shares[1]
+    share = {outlook.team: outlook for outlook in report.teams}['A'].rank_shares[1]
     monkeypatch.setattr(card, 'LOW_SHARE', share)
     first = card_context(report, league, NEO, fmt='portrait', as_of=AS_OF)['rows'][0]
     assert first.team == 'A'

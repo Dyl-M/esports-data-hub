@@ -66,7 +66,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         len(teams),
         ', '.join(f'RLCS {season}: {count}' for season, count in sorted(per_season.items())),
     )
-    lineups = identify_lineups(matches).lineups
+    lineups = identify_lineups(matches).by_id
     kinds = Counter(lineup.kind for lineup in lineups)
     logger.info(
         'Lineups: %d, %d from a predecessor (%s)',

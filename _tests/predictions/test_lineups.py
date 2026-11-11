@@ -177,9 +177,9 @@ def test_matches_taken_in_date_order():
     """Test that the input order does not matter, and both sides of every match get a lineup."""
     matches = [_match(0, 'G2', 'a b c'), _match(30, 'NRG', 'a b c')]
     lineups = identify_lineups(reversed(matches))
-    assert [lineup.name for lineup in lineups.lineups] == ['G2', 'Rival', 'NRG']
+    assert [lineup.name for lineup in lineups.by_id] == ['G2', 'Rival', 'NRG']
     assert lineups.sides == {'0000_G2': (0, 1), '0030_NRG': (2, 1)}
-    assert lineups.lineups[2].predecessor == 0
+    assert lineups.by_id[2].predecessor == 0
 
 
 # === Kinds and seasons ===
