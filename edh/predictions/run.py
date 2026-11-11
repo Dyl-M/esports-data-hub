@@ -48,7 +48,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     """
     args = parse_args(argv)
     logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
-    for name in ('httpx', 'httpcore'):
+    for name in ('httpx2', 'httpcore2'):
         logging.getLogger(name).setLevel(logging.WARNING)
     try:
         if not args.offline:
