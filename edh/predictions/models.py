@@ -98,6 +98,18 @@ class PlayedMatch:
         return scores.index(max(scores))
 
 
+def start_order(match: PlayedMatch) -> tuple[dt.datetime, str]:
+    """Sort key of a match in the history: start time, then id (matches can start at the same time).
+
+    Args:
+        match: A played match.
+
+    Returns:
+        Its start time and id.
+    """
+    return match.played_at, match.match_id
+
+
 # === Lineups ===
 
 

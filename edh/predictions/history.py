@@ -49,7 +49,7 @@ from .constants import (
     TEAM_MODE,
     WIKI,
 )
-from .models import Opponent, PlayedMatch, Player
+from .models import Opponent, PlayedMatch, Player, start_order
 
 logger = logging.getLogger(__name__)
 
@@ -294,7 +294,7 @@ def read_history(
     )
     played = (match for match in _played(records, mode) if match is not None)
     matches = [match for match in played if match.tier in scope.tiers and match.played_at.date() >= scope.start]
-    return sorted(matches, key=lambda match: (match.played_at, match.match_id))
+    return sorted(matches, key=start_order)
 
 
 def _played(records: Iterable[dict[str, Any]], mode: str) -> Iterator[PlayedMatch | None]:

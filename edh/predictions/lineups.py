@@ -25,7 +25,7 @@ from .constants import (
     SEASON_FIRST_DAYS,
     SEASON_STARTS,
 )
-from .models import Lineup, Lineups, Opponent, PlayedMatch
+from .models import Lineup, Lineups, Opponent, PlayedMatch, start_order
 
 # === Public API ===
 
@@ -40,10 +40,7 @@ def identify_lineups(matches: Iterable[PlayedMatch]) -> Lineups:
         The lineups, and the lineup ids and rosters of each match.
     """
     tracker = _Tracker()
-    sides = {
-        match.match_id: tracker.place(match)
-        for match in sorted(matches, key=lambda match: (match.played_at, match.match_id))
-    }
+    sides = {match.match_id: tracker.place(match) for match in sorted(matches, key=start_order)}
     return Lineups(tuple(track.lineup for track in tracker.tracks), sides, tracker.rosters)
 
 

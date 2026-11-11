@@ -49,12 +49,12 @@ class _Spy(Uniform):
         self.calls.append(('update', first, second, games))
 
 
-def _match(day, first, second, score=(3, 1), **kwargs):
+def _match(day, first, second, games=(3, 1), **kwargs):
     """A match on day (from START) between two (name, players) sides."""
     (first_name, first_players), (second_name, second_players) = first, second
     opponents = (
-        make_opponent(first_name, score[0], first_players),
-        make_opponent(second_name, score[1], second_players),
+        make_opponent(first_name, games[0], first_players),
+        make_opponent(second_name, games[1], second_players),
     )
     return make_match(*opponents, match_id=f'm{day:03d}', played_at=START + dt.timedelta(days=day), **kwargs)
 
@@ -109,7 +109,7 @@ def test_players_without_roster():
 
 def test_lineups_inherit_and_seasons_start():
     """Test that a renamed lineup is introduced from its predecessor and a new season is announced once per member."""
-    matches = [_match(0, A, B), _match(140, ('A', 'a1 a2 a3'), B), _match(150, ('NewA', 'a1 a2 x'), B)]
+    matches = [_match(0, A, B), _match(140, ('A', 'a1 a2 a3'), B), _match(150, ('Rebrand', 'a1 a2 x'), B)]
     model, _ = _walk(matches, 'lineup')
     assert ('new_season', '0') in model.calls  # May 2025, then September 2025 (RLCS 2026)
     assert ('new_season', '1') in model.calls
@@ -119,9 +119,10 @@ def test_lineups_inherit_and_seasons_start():
 
 def test_heir_of_an_earlier_season_starts_the_new_season():
     """Test that a lineup inheriting from one last seen in an earlier season is pulled toward the mean like it."""
-    matches = [_match(0, A, B), _match(110, A, B), _match(140, ('NewA', 'a1 a2 x'), B)]  # A in 2025, NewA in 2026
+    matches = [_match(0, A, B), _match(110, A, B), _match(140, ('Rebrand', 'a1 a2 x'), B)]  # A in 2025, Rebrand in 2026
     model, _ = _walk(matches, 'lineup')
-    calls = model.calls[model.calls.index(('introduce', '2', '0')) :]
+    start = model.calls.index(('introduce', '2', '0'))
+    calls = model.calls[start:]
     assert calls[:2] == [('introduce', '2', '0'), ('new_season', '2')]
 
 
@@ -217,7 +218,7 @@ def test_evaluate_all_order(monkeypatch):
     """Test that every model is tuned for every identity, models first."""
     monkeypatch.setattr(evaluation, 'tune', lambda _matches, _lineups, model, identity: (model, identity))
     matches = [_match(0, A, B), _match(200, A, B)]  # one played match in each season
-    assert evaluate_all(matches, None, ['uniform', 'elo'], ['name', 'players']) == [
+    assert evaluate_all(matches, identify_lineups(matches), ['uniform', 'elo'], ['name', 'players']) == [
         ('uniform', 'name'),
         ('uniform', 'players'),
         ('elo', 'name'),

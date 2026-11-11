@@ -300,13 +300,21 @@ class _GameLog:
 
     def arrays(self) -> tuple[np.ndarray, np.ndarray]:
         """All logged series: the entries and games arrays."""
-        new = (np.array(self._pending_entries, dtype=float), np.array(self._pending_games, dtype=float))
-        if self._arrays is None:
-            self._arrays = new
-        elif self._pending_games:
-            self._arrays = (np.concatenate([self._arrays[0], new[0]]), np.concatenate([self._arrays[1], new[1]]))
+        new = (_rows(self._pending_entries), _rows(self._pending_games))
+        arrays = new if self._arrays is None else (_stack(self._arrays[0], new[0]), _stack(self._arrays[1], new[1]))
+        self._arrays = arrays
         self._pending_entries, self._pending_games = [], []
-        return self._arrays
+        return arrays
+
+
+def _rows(rows: Sequence[tuple[float, float, float]]) -> np.ndarray:
+    """Rows of three values as an array, three columns wide even when there is none."""
+    return np.array(rows, dtype=float).reshape(-1, 3)
+
+
+def _stack(old: np.ndarray, new: np.ndarray) -> np.ndarray:
+    """Rows of `new` appended to those of `old`."""
+    return np.concatenate([old, new])
 
 
 @dataclass
@@ -333,7 +341,9 @@ class BradleyTerry(_Steps):
 
     def introduce(self, member: str, predecessor: str | None) -> None:
         """Add a member, its prior (and starting strength) taken from its predecessor when known."""
-        prior = self._strengths[self._index[predecessor]] if predecessor in self._index else 0.0
+        prior = 0.0
+        if predecessor is not None and predecessor in self._index:
+            prior = self._strengths[self._index[predecessor]]
         self._index[member] = len(self._strengths)
         self._strengths.append(prior)
         self._priors.append(prior)

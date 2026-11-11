@@ -68,11 +68,14 @@ def test_elo_starts_seasons_and_inheritance():
 # === Glicko-2 ===
 
 
-def test_glicko2_matches_glickmans_example():
+def test_glicko2_matches_the_published_example():
     """Test one rating period against Glickman's worked example (1500, RD 200 against three players)."""
     scale = GLICKO2_SCALE
-    opponents = [((1400 - 1500) / scale, 30 / scale, 1.0), ((1550 - 1500) / scale, 100 / scale, 0.0)]
-    opponents.append(((1700 - 1500) / scale, 300 / scale, 0.0))
+    opponents = [
+        ((1400 - 1500) / scale, 30 / scale, 1.0),
+        ((1550 - 1500) / scale, 100 / scale, 0.0),
+        ((1700 - 1500) / scale, 300 / scale, 0.0),
+    ]
     state = glicko2_step(GlickoState(0.0, 200 / scale, 0.06), opponents, tau=0.5)
     assert (1500 + state.mu * scale, state.phi * scale, state.sigma) == pytest.approx((1464.06, 151.52, 0.05999), 1e-4)
     # the volatility search pinned to full precision (the value other Glicko-2 implementations give)
@@ -175,6 +178,9 @@ def test_bradley_terry_priors_and_decay():
     assert model.game_probability(('a',), ('b',)) < 0.5  # the recent result weighs more
     model.introduce('heir', 'b')
     assert model.game_probability(('heir',), ('a',)) == model.game_probability(('b',), ('a',))
+    model.introduce('orphan', 'unknown')  # a predecessor never rated: the default prior
+    model.introduce('fresh', None)
+    assert model.game_probability(('orphan',), ('fresh',)) == 0.5
 
 
 def test_bradley_terry_refit_pinned():

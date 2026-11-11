@@ -37,7 +37,7 @@ from .constants import (
     TUNING_SEASON,
 )
 from .lineups import season_of
-from .models import Lineups, PlayedMatch
+from .models import Lineups, PlayedMatch, start_order
 from .ratings import BradleyTerry, Elo, Glicko2, Members, RatingModel, Uniform
 from .series import series_probability
 
@@ -98,7 +98,7 @@ def walk_forward(
     seasons: dict[str, int] = {}
     played: Counter[int] = Counter()
     predecessor = _predecessors(identity, lineups)
-    for match in sorted(matches, key=lambda match: (match.played_at, match.match_id)):
+    for match in sorted(matches, key=start_order):
         season = season_of(match.played_at.date())
         first, second = (_members(identity, match, index, lineups) for index in (0, 1))
         for members in (first, second):
@@ -125,7 +125,10 @@ def _members(identity: str, match: PlayedMatch, index: int, lineups: Lineups) ->
     if identity == IDENTITY_LINEUP:
         return (str(lineups.sides[match.match_id][index]),)
     roster = lineups.rosters[match.match_id][index]
-    return tuple(sorted(roster)) if roster else (opponent.name,)
+    if not roster:
+        return (opponent.name,)
+    players: list[str] = sorted(roster)
+    return tuple(players)
 
 
 def _predecessors(identity: str, lineups: Lineups) -> Callable[[str], str | None]:
