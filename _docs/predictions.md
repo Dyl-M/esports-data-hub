@@ -155,8 +155,18 @@ day, on the previous days' games only). Walkovers are neither predicted nor lear
 
 - **Warm-up**: **RLCS 2024** (the history starts in September 2023) only builds the ratings, so that the tuning season
   starts with rated teams and crosses a season boundary, which the season shrinkage needs to be tuned at all.
-- **Tuning**: every combination of a small grid of hyperparameters is run over the whole history, and the one with the
-  lowest series log loss on **RLCS 2025** is kept.
+- **Tuning**: each run is a pass over the whole history with one set of hyperparameters, scored by its series log loss
+  on **RLCS 2025**; the lowest is kept. Every combination of a small grid is run first, then a bounded Nelder–Mead
+  search starts from the best of them:
+    - each hyperparameter is mapped to $[0, 1]$ over its bounds. $K$, $\tau$, $h$ and $\lambda$ matter by ratio, so
+      they use a log scale, $x = \ln(v / v_{\min}) / \ln(v_{\max} / v_{\min})$; the others a linear one,
+      $x = (v - v_{\min}) / (v_{\max} - v_{\min})$;
+    - the first simplex steps $0.1$ along each axis (inward near the upper bound); the search stops when its points
+      are within $0.01$ of each other and their log losses within $10^{-5}$, or after 60 evaluations;
+    - values are rounded to 4 significant digits before a run, and a point already run is not run again.
+
+  The grid's best is one of the runs, so the search can only improve on it. Runs are deterministic, so the pick does
+  not depend on how many worker processes tune the models. A pick on a bound is reported: the optimum may lie beyond.
 - **Evaluation**: **RLCS 2026** is scored once, with the hyperparameters picked on 2025. The ratings keep learning
   through 2026 (each match still predicted before it is learned from).
 
@@ -180,6 +190,12 @@ predicted around 70% are won about 70% of the time.
   evaluation reports the share, `first_team_share`, about two thirds of RLCS 2026). The ratings don't use the order,
   but a constant "the first team wins that share" already beats uniform: the baseline to beat is uniform, as in the
   simulator, not the best constant.
-- **Small grids**: each hyperparameter takes a few values only; a value picked at the edge of its grid may be improved
-  by a finer search.
+- **Local search**: Nelder–Mead finds a local minimum near the grid's best; the grid only guards against a poor start.
+  The pick fits RLCS 2025: more freedom in the search means more room to fit that season's noise, which only the
+  evaluation season can show. Bounds are set from what a value means, never from the evaluation season's score, which
+  would leak it into the tuning.
+- **Picks on a bound**: on players, Elo's starting offset goes as low as the search lets it (a new player is weaker than
+  the average rated player); it stops at −400, 10:1 per game against an average side. Glicko-2's $\tau$ stops at 2,
+  far above Glickman's suggested 0.3–1.2: much higher, ratings run away until expected scores round to 0 or 1, where
+  the rating period is undefined. Both are better answered by a cold-start prior (P5) than by wider bounds.
 - **No LAN / online or region effect**, and every tier weighs the same.

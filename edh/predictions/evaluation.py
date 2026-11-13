@@ -2,52 +2,31 @@
 
 Matches are taken in date order. Each played match is predicted with the ratings built from the matches before it,
 then used to update them, so every prediction is one that could have been made on that day. Walkovers are neither
-predicted nor learned from. Hyperparameters are picked on the tuning season, and the evaluation season is scored once
-with them.
+predicted nor learned from. How the hyperparameters are picked: `tuning.py`.
 """
 
 # Standard library
 import math
 from collections import Counter
-from collections.abc import Callable, Iterable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
-from itertools import product
 
 # Local
-from ..exceptions import DataSourceError
 from .constants import (
-    BT_GRID,
     CALIBRATION_BINS,
-    ELO_GRID,
-    EVALUATION_SEASON,
     EXPERIENCED_MATCHES,
-    GLICKO2_GRID,
     GROUP_ALL,
     GROUP_EXPERIENCED,
     GROUP_INEXPERIENCED,
     GROUP_TIER,
-    IDENTITIES,
     IDENTITY_LINEUP,
     IDENTITY_NAME,
-    MODEL_BRADLEY_TERRY,
-    MODEL_ELO,
-    MODEL_GLICKO2,
-    MODEL_UNIFORM,
     PROBABILITY_FLOOR,
-    TUNING_SEASON,
 )
 from .lineups import season_of
 from .models import Lineups, PlayedMatch, start_order
-from .ratings import BradleyTerry, Elo, Glicko2, Members, RatingModel, Uniform
+from .ratings import Members, RatingModel
 from .series import series_probability
-
-# Model factories and their hyperparameter grids
-MODELS: dict[str, tuple[Callable[..., RatingModel], Mapping[str, tuple[float, ...]]]] = {
-    MODEL_UNIFORM: (Uniform, {}),
-    MODEL_ELO: (Elo, ELO_GRID),
-    MODEL_GLICKO2: (Glicko2, GLICKO2_GRID),
-    MODEL_BRADLEY_TERRY: (BradleyTerry, BT_GRID),
-}
 
 # === Predictions ===
 
@@ -294,89 +273,3 @@ def first_team_share(predictions: Sequence[Prediction]) -> float:
 def _clip(p: float) -> float:
     """Keep a probability away from 0 and 1 so its log stays finite."""
     return min(max(p, PROBABILITY_FLOOR), 1 - PROBABILITY_FLOOR)
-
-
-# === Tuning ===
-
-
-@dataclass(frozen=True)
-class Result:
-    """A model and identity, tuned on the tuning season, with its predictions of the evaluation season.
-
-    Attributes:
-        model: Model name.
-        identity: Who the ratings follow.
-        params: Hyperparameters picked on the tuning season.
-        tuning: Scores on the tuning season with those hyperparameters.
-        predictions: Predictions of the evaluation season.
-    """
-
-    model: str
-    identity: str
-    params: Mapping[str, float]
-    tuning: Scores
-    predictions: tuple[Prediction, ...]
-
-
-def tune(
-    matches: Sequence[PlayedMatch],
-    lineups: Lineups,
-    model: str,
-    identity: str,
-    seasons: tuple[int, int] = (TUNING_SEASON, EVALUATION_SEASON),
-) -> Result:
-    """Run a model over its grid, keep the hyperparameters with the lowest series log loss on the tuning season.
-
-    Args:
-        matches: The history.
-        lineups: Lineup identity over the same history.
-        model: Model name (a key of `MODELS`).
-        identity: Who the ratings follow.
-        seasons: Tuning season, then evaluation season.
-
-    Returns:
-        The tuned model and its predictions of the evaluation season.
-    """
-    factory, grid = MODELS[model]
-    tuning_season, evaluation_season = seasons
-    runs = []
-    for params in _combinations(grid):
-        predictions = walk_forward(matches, lineups, identity, factory(**params))
-        tuning = score([prediction for prediction in predictions if prediction.season == tuning_season])
-        runs.append((tuning, params, predictions))
-    tuning, best, predictions = min(runs, key=lambda run: run[0].log_loss)
-    evaluated = tuple(prediction for prediction in predictions if prediction.season == evaluation_season)
-    return Result(model, identity, best, tuning, evaluated)
-
-
-def evaluate_all(
-    matches: Sequence[PlayedMatch],
-    lineups: Lineups,
-    models: Sequence[str] = tuple(MODELS),
-    identities: Sequence[str] = IDENTITIES,
-) -> list[Result]:
-    """Tune every model for every identity.
-
-    Args:
-        matches: The history.
-        lineups: Lineup identity over the same history.
-        models: Model names.
-        identities: Identities compared.
-
-    Returns:
-        One result per model and identity, in that order.
-
-    Raises:
-        DataSourceError: If the tuning or the evaluation season has no played match in the history.
-    """
-    played = {season_of(match.played_at.date()) for match in matches if not match.walkover}
-    missing = [season for season in (TUNING_SEASON, EVALUATION_SEASON) if season not in played]
-    if missing:
-        seasons = ', '.join(f'RLCS {season}' for season in missing)
-        raise DataSourceError(f'No played match of {seasons} in the history: run `python -m edh.predictions.run`')
-    return [tune(matches, lineups, model, identity) for model, identity in product(models, identities)]
-
-
-def _combinations(grid: Mapping[str, tuple[float, ...]]) -> list[dict[str, float]]:
-    """Every combination of the grid's values (a single empty one for a model without hyperparameters)."""
-    return [{name: values[index] for index, name in enumerate(grid)} for values in product(*grid.values())]
