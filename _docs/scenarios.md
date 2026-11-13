@@ -49,8 +49,8 @@ Every **reachable final score** of a pending series is equally likely (`outcomes
 
 - A best of $2k-1$ games has $2k$ final scores: a Bo5 at 0-0 ends 3-0, 3-1, 3-2, 0-3, 1-3 or 2-3, each with
   probability $1/6$.
-- A series in progress continues from its current score: at 2-0 in a Bo5 only 3-0, 3-1, 3-2 and 2-3 remain ($1/4$
-  each), so the leader wins it $3/4$ of the time.
+- A series in progress continues from its current score: at 2-0 in a Bo5 only 3-0, 3-1, 3-2 and 2-3 remain, each with
+  probability $1/4$, so the leader wins it $3/4$ of the time.
 - A series already at its winning score keeps it, even if Liquipedia hasn't flagged it as finished yet.
 
 Scenarios are therefore all equally likely, and an exact share is simply *scenarios where X happens / all scenarios*.
@@ -385,7 +385,7 @@ $w$:
   straddling the slot counts for the part of it inside the slot, as in the rank shares. It lies between *qualified*
   and *qualified* + *undecided*, and equals *qualified* when no tie straddles the slot.
 
-Totals are divided by the total weight $W$ at the end ($N$ scenarios, $n$ samples, or 1 for winners-first). Writing
+Totals are divided by the total weight $W$ at the end: $N$ scenarios, $n$ samples, or 1 for winners-first. Writing
 $\mathcal{G}(t, \rho)$ for the weighted groups $(G, w)$ of the run that contain team $t$ and cover rank $\rho$
 (i.e. $r_G \le \rho \le r_G + |G| - 1$, with $r_G$ the group's first rank):
 
