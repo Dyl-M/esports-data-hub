@@ -106,21 +106,24 @@ uv run python -m edh.predictions.evaluate                               # every 
 uv run python -m edh.predictions.evaluate --models elo glicko2 --identities players
 ```
 
-| Option         | Default | Effect                                                            |
-|----------------|---------|-------------------------------------------------------------------|
-| `--models`     | all     | `uniform`, `elo`, `glicko2`, `bradley_terry`                      |
-| `--identities` | all     | `name`, `lineup`, `players`: who the ratings follow               |
+| Option         | Default  | Effect                                                                   |
+|----------------|----------|--------------------------------------------------------------------------|
+| `--models`     | all      | `uniform`, `elo`, `glicko2`, `bradley_terry`                             |
+| `--identities` | all      | `name`, `lineup`, `players`: who the ratings follow                      |
+| `--workers`    | all CPUs | Worker processes, one model and identity each; 1 tunes in the main one   |
 
 It reads the cached history only (run `python -m edh.predictions.run` first to update it; a history without played
 matches in the tuning or evaluation season is an error). How models are tuned and scored:
-[Walk-forward evaluation](/_docs/predictions.md#walk-forward-evaluation); the settings are in `constants.py`
-(`ELO_GRID`, `GLICKO2_GRID`, `BT_GRID`, `TUNING_SEASON`, `EVALUATION_SEASON`, `EXPERIENCED_MATCHES`,
-`CALIBRATION_BINS`). It logs a table, best first, with the share of series won by the team listed first, and writes
-`_data/predictions/<last match day>/` (committed, to compare evaluations over time):
+[Walk-forward evaluation](/_docs/predictions.md#walk-forward-evaluation); the settings are in `constants.py`,
+*Evaluation* and *Tuning* (`TUNING_SEASON`, `EVALUATION_SEASON`, the grids `ELO_GRID`, `GLICKO2_GRID`, `BT_GRID`, the
+search's `*_BOUNDS`, `LOG_SCALE` and `TUNING_*`). Results don't depend on `--workers`. It logs a table, best first,
+with the runs of each tuning and a star on the hyperparameters picked on a bound, then the share of series won by the
+team listed first, and writes `_data/predictions/<last match day>/` (committed, to compare evaluations over time):
 
-- `evaluation.json`: the seasons, `first_team_share`, and per model and identity the hyperparameters picked, the
-  tuning season's scores, and the evaluation season's scores by group (`all`, `tier <n>`, `experienced`,
-  `inexperienced`). Scores: `log_loss` and `brier` (series winner), `accuracy`, `game_log_loss`, `matches`.
+- `evaluation.json`: the seasons, `first_team_share`, and per model and identity the hyperparameters picked, those
+  picked on a bound (`at_bound`), the tuning season's scores, the evaluation season's scores by group (`all`,
+  `tier <n>`, `experienced`, `inexperienced`), and every run of the tuning in order (`trials`: `params`,
+  `log_loss`). Scores: `log_loss` and `brier` (series winner), `accuracy`, `game_log_loss`, `matches`.
 - `calibration.csv`: per model and identity, the evaluation season's series predictions by bin of predicted
   probability: `low`, `high`, `matches`, `predicted` (mean), `observed` (share won by the first team).
 
@@ -132,13 +135,14 @@ From Python, `edh.predictions.series` turns a per-game probability into a series
 
 | Module          | Role                                                                                  |
 |-----------------|---------------------------------------------------------------------------------------|
-| `constants.py`  | History scope, queried fields, retries, cache files, lineup rules, rating grids       |
+| `constants.py`  | History scope, queried fields, retries, cache files, lineup rules, tuning settings    |
 | `models.py`     | `Player`, `Opponent`, `PlayedMatch`, `Lineup`, `Lineups` (frozen, validated)          |
 | `history.py`    | `HistoryScope`, `update_history` (fetch and cache), `read_history`, `to_played_match` |
 | `lineups.py`    | `identify_lineups`, `side_kind`, `season_of`                                          |
 | `series.py`     | Per-game probability → series score distribution and win probability                  |
 | `ratings.py`    | `Uniform`, `Elo`, `Glicko2`, `BradleyTerry` (the `RatingModel` protocol)              |
-| `evaluation.py` | `walk_forward`, `score`, `calibration`, `breakdown`, `tune`, `evaluate_all`           |
+| `evaluation.py` | `walk_forward`, `score`, `calibration`, `breakdown`, `first_team_share`               |
+| `tuning.py`     | `MODELS` (search spaces), `tune` (grid, then bounded search), `evaluate_all`          |
 | `evaluate.py`   | Evaluation command line entry point and report                                        |
 | `run.py`        | History command line entry point                                                      |
 
