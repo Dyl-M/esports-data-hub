@@ -92,10 +92,25 @@ REPORT_DIGITS = 4  # decimals of the calibration table
 IDENTITY_NAME, IDENTITY_LINEUP, IDENTITY_PLAYERS = 'name', 'lineup', 'players'
 IDENTITIES = (IDENTITY_NAME, IDENTITY_LINEUP, IDENTITY_PLAYERS)
 MODEL_UNIFORM, MODEL_ELO, MODEL_GLICKO2, MODEL_BRADLEY_TERRY = 'uniform', 'elo', 'glicko2', 'bradley_terry'
-# Small hyperparameter grids, searched on the tuning season (an optimizer may replace them later)
-ELO_GRID: dict[str, tuple[float, ...]] = {'k': (16, 24, 32, 48), 'shrink': (0, 0.25, 0.5), 'offset': (0, -50, -100)}
-GLICKO2_GRID: dict[str, tuple[float, ...]] = {'tau': (0.3, 0.6, 0.9), 'start_rd': (200, 350), 'shrink': (0, 0.25, 0.5)}
-BT_GRID: dict[str, tuple[float, ...]] = {'half_life': (90, 180, 365), 'l2': (0.1, 1, 10)}
 PREDICTIONS_FOLDER = 'predictions'  # under `_data/`: one dated folder per evaluation
 EVALUATION_JSON = 'evaluation.json'
 CALIBRATION_CSV = 'calibration.csv'
+
+# === Tuning ===
+
+# Small hyperparameter grids, every combination run on the tuning season; the best one starts the bounded search
+ELO_GRID: dict[str, tuple[float, ...]] = {'k': (16, 24, 32, 48), 'shrink': (0, 0.25, 0.5), 'offset': (0, -50, -100)}
+GLICKO2_GRID: dict[str, tuple[float, ...]] = {'tau': (0.3, 0.6, 0.9), 'start_rd': (200, 350), 'shrink': (0, 0.25, 0.5)}
+BT_GRID: dict[str, tuple[float, ...]] = {'half_life': (90, 180, 365), 'l2': (0.1, 1, 10)}
+# Lowest and highest value of each hyperparameter in the search (its grid's values included)
+# offset stops at -400 (10:1 per game against an average side): on players, the search goes as low as it is let
+ELO_BOUNDS: dict[str, tuple[float, float]] = {'k': (4, 128), 'shrink': (0, 1), 'offset': (-400, 100)}
+# tau stops at 2: far above Glickman's 0.3-1.2, and near 5 ratings run away (expected scores of exactly 0 or 1)
+GLICKO2_BOUNDS: dict[str, tuple[float, float]] = {'tau': (0.1, 2), 'start_rd': (50, 500), 'shrink': (0, 1)}
+BT_BOUNDS: dict[str, tuple[float, float]] = {'half_life': (30, 1500), 'l2': (0.01, 100)}
+LOG_SCALE = frozenset({'k', 'tau', 'half_life', 'l2'})  # searched on a log scale: their ratios matter, not differences
+TUNING_STEP = 0.1  # first moves of the search, as a share of each hyperparameter's (scaled) range
+TUNING_MAX_EVALUATIONS = 60  # cap on the search's evaluations after the grid
+TUNING_TOLERANCE = 0.01  # the search stops when its points are this close (share of the range), and
+TUNING_LOSS_TOLERANCE = 1e-5  # their tuning log losses this close
+TUNING_DIGITS = 4  # significant digits of a hyperparameter tried: nearer points are the same run

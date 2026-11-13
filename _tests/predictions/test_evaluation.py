@@ -1,4 +1,4 @@
-"""Tests for edh/predictions/evaluation.py - walk-forward evaluation, scores and tuning."""
+"""Tests for edh/predictions/evaluation.py - walk-forward evaluation and scores."""
 
 # Standard library
 import datetime as dt
@@ -9,16 +9,12 @@ from dataclasses import replace
 import pytest
 
 # Local
-from edh.exceptions import DataSourceError
-from edh.predictions import evaluation
 from edh.predictions.evaluation import (
     Prediction,
     breakdown,
     calibration,
-    evaluate_all,
     first_team_share,
     score,
-    tune,
     walk_forward,
 )
 from edh.predictions.lineups import identify_lineups
@@ -204,42 +200,6 @@ def test_breakdown_groups():
         'experienced': 1,
         'inexperienced': 1,
     }
-
-
-# === Tuning ===
-
-
-def test_tune_keeps_the_best_tuning_log_loss(monkeypatch):
-    """Test that tuning keeps the grid point with the lowest tuning-season log loss, scored on the next season."""
-    monkeypatch.setitem(evaluation.MODELS, 'elo', (Elo, {'k': (0, 60)}))
-    matches = [_match(day, A, B) for day in range(0, 200, 10)]  # A always wins: learning helps
-    result = tune(matches, identify_lineups(matches), 'elo', 'name')
-    assert (result.model, result.identity, result.params) == ('elo', 'name', {'k': 60})
-    assert result.tuning.matches == len([day for day in range(0, 200, 10) if day < 138])
-    assert {prediction.season for prediction in result.predictions} == {2026}
-
-
-def test_evaluate_all_order(monkeypatch):
-    """Test that every model is tuned for every identity, models first."""
-    monkeypatch.setattr(evaluation, 'tune', lambda _matches, _lineups, model, identity: (model, identity))
-    matches = [_match(0, A, B), _match(200, A, B)]  # one played match in each season
-    assert evaluate_all(matches, identify_lineups(matches), ['uniform', 'elo'], ['name', 'players']) == [
-        ('uniform', 'name'),
-        ('uniform', 'players'),
-        ('elo', 'name'),
-        ('elo', 'players'),
-    ]
-
-
-@pytest.mark.parametrize(
-    ('days', 'missing'), [((0,), 'RLCS 2026'), ((200,), 'RLCS 2025'), ((), 'RLCS 2025, RLCS 2026')]
-)
-def test_evaluate_all_needs_both_seasons(days, missing):
-    """Test that a history without a played match in the tuning or evaluation season is a data error."""
-    matches = [_match(day, A, B) for day in days]
-    matches.append(replace(_match(201, A, C), walkover=True))  # walkovers don't count
-    with pytest.raises(DataSourceError, match=f'No played match of {missing}'):
-        evaluate_all(matches, identify_lineups(matches))
 
 
 def test_first_team_share():
