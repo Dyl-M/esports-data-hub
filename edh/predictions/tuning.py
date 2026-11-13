@@ -233,7 +233,7 @@ def _to_unit(name: str, value: float, bounds: tuple[float, float]) -> float:
 def _from_unit(name: str, x: float, bounds: tuple[float, float]) -> float:
     """The value at position x between its bounds, rounded to `TUNING_DIGITS` significant digits, kept in bounds."""
     low, high = bounds
-    value = low * (high / low) ** x if name in LOG_SCALE else low + x * (high - low)
+    value = low * math.pow(high / low, x) if name in LOG_SCALE else low + x * (high - low)
     return min(max(float(f'{value:.{TUNING_DIGITS}g}'), low), high)
 
 

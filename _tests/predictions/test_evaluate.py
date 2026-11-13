@@ -94,7 +94,8 @@ def test_workers_must_be_positive(workers, capsys):
     """Test that a worker count below 1 is a command line error."""
     with pytest.raises(SystemExit):
         evaluate.parse_args(['--workers', workers])
-    assert f'must be at least 1, got {workers}' in capsys.readouterr().err
+    error: str = capsys.readouterr().err
+    assert f'must be at least 1, got {workers}' in error
 
 
 def test_main_without_history(monkeypatch, caplog):
