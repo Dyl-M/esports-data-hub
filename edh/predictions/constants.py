@@ -2,6 +2,7 @@
 
 # Standard library
 import datetime as dt
+import re
 
 # === History scope ===
 
@@ -100,6 +101,12 @@ CALIBRATION_CSV = 'calibration.csv'
 
 FORECAST_JSON = 'forecast_params.json'  # beside the evaluation report: the forecasts' tuning (picks and scores)
 FORECAST_BEST_OF = 5  # series length the command line quotes by default (Kick-Off upper round 1, the leagues)
+
+# === Frozen forecasts ===
+
+FROZEN_JSON = 'frozen.json'  # in `_data/predictions/<event folder>/` (the event's script in `_scripts/` names it)
+TBD_TEAM = 'TBD'  # opponent name of a slot not filled yet
+PLAYER_KEY = re.compile(r'p\d+')  # `opponentplayers` keys holding a player page (`p1dn` names, `c1` coaches)
 
 # === Tuning ===
 
