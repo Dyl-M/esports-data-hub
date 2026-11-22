@@ -96,6 +96,11 @@ PREDICTIONS_FOLDER = 'predictions'  # under `_data/`: one dated folder per evalu
 EVALUATION_JSON = 'evaluation.json'
 CALIBRATION_CSV = 'calibration.csv'
 
+# === Forecasts ===
+
+FORECAST_JSON = 'forecast_params.json'  # beside the evaluation report: the forecasts' tuning (picks and scores)
+FORECAST_BEST_OF = 5  # series length the command line quotes by default (Kick-Off upper round 1, the leagues)
+
 # === Tuning ===
 
 # Small hyperparameter grids, every combination run on the tuning season; the best one starts the bounded search

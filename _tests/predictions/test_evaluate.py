@@ -5,19 +5,16 @@ import datetime as dt
 import json
 import logging
 import math
-import runpy
-import sys
 
 # Third-party
 import pytest
 
 # Local
-from edh import paths
 from edh.predictions import evaluate
 from edh.predictions.evaluation import Prediction, score
-from edh.predictions.tuning import Result, Trial
+from edh.predictions.tuning import EVALUATION, Result, Trial
 
-from .conftest import make_match, make_opponent
+from .conftest import help_opens_with_docstring, make_match, make_opponent, run_as_main, use_history
 
 START = dt.datetime(2025, 6, 1, 18, tzinfo=dt.UTC)
 
@@ -38,9 +35,7 @@ def _history():
 @pytest.fixture
 def history(monkeypatch, tmp_path):
     """The small history as the cache, `_data/` in a temporary folder."""
-    monkeypatch.setattr(evaluate, 'read_history', _history)
-    monkeypatch.setattr(paths, 'DATA_DIR', tmp_path)
-    return tmp_path
+    return use_history(monkeypatch, tmp_path, evaluate, _history)
 
 
 def test_main_writes_the_report(history, caplog):
@@ -83,10 +78,7 @@ def test_rerun_replaces_the_report(history):
 
 def test_help_describes_the_command(capsys):
     """Test that `--help` opens with the first line of the module docstring."""
-    with pytest.raises(SystemExit):
-        evaluate.parse_args(['--help'])
-    help_text: str = capsys.readouterr().out
-    assert evaluate.__doc__.splitlines()[0] in help_text
+    assert help_opens_with_docstring(evaluate, capsys)
 
 
 @pytest.mark.parametrize('workers', ['0', '-2'])
@@ -108,24 +100,22 @@ def test_main_without_history(monkeypatch, caplog):
 def test_summary_parameters():
     """Test that a model without hyperparameters shows a dash."""
     prediction = Prediction('m', 2026, '1', True, 0.5, 0.5, (3, 1))
-    result = Result('uniform', 'name', {}, score([prediction]), (prediction,), (), ())
+    result = Result('uniform', 'name', EVALUATION, {}, score([prediction]), (prediction,), (), ())
     assert evaluate.summary([result])[1].endswith('  -')
-    assert len(evaluate.summary([])) == 1  # the header only: no series to count
+    assert evaluate.summary([]) == []  # no seasons to name, no series to count
 
 
 def test_summary_stars_parameters_on_a_bound():
     """Test that the runs are counted and a hyperparameter picked on a bound is starred."""
     prediction = Prediction('m', 2026, '1', True, 0.6, 0.6, (3, 1))
     trials = (Trial({'k': 4, 'shrink': 0.5}, 0.6), Trial({'k': 8, 'shrink': 0.5}, 0.5))
-    result = Result('elo', 'name', {'k': 4, 'shrink': 0.5}, score([prediction]), (prediction,), trials, ('k',))
+    result = Result(
+        'elo', 'name', EVALUATION, {'k': 4, 'shrink': 0.5}, score([prediction]), (prediction,), trials, ('k',)
+    )
     assert evaluate.summary([result])[1].endswith('    2  k=4*, shrink=0.5')
 
 
 def test_module_entry_point(history, monkeypatch):
     """Test that `python -m edh.predictions.evaluate` exits with main's code."""
-    monkeypatch.setattr(sys, 'argv', ['evaluate', '--models', 'uniform', '--identities', 'name'])
-    monkeypatch.setattr('edh.predictions.history.read_history', _history)
-    monkeypatch.delitem(sys.modules, 'edh.predictions.evaluate')  # run a fresh copy as __main__
-    with pytest.raises(SystemExit) as exit_info:
-        runpy.run_module('edh.predictions.evaluate', run_name='__main__')
-    assert exit_info.value.code == 0
+    argv = ['--models', 'uniform', '--identities', 'name']
+    assert run_as_main(monkeypatch, 'edh.predictions.evaluate', argv, _history) == 0

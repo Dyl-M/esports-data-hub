@@ -15,7 +15,7 @@ from edh.predictions import run
 from edh.predictions.constants import HISTORY_MAX_RETRIES, HISTORY_RETRY_BACKOFF
 from edh.predictions.history import update_history
 
-from .conftest import TODAY, FakeClient, make_record
+from .conftest import TODAY, FakeClient, help_opens_with_docstring, make_record
 
 
 class _Opened(FakeClient):
@@ -65,10 +65,7 @@ def test_main_offline_reads_the_cache_only(monkeypatch, tmp_path, caplog):
 
 def test_help_describes_the_command(capsys):
     """Test that `--help` opens with the first line of the module docstring."""
-    with pytest.raises(SystemExit):
-        run.parse_args(['--help'])
-    help_text: str = capsys.readouterr().out
-    assert run.__doc__.splitlines()[0] in help_text
+    assert help_opens_with_docstring(run, capsys)
 
 
 def test_module_entry_point(monkeypatch, tmp_path):

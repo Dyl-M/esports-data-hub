@@ -7,8 +7,9 @@ scored once with it. Tunings of different models and identities run in worker pr
 """
 
 # Standard library
+import datetime as dt
 import math
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass, field
 from functools import partial
@@ -78,6 +79,47 @@ MODELS: dict[str, SearchSpace] = {
 
 
 @dataclass(frozen=True)
+class Seasons:
+    """The seasons of a tuning: hyperparameters picked on one, then another scored once with them.
+
+    Attributes:
+        tuning: Season whose series log loss picks the hyperparameters.
+        evaluation: Season scored with the picks.
+    """
+
+    tuning: int
+    evaluation: int
+
+
+EVALUATION = Seasons(TUNING_SEASON, EVALUATION_SEASON)  # the evaluation's: picks scored on a later, unseen season
+
+
+def forecast_seasons(day: dt.date) -> Seasons:
+    """Return the seasons of the forecasts' tuning for a day: the season before the day's, then the day's own.
+
+    Args:
+        day: Day of the forecasts.
+
+    Returns:
+        The latest finished season to tune on, and the season under way to check the picks on.
+    """
+    season = season_of(day)
+    return Seasons(season - 1, season)
+
+
+def played_seasons(matches: Iterable[PlayedMatch]) -> set[int]:
+    """Return the seasons with at least one played match (walkovers aside).
+
+    Args:
+        matches: The history.
+
+    Returns:
+        Those seasons.
+    """
+    return {season_of(match.played_at.date()) for match in matches if not match.walkover}
+
+
+@dataclass(frozen=True)
 class Trial:
     """A run of the tuning.
 
@@ -97,6 +139,7 @@ class Result:
     Attributes:
         model: Model name.
         identity: Who the ratings follow.
+        seasons: Tuning and evaluation seasons.
         params: Hyperparameters picked on the tuning season.
         tuning: Scores on the tuning season with those hyperparameters.
         predictions: Predictions of the evaluation season.
@@ -106,6 +149,7 @@ class Result:
 
     model: str
     identity: str
+    seasons: Seasons
     params: Params
     tuning: Scores
     predictions: tuple[Prediction, ...]
@@ -133,6 +177,7 @@ class _Search:
     lineups: Lineups
     identity: str
     space: SearchSpace
+    season: int
     trials: list[Trial] = field(default_factory=list)
     improvements: list[_Run] = field(default_factory=list)
     _seen: dict[tuple[tuple[str, float], ...], float] = field(default_factory=dict, init=False, repr=False)
@@ -142,7 +187,7 @@ class _Search:
         key = tuple(sorted(params.items()))
         if key not in self._seen:
             predictions = walk_forward(self.matches, self.lineups, self.identity, self.space.factory(**params))
-            tuning = score([prediction for prediction in predictions if prediction.season == TUNING_SEASON])
+            tuning = score([prediction for prediction in predictions if prediction.season == self.season])
             self._seen[key] = tuning.log_loss
             self.trials.append(Trial(params, tuning.log_loss))
             if not self.improvements or tuning.log_loss < self.best.tuning.log_loss:
@@ -155,7 +200,9 @@ class _Search:
         return self.improvements[-1]
 
 
-def tune(matches: Sequence[PlayedMatch], lineups: Lineups, model: str, identity: str) -> Result:
+def tune(
+    matches: Sequence[PlayedMatch], lineups: Lineups, model: str, identity: str, seasons: Seasons = EVALUATION
+) -> Result:
     """Run a model over its grid, then search from the best point; keep the lowest series log loss of the tuning season.
 
     Args:
@@ -163,20 +210,21 @@ def tune(matches: Sequence[PlayedMatch], lineups: Lineups, model: str, identity:
         lineups: Lineup identity over the same history.
         model: Model name (a key of `MODELS`).
         identity: Who the ratings follow.
+        seasons: Tuning and evaluation seasons.
 
     Returns:
         The tuned model and its predictions of the evaluation season.
     """
     space = MODELS[model]
-    search = _Search(matches, lineups, identity, space)
+    search = _Search(matches, lineups, identity, space, seasons.tuning)
     for params in _combinations(space.grid):
         search.run(params)
     if space.bounds:
         _refine(search)
     best = search.best
-    evaluated = tuple(prediction for prediction in best.predictions if prediction.season == EVALUATION_SEASON)
+    evaluated = tuple(prediction for prediction in best.predictions if prediction.season == seasons.evaluation)
     at_bound = _at_bound(best.params, space.bounds)
-    return Result(model, identity, best.params, best.tuning, evaluated, tuple(search.trials), at_bound)
+    return Result(model, identity, seasons, best.params, best.tuning, evaluated, tuple(search.trials), at_bound)
 
 
 def _simplex(start: np.ndarray) -> np.ndarray:
@@ -253,37 +301,38 @@ def _combinations(grid: Mapping[str, tuple[float, ...]]) -> list[Params]:
 
 # === All models ===
 
+TASKS = tuple(product(MODELS, IDENTITIES))  # every model with every identity
+
 
 def evaluate_all(
     matches: Sequence[PlayedMatch],
     lineups: Lineups,
-    models: Sequence[str] = tuple(MODELS),
-    identities: Sequence[str] = IDENTITIES,
+    tasks: Sequence[tuple[str, str]] = TASKS,
+    seasons: Seasons = EVALUATION,
     workers: int | None = None,
 ) -> list[Result]:
-    """Tune every model for every identity, in worker processes.
+    """Tune models for identities, in worker processes.
 
     Args:
         matches: The history.
         lineups: Lineup identity over the same history.
-        models: Model names.
-        identities: Identities compared.
+        tasks: Model name and identity of each tuning.
+        seasons: Tuning and evaluation seasons.
         workers: Worker processes (None: one per CPU; 1: tune in the calling process). Results don't depend on it.
 
     Returns:
-        One result per model and identity, in that order.
+        One result per task, in that order.
 
     Raises:
         DataSourceError: If the tuning or the evaluation season has no played match in the history.
     """
-    played = {season_of(match.played_at.date()) for match in matches if not match.walkover}
-    missing = [season for season in (TUNING_SEASON, EVALUATION_SEASON) if season not in played]
+    played = played_seasons(matches)
+    missing = [season for season in (seasons.tuning, seasons.evaluation) if season not in played]
     if missing:
-        seasons = ', '.join(f'RLCS {season}' for season in missing)
-        raise DataSourceError(f'No played match of {seasons} in the history: run `python -m edh.predictions.run`')
-    tasks = list(product(models, identities))
+        names = ', '.join(f'RLCS {season}' for season in missing)
+        raise DataSourceError(f'No played match of {names} in the history: run `python -m edh.predictions.run`')
     task_models, task_identities = [model for model, _ in tasks], [identity for _, identity in tasks]
-    run = partial(tune, matches, lineups)
+    run = partial(tune, matches, lineups, seasons=seasons)
     workers = min(workers or cpu_count(), len(tasks))
     if workers <= 1:
         return list(map(run, task_models, task_identities))

@@ -2,8 +2,14 @@
 
 # Standard library
 import datetime as dt
+import runpy
+import sys
+
+# Third-party
+import pytest
 
 # Local
+from edh import paths
 from edh.predictions.models import Opponent, PlayedMatch, Player
 
 TODAY = dt.date(2026, 11, 10)
@@ -56,6 +62,30 @@ def make_record(match_id, date, score=(3, 1), **fields):
         'match2opponents': opponents,
         'match2games': _games(*score) if 'S' in statuses else [],
     } | fields
+
+
+def use_history(monkeypatch, tmp_path, module, history):
+    """Serve a history as the cache to a command line module, `_data/` in a temporary folder; return that folder."""
+    monkeypatch.setattr(module, 'read_history', history)
+    monkeypatch.setattr(paths, 'DATA_DIR', tmp_path)
+    return tmp_path
+
+
+def run_as_main(monkeypatch, module, argv, history):
+    """Run a command line module as `python -m` would, with a history as the cache; return its exit code."""
+    monkeypatch.setattr(sys, 'argv', [module.rsplit('.', maxsplit=1)[-1], *argv])
+    monkeypatch.setattr('edh.predictions.history.read_history', history)
+    monkeypatch.delitem(sys.modules, module)  # run a fresh copy as __main__
+    with pytest.raises(SystemExit) as exit_info:
+        runpy.run_module(module, run_name='__main__')
+    return exit_info.value.code
+
+
+def help_opens_with_docstring(module, capsys):
+    """Whether a command line module's `--help` shows the first line of its docstring."""
+    with pytest.raises(SystemExit):
+        module.parse_args(['--help'])
+    return module.__doc__.splitlines()[0] in capsys.readouterr().out
 
 
 class FakeMatches:
