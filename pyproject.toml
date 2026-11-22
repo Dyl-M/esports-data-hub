@@ -44,6 +44,13 @@ test = [
     "pytest==9.2.0",
     "pytest-cov==7.1.0",
 ]
+notebooks = [ # Marimo notebooks in _notebooks/: `uv sync --group notebooks` (not installed by default, nor in CI)
+    "marimo==0.25.2",
+    "plotly==7.1.0",
+]
+
+[tool.marimo.display]
+theme = "dark"
 
 [tool.hatch.version]
 source = "vcs"
@@ -56,7 +63,9 @@ packages = ["edh"]
 [tool.ruff]
 target-version = "py313"
 line-length = 120
-extend-exclude = ["*.ipynb", "*.md"] # ruff >= 0.16 formats Markdown code fences; docs are not code
+# ruff >= 0.16 formats Markdown code fences, docs are not code; Marimo saves notebook cells as functions it regenerates
+# (no docstring nor annotation), so `_notebooks/` is left to Marimo's own checks (`marimo check`)
+extend-exclude = ["*.ipynb", "*.md", "_notebooks"]
 
 [tool.ruff.lint]
 select = [

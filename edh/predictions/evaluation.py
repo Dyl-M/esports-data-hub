@@ -285,6 +285,47 @@ def calibration(predictions: Sequence[Prediction], bins: int = CALIBRATION_BINS)
     ]
 
 
+def favorite_calibration(bins: Sequence[CalibrationBin]) -> list[CalibrationBin]:
+    """Read calibration bins from the favorite's side instead of the first team's.
+
+    The ratings ignore which team is listed first, so a bin ending at one half or below (the second team favored) is
+    mirrored onto the favorite's chance and merged with the bin it lands on, both means weighted by predictions. Bins
+    include their lower edge, so a mirrored one includes its upper edge instead: a prediction exactly on an edge (30%
+    for the first team, 70% for its opponent) joins the bin below 70%, not the one from 70%.
+
+    Args:
+        bins: Bins of equal width, from the first team's side (as `calibration` returns them).
+
+    Returns:
+        The bins from one half up, lowest first: `predicted` is the favorite's mean chance, `observed` the share of
+        favorites that won.
+    """
+    merged: dict[int, CalibrationBin] = {}
+    for favored in map(_favorite_side, bins):
+        index = round(favored.low / (favored.high - favored.low))  # the bin's place, free of rounding
+        merged[index] = _merge(merged[index], favored) if index in merged else favored
+    return [merged[index] for index in sorted(merged)]
+
+
+def _favorite_side(item: CalibrationBin) -> CalibrationBin:
+    """A bin read from its favorite's side: mirrored when it ends at one half or below (the second team favored)."""
+    if item.high > 1 / 2:
+        return item
+    return CalibrationBin(1 - item.high, 1 - item.low, item.matches, 1 - item.predicted, 1 - item.observed)
+
+
+def _merge(first: CalibrationBin, second: CalibrationBin) -> CalibrationBin:
+    """Two bins covering the same range as one, their means weighted by predictions."""
+    matches = first.matches + second.matches
+    return CalibrationBin(
+        first.low,
+        first.high,
+        matches,
+        (first.predicted * first.matches + second.predicted * second.matches) / matches,
+        (first.observed * first.matches + second.observed * second.matches) / matches,
+    )
+
+
 def breakdown(predictions: Sequence[Prediction]) -> dict[str, Scores]:
     """Score predictions overall, per tier, and for experienced / new lineups.
 

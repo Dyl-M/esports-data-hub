@@ -1,5 +1,9 @@
 version = 1
 
+# Marimo writes each notebook cell as a function it regenerates (all named `_`, no docstring, a closing `return`, a
+# bare expression to display a value): left to `marimo check`, as ruff does
+exclude_patterns = ["_notebooks/**"]
+
 [[analyzers]]
 name = "test-coverage"
 enabled = true

@@ -129,6 +129,17 @@ team listed first, and writes `_data/predictions/<last match day>/` (committed, 
 - `calibration.csv`: per model and identity, the evaluation season's series predictions by bin of predicted
   probability: `low`, `high`, `matches`, `predicted` (mean), `observed` (share won by the first team).
 
+A saved report is explored in the [rating models notebook](/_notebooks/rating_models.py) (Marimo, Plotly, dark): a
+reminder of each model, the comparison per group, the calibration from the favorite's side and the tuning's picks and
+runs, each chart with its explanation. The project's Marimo settings are in `pyproject.toml` (`[tool.marimo]`: dark
+theme by default).
+
+```bash
+uv sync --group notebooks                          # once: marimo and plotly (not installed by default)
+uv run marimo run _notebooks/rating_models.py      # read-only, http://localhost:2718
+uv run marimo edit _notebooks/rating_models.py     # to change it
+```
+
 From Python, `edh.predictions.series` turns a per-game probability into a series' score distribution
 (`score_distribution(p, wins_needed, current)`) or win probability (`series_probability`), and the models of
 `edh.predictions.ratings` can be used directly (`introduce`, `prepare`, `game_probability`, `update`).
@@ -218,7 +229,7 @@ Commit the file right away: the commit date shows it came before the event.
 | `lineups.py`    | `identify_lineups`, `side_kind`, `season_of`                                          |
 | `series.py`     | Per-game probability → series score distribution and win probability                  |
 | `ratings.py`    | `Uniform`, `Elo`, `Glicko2`, `BradleyTerry` (the `RatingModel` protocol)              |
-| `evaluation.py` | `walk_forward` (`Replay`), `score`, `calibration`, `breakdown`, `first_team_share`    |
+| `evaluation.py` | `walk_forward` (`Replay`), `score`, `calibration` (`favorite_calibration`), `breakdown` |
 | `tuning.py`     | `MODELS`, `Seasons`, `tune` (grid, then bounded search), `evaluate_all`, seasons      |
 | `evaluate.py`   | Evaluation command line entry point and report                                        |
 | `forecast.py`   | `Forecaster` (replay, then any pair), `Side`, `Forecast`                              |

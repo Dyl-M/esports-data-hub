@@ -15,6 +15,7 @@ lines, reading the lineups from Python, the evaluation report), see the
 - [Lineup limits](#lineup-limits)
 - [Rating models](#rating-models)
 - [Walk-forward evaluation](#walk-forward-evaluation)
+    - [Calibration](#calibration)
 - [Forecasts](#forecasts)
 - [Model limits](#model-limits)
 
@@ -184,6 +185,18 @@ For each series, with $y = 1$ when the first team won and $\hat{p}$ its predicte
 Scores are also split by tier and by experience (both lineups with at least 10 matches before, or not), and series
 predictions are grouped into 10 bins of predicted probability to check calibration: in a calibrated model, the series
 predicted around 70% are won about 70% of the time.
+
+### Calibration
+
+The saved bins follow the team LPDB lists first, but the ratings ignore that order: a series predicted at $p$ for the
+first team is the same prediction as one at $1 - p$ for the second. Calibration is therefore read from the
+**favorite's side**, the team given $q = \max(p, 1 - p)$, at least one half (`favorite_calibration`). A bin from $a$
+to $b$ with $b \leq 0.5$ (the second team favored) is mirrored onto the bin from $1 - b$ to $1 - a$: its mean
+prediction $m$ becomes $1 - m$ and its share won $w$ becomes $1 - w$. It is then merged with the bin it lands on, both
+means weighted by series. Each series thus lands where its favorite's chance puts it, except a prediction exactly on
+an edge: $p = 0.3$ gives $q = 0.7$, which joins the bin below 0.7, since a bin includes its lower edge and a mirrored
+one its upper edge. The uniform model has no favorite and is left out. Above the diagonal, favorites win more often
+than predicted (the model is too cautious); below, it is overconfident.
 
 ## Forecasts
 

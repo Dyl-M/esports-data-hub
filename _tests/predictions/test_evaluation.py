@@ -3,16 +3,18 @@
 # Standard library
 import datetime as dt
 import math
-from dataclasses import replace
+from dataclasses import astuple, replace
 
 # Third-party
 import pytest
 
 # Local
 from edh.predictions.evaluation import (
+    CalibrationBin,
     Prediction,
     breakdown,
     calibration,
+    favorite_calibration,
     first_team_share,
     score,
     walk_forward,
@@ -188,6 +190,37 @@ def test_calibration_bins():
     bins = calibration(predictions, bins=10)
     assert [(row.low, row.matches) for row in bins] == [(0.0, 1), (0.1, 1), (0.9, 2)]
     assert (bins[2].predicted, bins[2].observed) == (pytest.approx(0.975), 1.0)
+
+
+def test_favorite_calibration_mirrors_and_merges():
+    """Test that bins of the second team's favorites are mirrored, then merged with the bin they land on by series."""
+    bins = [
+        CalibrationBin(0.1, 0.2, 10, 0.15, 0.2),  # mirrored onto 0.8-0.9: favorites at 0.85, 80% won
+        CalibrationBin(0.4, 0.5, 20, 0.45, 0.6),  # ends at one half: mirrored onto 0.5-0.6
+        CalibrationBin(0.5, 0.6, 5, 0.55, 0.8),  # starts at one half: kept
+        CalibrationBin(0.8, 0.9, 30, 0.85, 0.9),
+    ]
+    assert _rounded(favorite_calibration(bins)) == [
+        (0.5, 0.6, 25, 0.55, (20 * 0.4 + 5 * 0.8) / 25),
+        (0.8, 0.9, 40, 0.85, 0.875),
+    ]
+
+
+def test_favorite_calibration_any_bin_width():
+    """Test that bins of another width are matched by place: a quarter from 0 lands on the quarter ending at 1."""
+    bins = [CalibrationBin(0.0, 0.25, 1, 0.1, 0.0), CalibrationBin(0.75, 1.0, 3, 0.9, 1.0)]
+    assert _rounded(favorite_calibration(bins)) == [(0.75, 1.0, 4, 0.9, 1.0)]
+
+
+def test_favorite_calibration_of_predictions():
+    """Test the favorite's side of a walk-forward's bins: a 25% first team that lost is a 75% favorite that won."""
+    bins = calibration([_prediction(0.25, (0, 3)), _prediction(0.75, (3, 1))], bins=10)
+    assert _rounded(favorite_calibration(bins)) == [(0.7, 0.8, 2, 0.75, 1.0)]
+
+
+def _rounded(bins):
+    """Each bin's fields, rounded past float noise (`1 - 0.2` is not exactly `0.8`)."""
+    return [tuple(round(value, 9) for value in astuple(item)) for item in bins]
 
 
 def test_breakdown_groups():
