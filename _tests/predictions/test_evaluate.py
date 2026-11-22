@@ -14,7 +14,7 @@ from edh.predictions import evaluate
 from edh.predictions.evaluation import Prediction, score
 from edh.predictions.tuning import EVALUATION, Result, Trial
 
-from .conftest import help_opens_with_docstring, make_match, make_opponent, run_as_main, use_history
+from .conftest import help_opens_with_docstring, make_match, make_opponent, parse_error, run_as_main, use_history
 
 START = dt.datetime(2025, 6, 1, 18, tzinfo=dt.UTC)
 
@@ -84,10 +84,7 @@ def test_help_describes_the_command(capsys):
 @pytest.mark.parametrize('workers', ['0', '-2'])
 def test_workers_must_be_positive(workers, capsys):
     """Test that a worker count below 1 is a command line error."""
-    with pytest.raises(SystemExit):
-        evaluate.parse_args(['--workers', workers])
-    error: str = capsys.readouterr().err
-    assert f'must be at least 1, got {workers}' in error
+    assert f'must be at least 1, got {workers}' in parse_error(evaluate, ['--workers', workers], capsys)
 
 
 def test_main_without_history(monkeypatch, caplog):

@@ -88,6 +88,14 @@ def help_opens_with_docstring(module, capsys):
     return module.__doc__.splitlines()[0] in capsys.readouterr().out
 
 
+def parse_error(module, argv, capsys):
+    """The error a command line module's argument parser prints for these arguments."""
+    with pytest.raises(SystemExit):
+        module.parse_args(argv)
+    error: str = capsys.readouterr().err
+    return error
+
+
 class FakeMatches:
     """Serves records as liquipydia's paginate does, then raises `error` when set."""
 

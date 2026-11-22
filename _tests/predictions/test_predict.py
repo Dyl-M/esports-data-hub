@@ -13,7 +13,7 @@ from edh import paths
 from edh.predictions import predict
 from edh.predictions.forecast import Forecast, Side
 
-from .conftest import help_opens_with_docstring, make_match, make_opponent, run_as_main, use_history
+from .conftest import help_opens_with_docstring, make_match, make_opponent, parse_error, run_as_main, use_history
 
 START = dt.datetime(2026, 6, 1, 18, tzinfo=dt.UTC)  # RLCS 2026 until September 20, then RLCS 2027
 FAST = ['--models', 'uniform', 'elo', '--identities', 'name', 'players', '--workers', '1']
@@ -184,24 +184,19 @@ def test_default_day_is_today(history, monkeypatch, caplog):
 @pytest.mark.parametrize('argv', [[], ['Team A'], ['Team A', '--tune']])
 def test_teams_or_tune_needed(argv, capsys):
     """Test that a run needs two teams or more, or none with `--tune`."""
-    with pytest.raises(SystemExit):
-        predict.parse_args(argv)
-    assert 'give at least two teams (or none with --tune)' in capsys.readouterr().err
+    assert 'give at least two teams (or none with --tune)' in parse_error(predict, argv, capsys)
 
 
 def test_roster_of_a_team_not_forecast(capsys):
     """Test that a roster for a team not given is a command line error naming it."""
-    with pytest.raises(SystemExit):
-        predict.parse_args(['A', 'B', '--roster', 'D=d1', '--roster', 'C=c1', '--roster', 'A=a1'])
-    assert '--roster for teams not forecast: C, D' in capsys.readouterr().err
+    argv = ['A', 'B', '--roster', 'D=d1', '--roster', 'C=c1', '--roster', 'A=a1']
+    assert '--roster for teams not forecast: C, D' in parse_error(predict, argv, capsys)
 
 
 @pytest.mark.parametrize('value', ['Team A', 'Team A=', '=a1,a2', 'Team A= , '])
 def test_roster_format(value, capsys):
     """Test that a roster needs a team, an equals sign and at least one player."""
-    with pytest.raises(SystemExit):
-        predict.parse_args(['A', 'B', '--roster', value])
-    assert 'expected TEAM=PLAYER,PLAYER,...' in capsys.readouterr().err
+    assert 'expected TEAM=PLAYER,PLAYER,...' in parse_error(predict, ['A', 'B', '--roster', value], capsys)
 
 
 def test_roster_parsed():
@@ -221,9 +216,7 @@ def test_when_is_the_start_of_a_day_in_utc():
 )
 def test_counts_checked(option, value, error, capsys):
     """Test that the series length must be odd and positive, and the workers at least 1."""
-    with pytest.raises(SystemExit):
-        predict.parse_args(['--tune', option, value])
-    assert error in capsys.readouterr().err
+    assert error in parse_error(predict, ['--tune', option, value], capsys)
 
 
 def test_best_of_one_is_allowed():

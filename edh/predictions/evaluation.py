@@ -74,7 +74,8 @@ def walk_forward(
         One prediction per played match (walkovers excluded), in date order.
     """
     replay = Replay(lineups, identity, model)
-    return [prediction for match in sorted(matches, key=start_order) if (prediction := replay.play(match))]
+    predictions = (replay.play(match) for match in sorted(matches, key=start_order))
+    return [prediction for prediction in predictions if prediction is not None]
 
 
 class Replay:

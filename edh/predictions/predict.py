@@ -71,7 +71,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
     if len(args.teams) == 1 or not (args.teams or args.tune):
         parser.error('give at least two teams (or none with --tune)')
-    stray = sorted({team for team, _ in args.roster} - set(args.teams))
+    rosters: list[tuple[str, tuple[str, ...]]] = args.roster
+    stray = sorted({team for team, _ in rosters} - set(args.teams))
     if stray:
         parser.error(f'--roster for teams not forecast: {", ".join(stray)}')
     return args
