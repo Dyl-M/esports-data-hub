@@ -179,6 +179,35 @@ vitality, falcons = forecaster.side('Team Vitality'), forecaster.side('Team Falc
 forecast = forecaster.forecast(vitality, falcons)  # game_probability, unseen, series_probability(wins_needed)
 ```
 
+### Frozen forecasts
+
+An event whose pairings aren't known in advance (a bracket) is forecast **once, before it starts**: every pair of its
+teams, with every model and identity, saved to a file that is never overwritten and scored once the event is played.
+`freeze.freeze(client, page, day, path)` reads the teams and rosters from the event's placements on Liquipedia (the
+placements with a qualifier; every slot must be filled, or the error names the slots still `TBD` or without roster),
+forecasts each pair for the event's first day with the latest picks of every model and identity (all must be tuned),
+the rosters given replacing those of the history, and writes the file. It refuses once the event's first day has begun
+(the cache may then hold its matches: only those before it are used), and warns about the teams never seen under their
+name (cold starts for the name and lineup identities; check the names before committing). Each event gets a script in
+[`_scripts/`](/_scripts/) holding its page, day and file:
+
+```bash
+uv run python -m edh.predictions.run                  # refresh the cache first
+uv run python -m _scripts.freeze_kickoff_2027         # RLCS 2027 Kick-Off → _data/predictions/kickoff_2027/frozen.json
+```
+
+| Field             | Content                                                                                       |
+|-------------------|-----------------------------------------------------------------------------------------------|
+| `event`           | The event's page                                                                              |
+| `forecast_day`    | The day forecast (the event's first), as `YYYY-MM-DD`                                         |
+| `frozen_at`       | When the file was written (UTC, to the second)                                                |
+| `history_through` | Day of the history's latest match                                                             |
+| `picks`           | Each model and identity's hyperparameters                                                     |
+| `teams`           | Each team (sorted): its roster (player pages) and, per identity, its members never rated      |
+| `pairs`           | Each pair (sorted teams): per model then identity, the probability its first team wins a game |
+
+Commit the file right away: the commit date shows it came before the event.
+
 ## Module map
 
 | Module          | Role                                                                                  |
@@ -194,6 +223,7 @@ forecast = forecaster.forecast(vitality, falcons)  # game_probability, unseen, s
 | `evaluate.py`   | Evaluation command line entry point and report                                        |
 | `forecast.py`   | `Forecaster` (replay, then any pair), `Side`, `Forecast`                              |
 | `predict.py`    | Forecasts command line entry point (`--tune`, then forecasts of given teams)          |
+| `freeze.py`     | `freeze` (every pair of an event's teams, saved once), `event_teams`                  |
 | `run.py`        | History command line entry point                                                      |
 
 Liquipedia access shared with the other projects (API key, client, match parsing) lives in

@@ -82,6 +82,18 @@ class LpdbMatchClient(Protocol):
         ...
 
 
+class LpdbPlacementClient(Protocol):
+    """An LPDB client used for its placements only (e.g. an event's teams); `liquipydia.LiquipediaClient` satisfies it.
+
+    `/placement` pages through its records as `/match` does, hence the same Protocol.
+    """
+
+    @property
+    def placements(self) -> LpdbMatches:
+        """Placement queries."""
+        ...
+
+
 class LpdbClient(LpdbMatchClient, Protocol):
     """The part of an LPDB client used here; `liquipydia.LiquipediaClient` satisfies it."""
 

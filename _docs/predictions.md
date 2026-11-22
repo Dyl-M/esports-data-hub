@@ -210,6 +210,14 @@ the walk-forward evaluation would make** for that match, so the evaluation's sco
 A forecast keeps the per-game probability $p$: a series' probability follows from it and the series length
 ([series](#rating-models)), so the length of a round needs not be known when the forecast is made.
 
+**Frozen forecasts.** In a bracket only the first round's pairings are known in advance, so an event is frozen as
+**every pair of its teams**: $n(n-1)/2$ pairs, 276 for the Kick-Off's 24, each with $p$ for every model and identity,
+before its first day and never rewritten. Once the event is played, the series that took place are looked up among
+the pairs and scored like the evaluation (log loss of the series from $p$ and the length actually played, uniform as
+the bar): a genuine out-of-sample test, since the file predates every result. Each team takes the roster the event
+lists for it (the players identity); the name and lineup identities follow the team's name, so a team never seen
+under that name is a cold start there.
+
 ## Model limits
 
 - **Games are taken as independent** within a series, with the same $p$: momentum and adaptation are ignored.

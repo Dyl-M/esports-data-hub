@@ -126,7 +126,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 0
         rosters = dict(args.roster)
         teams = {team: rosters.get(team) for team in args.teams}
-        forecasts = forecast_all(matches, lineups, _select(latest_picks(), tasks), args.when, teams)
+        forecasts = forecast_all(matches, lineups, select_picks(latest_picks(), tasks), args.when, teams)
     except EsportsDataHubError as error:
         logger.error('%s', error)
         return 1
@@ -208,8 +208,19 @@ def latest_picks() -> Picks:
     return picks
 
 
-def _select(picks: Picks, tasks: Sequence[Task]) -> Picks:
-    """The picks of the tasks asked for; an error naming those never tuned."""
+def select_picks(picks: Picks, tasks: Sequence[Task]) -> Picks:
+    """Return the picks of the models and identities asked for.
+
+    Args:
+        picks: Hyperparameters by model and identity.
+        tasks: The models and identities asked for.
+
+    Returns:
+        Their picks, in the order asked for.
+
+    Raises:
+        DataSourceError: If one of them was never tuned (naming each).
+    """
     missing = [f'{model} / {identity}' for model, identity in tasks if (model, identity) not in picks]
     if missing:
         raise DataSourceError(f'No tuned hyperparameters for {", ".join(missing)}: run with --tune')
