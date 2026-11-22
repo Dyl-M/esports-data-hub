@@ -1,7 +1,8 @@
 # Rating predictions: how it works
 
 This page explains the models behind `edh.predictions` and why they are built this way: **lineup identity** (who a
-rating belongs to), then the **rating models** and how they are evaluated. To run it (history scope, cache, command
+rating belongs to), then the **rating models**, how they are evaluated and how they **forecast** matches not played
+yet. To run it (history scope, cache, command
 lines, reading the lineups from Python, the evaluation report), see the
 [rating predictions README](/edh/predictions/README.md).
 
@@ -14,6 +15,7 @@ lines, reading the lineups from Python, the evaluation report), see the
 - [Lineup limits](#lineup-limits)
 - [Rating models](#rating-models)
 - [Walk-forward evaluation](#walk-forward-evaluation)
+- [Forecasts](#forecasts)
 - [Model limits](#model-limits)
 
 ## Lineup identity
@@ -182,6 +184,31 @@ For each series, with $y = 1$ when the first team won and $\hat{p}$ its predicte
 Scores are also split by tier and by experience (both lineups with at least 10 matches before, or not), and series
 predictions are grouped into 10 bins of predicted probability to check calibration: in a calibrated model, the series
 predicted around 70% are won about 70% of the time.
+
+## Forecasts
+
+A forecast predicts a match not played yet, at a time $t$ (the start of its day). It is built to be **the prediction
+the walk-forward evaluation would make** for that match, so the evaluation's scores carry over:
+
+- **Same replay**: every match starting before $t$ is replayed with the walk-forward's own steps (same order, members
+  introduced and pulled toward the mean the same way, walkovers registered but not learned from); later matches are
+  left out. Bradley–Terry is fitted at $t$.
+- **Sides as they stand**: a team is its latest appearance in the history under its name: its lineup and that match's
+  roster. A roster given explicitly (a signing, a team renamed since) replaces the latest one for the **players**
+  identity only; the name and lineup identities keep following the name, since a roster alone cannot place a side in
+  a lineup without the match that would start it.
+- **The forecast's season**: members are registered as at a match of $t$'s season, so a team last seen in an earlier
+  season is pulled toward the mean exactly as at its first match of the new season.
+- **Cold starts**: a team the history never saw is rated by its name; a player never seen starts from the default
+  rating. Both are reported per forecast: on players, Elo's starting offset sits at its bound (see
+  [Model limits](#model-limits)), so a single new player weighs heavily on a roster's mean.
+- **Hyperparameters**: picked like the evaluation's, but on the **season before the forecast's** (RLCS 2026 for the
+  Kick-Off), and scored on the matches of the forecast's season played so far as a check (on the tuning season itself,
+  in-sample, before the first of them). The forecasts use these picks, not the evaluation's (picked on RLCS 2025): the
+  evaluation measures the method, the forecasts use its most recent fit.
+
+A forecast keeps the per-game probability $p$: a series' probability follows from it and the series length
+([series](#rating-models)), so the length of a round needs not be known when the forecast is made.
 
 ## Model limits
 
