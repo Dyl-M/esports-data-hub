@@ -17,7 +17,18 @@ def _():
     from edh import paths
     from edh.predictions import constants, evaluation, tuning
 
-    return constants, csv, evaluation, go, json, make_subplots, math, mo, paths, tuning
+    return (
+        constants,
+        csv,
+        evaluation,
+        go,
+        json,
+        make_subplots,
+        math,
+        mo,
+        paths,
+        tuning,
+    )
 
 
 @app.cell
@@ -154,7 +165,10 @@ def _(constants, go, layout, math, mo, model_names, results, theme):
     )
     _rows = _rated + [result for result in results if result['model'] == constants.MODEL_UNIFORM][:1]
     _labels = [
-        model_names[row['model']] + ('' if row['model'] == constants.MODEL_UNIFORM else f' · {row["identity"]}') for row in _rows
+        model_names[row['model']]
+        if row['model'] == constants.MODEL_UNIFORM
+        else f'{model_names[row["model"]]} · {row["identity"]}'
+        for row in _rows
     ]
     _columns = [f'{key.capitalize()}<br>{results[0]["evaluation"][key]["matches"]:,} series' for key in _keys]
     _loss = [[row['evaluation'][key]['log_loss'] for key in _keys] for row in _rows]
@@ -203,11 +217,22 @@ def _(mo):
 
 
 @app.cell
-def _(bins, constants, evaluation, go, identity_colors, layout, make_subplots, math, mo, model_names, theme, tuning):
+def _(
+    bins,
+    constants,
+    evaluation,
+    go,
+    identity_colors,
+    layout,
+    make_subplots,
+    math,
+    mo,
+    model_names,
+    theme,
+    tuning,
+):
     _models = [
-        model
-        for model in tuning.MODELS
-        if model != constants.MODEL_UNIFORM and any(task[0] == model for task in bins)
+        model for model in tuning.MODELS if model != constants.MODEL_UNIFORM and any(task[0] == model for task in bins)
     ]
     _most = max(item.matches for items in bins.values() for item in items)
     calibration = make_subplots(
@@ -276,7 +301,18 @@ def _(mo):
 
 
 @app.cell
-def _(constants, go, identity_colors, layout, math, mo, model_names, results, theme, tuning):
+def _(
+    constants,
+    go,
+    identity_colors,
+    layout,
+    math,
+    mo,
+    model_names,
+    results,
+    theme,
+    tuning,
+):
     def _position(name, value, bounds):
         low, high = bounds
         if name in constants.LOG_SCALE:
@@ -334,7 +370,16 @@ def _(mo):
 
 
 @app.cell
-def _(go, identity_colors, layout, make_subplots, mo, model_names, results, tuning):
+def _(
+    go,
+    identity_colors,
+    layout,
+    make_subplots,
+    mo,
+    model_names,
+    results,
+    tuning,
+):
     _tuned = [
         model
         for model, space in tuning.MODELS.items()
