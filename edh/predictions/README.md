@@ -2,8 +2,9 @@
 
 Per-game win probabilities learned from past results, meant to replace the "every score is equally likely" model of
 the [league play scenarios](/edh/scenarios/README.md). It holds the **match history**, fetched from Liquipedia and
-cached locally, the **lineups** a rating follows, and the **rating baselines** (uniform, Elo, Glicko-2, Bradley–Terry)
-with their walk-forward evaluation. How it works: [`_docs/predictions.md`](/_docs/predictions.md).
+cached locally, the **lineups** a rating follows, the **rating baselines** (uniform, Elo, Glicko-2, Bradley–Terry)
+with their walk-forward evaluation, and **forecasts** of matches not played yet. How it works:
+[`_docs/predictions.md`](/_docs/predictions.md).
 
 ## Contents
 
@@ -13,6 +14,7 @@ with their walk-forward evaluation. How it works: [`_docs/predictions.md`](/_doc
 - [Reading the history](#reading-the-history)
 - [Lineups](#lineups)
 - [Rating baselines](#rating-baselines)
+- [Forecasts](#forecasts)
 - [Module map](#module-map)
 
 ## Setup
@@ -131,6 +133,52 @@ From Python, `edh.predictions.series` turns a per-game probability into a series
 (`score_distribution(p, wins_needed, current)`) or win probability (`series_probability`), and the models of
 `edh.predictions.ratings` can be used directly (`introduce`, `prepare`, `game_probability`, `update`).
 
+## Forecasts
+
+Forecasts predict matches not played yet, with the history before their day (how sides are resolved and why a
+forecast equals the walk-forward's prediction: [Forecasts](/_docs/predictions.md#forecasts)). Their hyperparameters
+are picked once, then every forecast reads them:
+
+```bash
+uv run python -m edh.predictions.predict --tune --when 2026-12-09        # pick the hyperparameters (a few minutes)
+uv run python -m edh.predictions.predict "Team Vitality" "Karmine Corp" "Team Falcons" --when 2026-12-09
+uv run python -m edh.predictions.predict "Team A" "Team B" --roster "Team B=Player1,Player2,Player3" --identities players
+```
+
+| Option         | Default    | Effect                                                                                  |
+|----------------|------------|-----------------------------------------------------------------------------------------|
+| `teams`        | none       | Teams as Liquipedia names them (two or more, or none with `--tune`); every pair         |
+| `--tune`       | off        | Pick the hyperparameters first: the season before `--when`'s tunes, `--when`'s checks   |
+| `--roster`     | none       | `TEAM=PLAYER,...` (player pages) for a team given: replaces its latest roster; repeatable|
+| `--when`       | today      | Day of the matches (`YYYY-MM-DD`): the history before it is used                        |
+| `--best-of`    | 5          | Series length quoted beside the per-game probability                                    |
+| `--models`     | all        | `uniform`, `elo`, `glicko2`, `bradley_terry`                                            |
+| `--identities` | all        | `name`, `lineup`, `players`                                                             |
+| `--workers`    | all CPUs   | Tuning worker processes; 1 tunes in the main one                                        |
+
+`--tune` logs the same table as the evaluation (a warning when `--when`'s season has no played match yet: the picks are
+then checked on the tuning season itself) and writes `forecast_params.json` (same fields as `evaluation.json`) into
+`_data/predictions/<last match day>/` (committed), keeping the models and identities already saved there on the same
+seasons. Forecasts take each model and identity's latest picks and fail when one asked for was never tuned. A forecast
+logs, per pair, one line per model and identity: the probability that the first team
+wins a game, then the series, and the members never rated (a new team, a player without history: cold starts).
+
+From Python:
+
+```python
+from edh.predictions.forecast import Forecaster
+from edh.predictions.history import read_history
+from edh.predictions.lineups import identify_lineups
+from edh.predictions.ratings import Elo
+import datetime as dt
+
+matches = read_history()
+model = Elo(k=18.24, shrink=0.2165, offset=-399.9)  # illustrative: take the picks from forecast_params.json
+forecaster = Forecaster(matches, identify_lineups(matches), 'players', model, dt.datetime(2026, 12, 9, tzinfo=dt.UTC))
+vitality, falcons = forecaster.side('Team Vitality'), forecaster.side('Team Falcons')
+forecast = forecaster.forecast(vitality, falcons)  # game_probability, unseen, series_probability(wins_needed)
+```
+
 ## Module map
 
 | Module          | Role                                                                                  |
@@ -141,9 +189,11 @@ From Python, `edh.predictions.series` turns a per-game probability into a series
 | `lineups.py`    | `identify_lineups`, `side_kind`, `season_of`                                          |
 | `series.py`     | Per-game probability → series score distribution and win probability                  |
 | `ratings.py`    | `Uniform`, `Elo`, `Glicko2`, `BradleyTerry` (the `RatingModel` protocol)              |
-| `evaluation.py` | `walk_forward`, `score`, `calibration`, `breakdown`, `first_team_share`               |
-| `tuning.py`     | `MODELS` (search spaces), `tune` (grid, then bounded search), `evaluate_all`          |
+| `evaluation.py` | `walk_forward` (`Replay`), `score`, `calibration`, `breakdown`, `first_team_share`    |
+| `tuning.py`     | `MODELS`, `Seasons`, `tune` (grid, then bounded search), `evaluate_all`, seasons      |
 | `evaluate.py`   | Evaluation command line entry point and report                                        |
+| `forecast.py`   | `Forecaster` (replay, then any pair), `Side`, `Forecast`                              |
+| `predict.py`    | Forecasts command line entry point (`--tune`, then forecasts of given teams)          |
 | `run.py`        | History command line entry point                                                      |
 
 Liquipedia access shared with the other projects (API key, client, match parsing) lives in

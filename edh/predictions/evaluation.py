@@ -8,7 +8,7 @@ predicted nor learned from. How the hyperparameters are picked: `tuning.py`.
 # Standard library
 import math
 from collections import Counter
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 
 # Local
@@ -20,7 +20,7 @@ from .constants import (
     GROUP_INEXPERIENCED,
     GROUP_TIER,
     IDENTITY_LINEUP,
-    IDENTITY_NAME,
+    IDENTITY_PLAYERS,
     PROBABILITY_FLOOR,
 )
 from .lineups import season_of
@@ -73,77 +73,120 @@ def walk_forward(
     Returns:
         One prediction per played match (walkovers excluded), in date order.
     """
-    predictions = []
-    seasons: dict[str, int] = {}
-    played: Counter[int] = Counter()
-    predecessor = _predecessors(identity, lineups)
-    for match in sorted(matches, key=start_order):
+    replay = Replay(lineups, identity, model)
+    predictions = (replay.play(match) for match in sorted(matches, key=start_order))
+    return [prediction for prediction in predictions if prediction is not None]
+
+
+class Replay:
+    """A rating model taken through the history one match at a time, as the walk-forward evaluation does.
+
+    The forecasts (`forecast.py`) replay the history the same way, then rate sides that have not played yet, so a
+    forecast is the prediction the evaluation would have made.
+    """
+
+    def __init__(self, lineups: Lineups, identity: str, model: RatingModel) -> None:
+        """Start with a fresh model and no match played.
+
+        Args:
+            lineups: Lineup identity over the history to replay.
+            identity: Who the ratings follow: `name`, `lineup` or `players`.
+            model: A fresh rating model.
+        """
+        self.model = model
+        self._lineups, self._identity = lineups, identity
+        self._seasons: dict[str, int] = {}  # season of each member's latest match
+        self._played: Counter[int] = Counter()  # matches played by each lineup
+        self._predecessors = _predecessors(identity, lineups)
+
+    @property
+    def members(self) -> frozenset[str]:
+        """Members rated so far."""
+        return frozenset(self._seasons)
+
+    def play(self, match: PlayedMatch) -> Prediction | None:
+        """Predict a match with the ratings so far, then learn from it.
+
+        Args:
+            match: The next match of the history, in date order.
+
+        Returns:
+            Its prediction; None for a walkover (neither predicted nor learned from, its sides still registered).
+        """
         season = season_of(match.played_at.date())
-        first, second = (_members(identity, match, index, lineups) for index in (0, 1))
+        first, second = (_members(self._identity, match, index, self._lineups) for index in (0, 1))
         for members in (first, second):
-            _register(model, members, season, seasons, predecessor)
-        lineup_ids = lineups.sides[match.match_id]
+            self.register(members, season)
+        lineup_ids = self._lineups.sides[match.match_id]
+        prediction = None
         if not match.walkover:
-            model.prepare(match.played_at)
-            p = model.game_probability(first, second)
+            self.model.prepare(match.played_at)
+            p = self.model.game_probability(first, second)
             games = (match.opponents[0].score, match.opponents[1].score)
-            experienced = min(played[lineup_id] for lineup_id in lineup_ids) >= EXPERIENCED_MATCHES
-            predictions.append(
-                Prediction(match.match_id, season, match.tier, experienced, p, series_probability(p, max(games)), games)
+            experienced = min(self._played[lineup_id] for lineup_id in lineup_ids) >= EXPERIENCED_MATCHES
+            prediction = Prediction(
+                match.match_id, season, match.tier, experienced, p, series_probability(p, max(games)), games
             )
-            model.update(first, second, games, match.played_at)
-        played.update(lineup_ids)
-    return predictions
+            self.model.update(first, second, games, match.played_at)
+        self._played.update(lineup_ids)
+        return prediction
+
+    def register(self, members: Members, season: int) -> None:
+        """Introduce new members, and start a new season for members last seen in an earlier one.
+
+        A new member inheriting from a predecessor last seen in an earlier season starts the new season too, like the
+        predecessor would have: a lineup renamed over the off-season is pulled toward the mean as if it had kept its
+        name.
+
+        Args:
+            members: The members of a side about to play.
+            season: RLCS season of the match.
+        """
+        for member in members:
+            if member not in self._seasons:
+                inherited = self._predecessors.get(member)
+                self.model.introduce(member, inherited)
+                if inherited is not None and self._seasons.get(inherited, season) != season:
+                    self.model.new_season(member)
+            elif self._seasons[member] != season:
+                self.model.new_season(member)
+            self._seasons[member] = season
 
 
 def _members(identity: str, match: PlayedMatch, index: int, lineups: Lineups) -> Members:
     """The rated members of one side: its name, its lineup, or its roster's players (its name without any roster)."""
     opponent = match.opponents[index]
-    if identity == IDENTITY_NAME:
-        return (opponent.name,)
-    if identity == IDENTITY_LINEUP:
-        return (str(lineups.sides[match.match_id][index]),)
-    roster = lineups.rosters[match.match_id][index]
-    if not roster:
-        return (opponent.name,)
-    players: list[str] = sorted(roster)
-    return tuple(players)
+    lineup_id = lineups.sides[match.match_id][index]
+    return side_members(identity, opponent.name, lineup_id, lineups.rosters[match.match_id][index])
 
 
-def _predecessors(identity: str, lineups: Lineups) -> Callable[[str], str | None]:
-    """How to find the member a new member inherits from: only lineups have predecessors."""
-    if identity != IDENTITY_LINEUP:
-        return lambda _: None
+def side_members(identity: str, name: str, lineup_id: int | None, roster: frozenset[str]) -> Members:
+    """Return the rated members of a side: its name, its lineup, or its roster's players.
 
-    def predecessor(member: str) -> str | None:
-        """The lineup id a lineup took its core from, as a member; None for a new core."""
-        inherited = lineups.by_id[int(member)].predecessor
-        return None if inherited is None else str(inherited)
+    Args:
+        identity: Who the ratings follow: `name`, `lineup` or `players`.
+        name: Team name.
+        lineup_id: Its lineup; None for a team the history has never seen (rated by its name).
+        roster: Player pages of its roster; empty when unknown (rated by its name).
 
-    return predecessor
-
-
-def _register(
-    model: RatingModel,
-    members: Members,
-    season: int,
-    seasons: dict[str, int],
-    predecessor: Callable[[str], str | None],
-) -> None:
-    """Introduce new members, and start a new season for members last seen in an earlier one.
-
-    A new member inheriting from a predecessor last seen in an earlier season starts the new season too, like the
-    predecessor would have: a lineup renamed over the off-season is pulled toward the mean as if it had kept its name.
+    Returns:
+        The members whose ratings make the side's.
     """
-    for member in members:
-        if member not in seasons:
-            inherited = predecessor(member)
-            model.introduce(member, inherited)
-            if inherited is not None and seasons.get(inherited, season) != season:
-                model.new_season(member)
-        elif seasons[member] != season:
-            model.new_season(member)
-        seasons[member] = season
+    if identity == IDENTITY_LINEUP and lineup_id is not None:
+        return (str(lineup_id),)
+    if identity == IDENTITY_PLAYERS and roster:
+        players: list[str] = sorted(roster)
+        return tuple(players)
+    return (name,)
+
+
+def _predecessors(identity: str, lineups: Lineups) -> Mapping[str, str]:
+    """The member each new member inherits from, when it has one: only lineups have predecessors."""
+    if identity != IDENTITY_LINEUP:
+        return {}
+    return {
+        str(lineup.lineup_id): str(lineup.predecessor) for lineup in lineups.by_id if lineup.predecessor is not None
+    }
 
 
 # === Scores ===

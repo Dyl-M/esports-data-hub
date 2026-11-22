@@ -17,11 +17,21 @@ from edh.predictions.constants import LOG_SCALE
 from edh.predictions.lineups import identify_lineups
 from edh.predictions.ratings import Elo, Uniform
 from edh.predictions.series import series_probability
-from edh.predictions.tuning import MODELS, SearchSpace, evaluate_all, tune
+from edh.predictions.tuning import (
+    MODELS,
+    SearchSpace,
+    Seasons,
+    evaluate_all,
+    forecast_seasons,
+    played_seasons,
+    tune,
+)
 
 from .conftest import make_match, make_opponent
 
 START = dt.datetime(2025, 5, 1, 18, tzinfo=dt.UTC)  # RLCS 2025 until day 135 (September 13), then RLCS 2026
+FORECAST = Seasons(2026, 2027)  # the forecasts' seasons during RLCS 2027
+TASKS = [('uniform', 'name'), ('uniform', 'players'), ('elo', 'name'), ('elo', 'players')]
 
 
 class _Fixed(Uniform):
@@ -159,9 +169,9 @@ def test_search_spaces_are_consistent(name):
 
 def test_evaluate_all_order(monkeypatch):
     """Test that every model is tuned for every identity, models first."""
-    monkeypatch.setattr(tuning, 'tune', lambda _matches, _lineups, model, identity: (model, identity))
+    monkeypatch.setattr(tuning, 'tune', lambda _matches, _lineups, model, identity, seasons: (model, identity))
     matches = _history([0, 200])  # one played match in each season
-    assert evaluate_all(matches, identify_lineups(matches), ['uniform', 'elo'], ['name', 'players'], workers=1) == [
+    assert evaluate_all(matches, identify_lineups(matches), TASKS, workers=1) == [
         ('uniform', 'name'),
         ('uniform', 'players'),
         ('elo', 'name'),
@@ -193,9 +203,9 @@ def test_default_workers_one_per_cpu(monkeypatch, cpus, sizes):
     pools = []
     monkeypatch.setattr(tuning, 'ProcessPoolExecutor', partial(_FakePool, pools))
     monkeypatch.setattr(tuning, 'cpu_count', lambda: cpus)
-    monkeypatch.setattr(tuning, 'tune', lambda _matches, _lineups, model, identity: (model, identity))
+    monkeypatch.setattr(tuning, 'tune', lambda _matches, _lineups, model, identity, seasons: (model, identity))
     matches = _history([0, 200])
-    tuned = evaluate_all(matches, identify_lineups(matches), ['uniform'], ['name', 'players'])
+    tuned = evaluate_all(matches, identify_lineups(matches), [('uniform', 'name'), ('uniform', 'players')])
     assert tuned == [('uniform', 'name'), ('uniform', 'players')]
     assert pools == sizes
 
@@ -204,9 +214,11 @@ def test_one_worker_starts_no_pool(monkeypatch):
     """Test that a single worker tunes in this process."""
     pools = []
     monkeypatch.setattr(tuning, 'ProcessPoolExecutor', partial(_FakePool, pools))
-    monkeypatch.setattr(tuning, 'tune', lambda _matches, _lineups, model, identity: (model, identity))
+    monkeypatch.setattr(tuning, 'tune', lambda _matches, _lineups, model, identity, seasons: (model, identity))
     matches = _history([0, 200])
-    assert evaluate_all(matches, identify_lineups(matches), ['uniform'], ['name', 'players'], workers=1) == [
+    assert evaluate_all(
+        matches, identify_lineups(matches), [('uniform', 'name'), ('uniform', 'players')], workers=1
+    ) == [
         ('uniform', 'name'),
         ('uniform', 'players'),
     ]
@@ -216,16 +228,47 @@ def test_one_worker_starts_no_pool(monkeypatch):
 def test_evaluate_all_without_models():
     """Test that tuning no model gives no result, without starting workers."""
     matches = _history([0, 200])
-    assert evaluate_all(matches, identify_lineups(matches), [], ['name']) == []
+    assert evaluate_all(matches, identify_lineups(matches), []) == []
 
 
 def test_worker_processes_give_the_same_results():
     """Test that tuning in worker processes gives exactly the results of tuning in this process."""
     matches = _history(range(0, 200, 10), first_loses=range(0, 200, 30))
     lineups = identify_lineups(matches)
-    serial = evaluate_all(matches, lineups, ['uniform', 'elo'], ['name', 'players'], workers=1)
-    assert evaluate_all(matches, lineups, ['uniform', 'elo'], ['name', 'players'], workers=2) == serial
+    serial = evaluate_all(matches, lineups, TASKS, workers=1)
+    assert evaluate_all(matches, lineups, TASKS, workers=2) == serial
     assert len(serial[2].trials) > len(list(MODELS['elo'].grid['k'])) * 9  # the grid, then the search
+
+
+def test_tune_on_other_seasons(monkeypatch):
+    """Test that the seasons pick which predictions tune and which are scored: the forecasts' tune on RLCS 2026."""
+    monkeypatch.setitem(MODELS, 'test', SearchSpace(Uniform))
+    matches = _history([0, 200, 520])  # RLCS 2025, 2026, 2027
+    result = tune(matches, identify_lineups(matches), 'test', 'name', FORECAST)
+    assert (result.seasons, [prediction.season for prediction in result.predictions]) == (FORECAST, [2027])
+
+
+@pytest.mark.parametrize(
+    ('day', 'seasons'), [(dt.date(2026, 12, 9), (2026, 2027)), (dt.date(2026, 9, 20), (2025, 2026))]
+)
+def test_forecast_seasons(day, seasons):
+    """Test that forecasts tune on the season before the day's and check on the day's (RLCS 2027 from Sep 21)."""
+    assert forecast_seasons(day) == Seasons(*seasons)
+
+
+def test_played_seasons_leave_walkovers_out():
+    """Test that a season with walkovers only has no played match."""
+    matches = [*_history([0]), replace(_history([200])[0], walkover=True)]
+    assert played_seasons(matches) == {2025}
+
+
+def test_evaluate_all_passes_the_seasons(monkeypatch):
+    """Test that every tuning gets the seasons asked for, and that the check looks at those seasons."""
+    monkeypatch.setattr(tuning, 'tune', lambda _matches, _lineups, model, identity, seasons: seasons)
+    matches = _history([200, 520])  # no RLCS 2025: enough for the forecasts, not for the evaluation
+    assert evaluate_all(matches, identify_lineups(matches), [('uniform', 'name')], FORECAST) == [FORECAST]
+    with pytest.raises(DataSourceError, match='No played match of RLCS 2028'):
+        evaluate_all(matches, identify_lineups(matches), [('uniform', 'name')], Seasons(2026, 2028))
 
 
 @pytest.mark.parametrize(

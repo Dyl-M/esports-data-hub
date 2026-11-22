@@ -19,7 +19,7 @@ subpackage of `edh` with its own README, sharing the same tooling and data sourc
 | Project                                         | Package           | Status                                 |
 |-------------------------------------------------|-------------------|----------------------------------------|
 | [League play scenarios](#league-play-scenarios) | `edh.scenarios`   | In use                                 |
-| [Rating predictions](#rating-predictions)       | `edh.predictions` | Started: history, lineups, baselines   |
+| [Rating predictions](#rating-predictions)       | `edh.predictions` | Started: baselines, forecasts          |
 
 ### League play scenarios
 
@@ -46,17 +46,19 @@ uv run python -m edh.scenarios.run cdf_slash_2026 --source csv # offline, from t
 Per-game win probabilities learned from past results, to replace the equally likely scores of the league play scenarios.
 It holds the match history (Rocket League tiers 1 and 2 since September 2023, fetched from Liquipedia and cached
 locally), the lineups ratings follow (a core of players kept together, whatever the team is called), and four rating
-baselines (uniform, Elo, Glicko-2, Bradley–Terry) compared by a walk-forward evaluation.
+baselines (uniform, Elo, Glicko-2, Bradley–Terry) compared by a walk-forward evaluation, which also forecast matches
+not played yet.
 
 ```bash
 uv run python -m edh.predictions.run        # update the local match history, then summarize it
 uv run python -m edh.predictions.evaluate   # tune and score the rating baselines, save the report
+uv run python -m edh.predictions.predict "Team Vitality" "Team Falcons"   # forecast (after a --tune run)
 ```
 
 - **[Running it](edh/predictions/README.md)**: history scope, cache, updates, reading the matches and lineups from
-  Python, the evaluation and its report
+  Python, the evaluation and its report, forecasts
 - **[How it works](_docs/predictions.md)**: lineup identity (renames, roster changes, national teams), seasons, the
-  rating models, the walk-forward evaluation and its scores
+  rating models, the walk-forward evaluation and its scores, forecasts
 
 ## Setup
 
@@ -87,7 +89,7 @@ esports-data-hub/
 ├── _docs            # How each project works: models and math, independent of the code
 ├── _tests           # Pytest test suite, CSV / recorded Liquipedia / placeholder visual fixtures, shared configuration
 └── edh              # Main application package: exceptions, paths, brand, lpdb (shared Liquipedia access)
-    ├── predictions  # Rating predictions: match history (.cache/lpdb/), lineups, rating models, evaluation, CLIs
+    ├── predictions  # Rating predictions: match history (.cache/lpdb/), lineups, rating models, evaluation, forecasts, CLIs
     └── scenarios    # League play scenarios: config, standings / tiebreakers, engine, winners-first, report, logos, CLI
         ├── sources  # Result sources: Liquipedia (through liquipydia) and CSV, event details snapshot
         └── visuals  # Outlook card: HTML rendering (Jinja2) and PNG export (Playwright)
