@@ -67,7 +67,7 @@ def freeze(
         raise DataSourceError(f'No match cached before {day}: run `python -m edh.predictions.run`')
     picks = select_picks(latest_picks(), list(product(MODELS, IDENTITIES)))
     pairs = forecast_all(matches, identify_lineups(matches), picks, when, teams)
-    content = {
+    content: dict[str, Any] = {
         'event': page,
         'forecast_day': day.isoformat(),
         'frozen_at': now.isoformat(timespec='seconds'),
