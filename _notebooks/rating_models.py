@@ -15,33 +15,9 @@ def _():
     from plotly.subplots import make_subplots
 
     from edh import paths
-    from edh.predictions.constants import (
-        CALIBRATION_CSV,
-        EVALUATION_JSON,
-        LOG_SCALE,
-        MODEL_UNIFORM,
-        PREDICTIONS_FOLDER,
-    )
-    from edh.predictions.evaluation import CalibrationBin, favorite_calibration
-    from edh.predictions.tuning import MODELS
+    from edh.predictions import constants, evaluation, tuning
 
-    return (
-        CALIBRATION_CSV,
-        CalibrationBin,
-        EVALUATION_JSON,
-        LOG_SCALE,
-        MODELS,
-        MODEL_UNIFORM,
-        PREDICTIONS_FOLDER,
-        csv,
-        favorite_calibration,
-        go,
-        json,
-        make_subplots,
-        math,
-        mo,
-        paths,
-    )
+    return constants, csv, evaluation, go, json, make_subplots, math, mo, paths, tuning
 
 
 @app.cell
@@ -89,25 +65,27 @@ def _(mo):
 
 
 @app.cell
-def _(EVALUATION_JSON, PREDICTIONS_FOLDER, mo, paths):
-    reports = sorted(path.parent for path in (paths.DATA_DIR / PREDICTIONS_FOLDER).glob(f'*/{EVALUATION_JSON}'))
+def _(constants, mo, paths):
+    reports = sorted(
+        path.parent for path in (paths.DATA_DIR / constants.PREDICTIONS_FOLDER).glob(f'*/{constants.EVALUATION_JSON}')
+    )
     picker = mo.ui.dropdown(
         options={folder.name: folder for folder in reports},
         value=reports[-1].name if reports else None,
         label='Report',
     )
-    picker
+    mo.output.replace(picker)
     return (picker,)
 
 
 @app.cell
-def _(CALIBRATION_CSV, CalibrationBin, EVALUATION_JSON, csv, json, mo, picker):
+def _(constants, csv, evaluation, json, mo, picker):
     mo.stop(picker.value is None, mo.md('No evaluation saved yet: run `python -m edh.predictions.evaluate`.'))
-    report = json.loads((picker.value / EVALUATION_JSON).read_text(encoding='utf-8'))
-    with (picker.value / CALIBRATION_CSV).open(encoding='utf-8', newline='') as _file:
+    report = json.loads((picker.value / constants.EVALUATION_JSON).read_text(encoding='utf-8'))
+    with (picker.value / constants.CALIBRATION_CSV).open(encoding='utf-8', newline='') as _file:
         bins = {}
         for _row in csv.DictReader(_file):
-            _bin = CalibrationBin(
+            _bin = evaluation.CalibrationBin(
                 float(_row['low']),
                 float(_row['high']),
                 int(_row['matches']),
@@ -123,27 +101,25 @@ def _(CALIBRATION_CSV, CalibrationBin, EVALUATION_JSON, csv, json, mo, picker):
 @app.cell
 def _():
     # The outlook cards' graphite, and one hue per identity (checked for color-blind separation on that background)
-    BACKGROUND, SURFACE, LINE, TEXT, MUTED = '#0e0e10', '#1b1b1f', '#2c2c32', '#f2f2f4', '#8e8e97'
-    HEAT, BOUND = '#1f7fbf', '#c9a646'
-    IDENTITY_COLORS = {'name': '#3987e5', 'lineup': '#d95926', 'players': '#199e70'}
-    MODEL_NAMES = {'uniform': 'Uniform', 'elo': 'Elo', 'glicko2': 'Glicko-2', 'bradley_terry': 'Bradley–Terry'}
-    LAYOUT = {
+    theme = {
+        'background': '#0e0e10',
+        'surface': '#1b1b1f',
+        'line': '#2c2c32',
+        'text': '#f2f2f4',
+        'muted': '#8e8e97',
+        'heat': '#1f7fbf',
+        'bound': '#c9a646',
+    }
+    identity_colors = {'name': '#3987e5', 'lineup': '#d95926', 'players': '#199e70'}
+    model_names = {'uniform': 'Uniform', 'elo': 'Elo', 'glicko2': 'Glicko-2', 'bradley_terry': 'Bradley–Terry'}
+    layout = {
         'template': 'plotly_dark',
-        'paper_bgcolor': BACKGROUND,
-        'plot_bgcolor': SURFACE,
-        'font': {'family': 'JetBrains Mono, monospace', 'color': TEXT},
+        'paper_bgcolor': theme['background'],
+        'plot_bgcolor': theme['surface'],
+        'font': {'family': 'JetBrains Mono, monospace', 'color': theme['text']},
         'margin': {'t': 60, 'l': 20, 'r': 20, 'b': 40},
     }
-    return (
-        BOUND,
-        HEAT,
-        IDENTITY_COLORS,
-        LAYOUT,
-        LINE,
-        MODEL_NAMES,
-        MUTED,
-        SURFACE,
-    )
+    return identity_colors, layout, model_names, theme
 
 
 @app.cell
@@ -164,7 +140,7 @@ def _(mo, report, seasons):
 
 
 @app.cell
-def _(HEAT, LAYOUT, MODEL_NAMES, MODEL_UNIFORM, SURFACE, go, math, results):
+def _(constants, go, layout, math, mo, model_names, results, theme):
     _keys = [
         'all',
         *sorted(key for key in results[0]['evaluation'] if key.startswith('tier ')),
@@ -173,12 +149,12 @@ def _(HEAT, LAYOUT, MODEL_NAMES, MODEL_UNIFORM, SURFACE, go, math, results):
     ]
     _keys = [key for key in _keys if key in results[0]['evaluation']]
     _rated = sorted(
-        (result for result in results if result['model'] != MODEL_UNIFORM),
+        (result for result in results if result['model'] != constants.MODEL_UNIFORM),
         key=lambda result: result['evaluation']['all']['log_loss'],
     )
-    _rows = _rated + [result for result in results if result['model'] == MODEL_UNIFORM][:1]
+    _rows = _rated + [result for result in results if result['model'] == constants.MODEL_UNIFORM][:1]
     _labels = [
-        MODEL_NAMES[row['model']] + ('' if row['model'] == MODEL_UNIFORM else f' · {row["identity"]}') for row in _rows
+        model_names[row['model']] + ('' if row['model'] == constants.MODEL_UNIFORM else f' · {row["identity"]}') for row in _rows
     ]
     _columns = [f'{key.capitalize()}<br>{results[0]["evaluation"][key]["matches"]:,} series' for key in _keys]
     _loss = [[row['evaluation'][key]['log_loss'] for key in _keys] for row in _rows]
@@ -199,15 +175,15 @@ def _(HEAT, LAYOUT, MODEL_NAMES, MODEL_UNIFORM, SURFACE, go, math, results):
             texttemplate='%{text}',
             hovertext=_hover,
             hoverinfo='text',
-            colorscale=[[0, SURFACE], [1, HEAT]],
+            colorscale=[[0, theme['surface']], [1, theme['heat']]],
             zmin=0,
             xgap=3,
             ygap=3,
             colorbar={'title': 'gain over<br>even odds'},
         )
     )
-    comparison.update_layout(**LAYOUT, height=80 + 46 * len(_rows), yaxis={'autorange': 'reversed'})
-    comparison
+    comparison.update_layout(**layout, height=80 + 46 * len(_rows), yaxis={'autorange': 'reversed'})
+    mo.output.replace(comparison)
     return
 
 
@@ -227,25 +203,17 @@ def _(mo):
 
 
 @app.cell
-def _(
-    IDENTITY_COLORS,
-    LAYOUT,
-    LINE,
-    MODELS,
-    MODEL_NAMES,
-    MODEL_UNIFORM,
-    bins,
-    favorite_calibration,
-    go,
-    make_subplots,
-    math,
-):
-    _models = [model for model in MODELS if model != MODEL_UNIFORM and any(task[0] == model for task in bins)]
+def _(bins, constants, evaluation, go, identity_colors, layout, make_subplots, math, mo, model_names, theme, tuning):
+    _models = [
+        model
+        for model in tuning.MODELS
+        if model != constants.MODEL_UNIFORM and any(task[0] == model for task in bins)
+    ]
     _most = max(item.matches for items in bins.values() for item in items)
     calibration = make_subplots(
         rows=1,
         cols=len(_models),
-        subplot_titles=[MODEL_NAMES[model] for model in _models],
+        subplot_titles=[model_names[model] for model in _models],
         shared_yaxes=True,
         horizontal_spacing=0.04,
     )
@@ -255,15 +223,15 @@ def _(
                 x=[0.5, 1],
                 y=[0.5, 1],
                 mode='lines',
-                line={'dash': 'dash', 'color': LINE},
+                line={'dash': 'dash', 'color': theme['line']},
                 showlegend=False,
                 hoverinfo='skip',
             ),
             row=1,
             col=_column,
         )
-        for _identity, _color in IDENTITY_COLORS.items():
-            _favored = favorite_calibration(bins.get((_model, _identity), []))
+        for _identity, _color in identity_colors.items():
+            _favored = evaluation.favorite_calibration(bins.get((_model, _identity), []))
             if not _favored:
                 continue
             calibration.add_trace(
@@ -278,7 +246,7 @@ def _(
                     marker={'size': [8 + 10 * math.sqrt(item.matches / _most) for item in _favored]},
                     customdata=[[item.matches] for item in _favored],
                     hovertemplate=(
-                        f'{MODEL_NAMES[_model]} · {_identity}<br>predicted %{{x:.1%}}, won %{{y:.1%}}'
+                        f'{model_names[_model]} · {_identity}<br>predicted %{{x:.1%}}, won %{{y:.1%}}'
                         '<br>%{customdata[0]:,} series<extra></extra>'
                     ),
                 ),
@@ -287,8 +255,8 @@ def _(
             )
     calibration.update_xaxes(tickformat='.0%', range=[0.48, 1.02], title_text="favorite's predicted chance")
     calibration.update_yaxes(tickformat='.0%', title_text='favorites that won', row=1, col=1)
-    calibration.update_layout(**LAYOUT, height=520, legend={'orientation': 'h', 'y': -0.2})
-    calibration
+    calibration.update_layout(**layout, height=520, legend={'orientation': 'h', 'y': -0.2})
+    mo.output.replace(calibration)
     return
 
 
@@ -308,62 +276,51 @@ def _(mo):
 
 
 @app.cell
-def _(
-    BOUND,
-    IDENTITY_COLORS,
-    LAYOUT,
-    LOG_SCALE,
-    MODELS,
-    MODEL_NAMES,
-    MUTED,
-    go,
-    math,
-    results,
-):
+def _(constants, go, identity_colors, layout, math, mo, model_names, results, theme, tuning):
     def _position(name, value, bounds):
         low, high = bounds
-        if name in LOG_SCALE:
+        if name in constants.LOG_SCALE:
             return math.log(value / low) / math.log(high / low)
         return (value - low) / (high - low)
 
     picks = go.Figure()
-    for _result in (result for result in results if MODELS[result['model']].bounds):
-        _bounds = MODELS[_result['model']].bounds
+    for _result in (result for result in results if tuning.MODELS[result['model']].bounds):
+        _bounds = tuning.MODELS[_result['model']].bounds
         for _name, _value in _result['params'].items():
             _on_bound = _name in _result['at_bound']
             picks.add_trace(
                 go.Scatter(
                     x=[_position(_name, _value, _bounds[_name])],
-                    y=[f'{MODEL_NAMES[_result["model"]]} · {_name}'],
+                    y=[f'{model_names[_result["model"]]} · {_name}'],
                     mode='markers',
                     marker={
                         'size': 14,
-                        'color': BOUND if _on_bound else IDENTITY_COLORS[_result['identity']],
+                        'color': theme['bound'] if _on_bound else identity_colors[_result['identity']],
                         'symbol': 'diamond' if _on_bound else 'circle',
-                        'line': {'width': 1, 'color': MUTED},
+                        'line': {'width': 1, 'color': theme['muted']},
                     },
                     name=_result['identity'],
                     legendgroup=_result['identity'],
                     showlegend=False,
                     hovertemplate=(
-                        f'{MODEL_NAMES[_result["model"]]} · {_result["identity"]}<br>{_name} = {_value:g} '
+                        f'{model_names[_result["model"]]} · {_result["identity"]}<br>{_name} = {_value:g} '
                         f'(searched {_bounds[_name][0]:g} to {_bounds[_name][1]:g})'
                         f'{" · on a bound" if _on_bound else ""}<extra></extra>'
                     ),
                 )
             )
-    for _identity, _color in IDENTITY_COLORS.items():  # legend entries only
+    for _identity, _color in identity_colors.items():  # legend entries only
         picks.add_trace(
             go.Scatter(x=[None], y=[None], mode='markers', marker={'size': 12, 'color': _color}, name=_identity)
         )
     picks.update_xaxes(range=[-0.05, 1.05], tickvals=[0, 0.5, 1], ticktext=['lowest', 'middle', 'highest'])
     picks.update_layout(
-        **LAYOUT,
+        **layout,
         height=460,
         title='Picks within their search bounds (gold diamond: on a bound)',
         legend={'orientation': 'h', 'y': -0.15},
     )
-    picks
+    mo.output.replace(picks)
     return
 
 
@@ -377,20 +334,16 @@ def _(mo):
 
 
 @app.cell
-def _(
-    IDENTITY_COLORS,
-    LAYOUT,
-    MODELS,
-    MODEL_NAMES,
-    go,
-    make_subplots,
-    results,
-):
-    _tuned = [model for model in MODELS if MODELS[model].bounds and any(r['model'] == model for r in results)]
+def _(go, identity_colors, layout, make_subplots, mo, model_names, results, tuning):
+    _tuned = [
+        model
+        for model, space in tuning.MODELS.items()
+        if space.bounds and any(result['model'] == model for result in results)
+    ]
     convergence = make_subplots(
         rows=1,
         cols=len(_tuned),
-        subplot_titles=[MODEL_NAMES[model] for model in _tuned],
+        subplot_titles=[model_names[model] for model in _tuned],
         horizontal_spacing=0.06,
     )
     for _column, _model in enumerate(_tuned, start=1):
@@ -407,7 +360,7 @@ def _(
                     name=_result['identity'],
                     legendgroup=_result['identity'],
                     showlegend=_column == 1,
-                    line={'color': IDENTITY_COLORS[_result['identity']], 'width': 2, 'shape': 'hv'},
+                    line={'color': identity_colors[_result['identity']], 'width': 2, 'shape': 'hv'},
                     hovertemplate='run %{x}: best %{y:.4f}<extra></extra>',
                 ),
                 row=1,
@@ -415,8 +368,8 @@ def _(
             )
     convergence.update_xaxes(title_text='run')
     convergence.update_yaxes(title_text='best tuning log loss', row=1, col=1)
-    convergence.update_layout(**LAYOUT, height=420, legend={'orientation': 'h', 'y': -0.25})
-    convergence
+    convergence.update_layout(**layout, height=420, legend={'orientation': 'h', 'y': -0.25})
+    mo.output.replace(convergence)
     return
 
 
