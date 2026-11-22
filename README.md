@@ -47,16 +47,17 @@ Per-game win probabilities learned from past results, to replace the equally lik
 It holds the match history (Rocket League tiers 1 and 2 since September 2023, fetched from Liquipedia and cached
 locally), the lineups ratings follow (a core of players kept together, whatever the team is called), and four rating
 baselines (uniform, Elo, Glicko-2, Bradley–Terry) compared by a walk-forward evaluation, which also forecast matches
-not played yet.
+not played yet, and freeze every pair of an event's teams before it starts.
 
 ```bash
 uv run python -m edh.predictions.run        # update the local match history, then summarize it
 uv run python -m edh.predictions.evaluate   # tune and score the rating baselines, save the report
 uv run python -m edh.predictions.predict "Team Vitality" "Team Falcons"   # forecast (after a --tune run)
+uv run python -m _scripts.freeze_kickoff_2027   # freeze the RLCS 2027 Kick-Off's forecasts, once
 ```
 
 - **[Running it](edh/predictions/README.md)**: history scope, cache, updates, reading the matches and lineups from
-  Python, the evaluation and its report, forecasts
+  Python, the evaluation and its report, forecasts, frozen forecasts
 - **[How it works](_docs/predictions.md)**: lineup identity (renames, roster changes, national teams), seasons, the
   rating models, the walk-forward evaluation and its scores, forecasts
 
@@ -85,8 +86,9 @@ Each project's README lists what it needs on top of this.
 ```
 esports-data-hub/
 ├── .github          # Workflows (tests & coverage, license year, release), Dependabot, PR template, CODEOWNERS, banner
-├── _data            # One folder per league (league.json, results.csv, event.json), predictions/ evaluation reports
+├── _data            # One folder per league (league.json, results.csv, event.json), predictions/ reports, frozen files
 ├── _docs            # How each project works: models and math, independent of the code
+├── _scripts         # One-off scripts for given events (e.g. freezing the RLCS 2027 Kick-Off's forecasts)
 ├── _tests           # Pytest test suite, CSV / recorded Liquipedia / placeholder visual fixtures, shared configuration
 └── edh              # Main application package: exceptions, paths, brand, lpdb (shared Liquipedia access)
     ├── predictions  # Rating predictions: match history (.cache/lpdb/), lineups, rating models, evaluation, forecasts, CLIs
