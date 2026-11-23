@@ -238,6 +238,9 @@ _data/*/logos/
 # Brand files kept local (avatar, font, icons); the card templates are public, for transparency
 edh/assets/
 
+# Code knowledge graph (graphify), rebuilt locally
+graphify-out/
+
 # Claude Code & Claude personal Config
 .claude/
 .remember/
