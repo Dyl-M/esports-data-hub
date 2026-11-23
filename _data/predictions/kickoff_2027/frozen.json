@@ -1,0 +1,7609 @@
+{
+  "event": "Rocket_League_Championship_Series/Club_Championship/2027/Kick-Off",
+  "forecast_day": "2026-12-09",
+  "frozen_at": "2026-11-23T14:30:02+00:00",
+  "history_through": "2026-11-22",
+  "picks": [
+    {
+      "model": "uniform",
+      "identity": "name",
+      "params": {}
+    },
+    {
+      "model": "uniform",
+      "identity": "lineup",
+      "params": {}
+    },
+    {
+      "model": "uniform",
+      "identity": "players",
+      "params": {}
+    },
+    {
+      "model": "elo",
+      "identity": "name",
+      "params": {
+        "k": 24.87,
+        "shrink": 0.3399,
+        "offset": -104.8
+      }
+    },
+    {
+      "model": "elo",
+      "identity": "lineup",
+      "params": {
+        "k": 25.55,
+        "shrink": 0.2851,
+        "offset": -72.48
+      }
+    },
+    {
+      "model": "elo",
+      "identity": "players",
+      "params": {
+        "k": 18.24,
+        "shrink": 0.2165,
+        "offset": -399.9
+      }
+    },
+    {
+      "model": "glicko2",
+      "identity": "name",
+      "params": {
+        "tau": 2.0,
+        "start_rd": 107.9,
+        "shrink": 0.09651
+      }
+    },
+    {
+      "model": "glicko2",
+      "identity": "lineup",
+      "params": {
+        "tau": 0.4259,
+        "start_rd": 124.9,
+        "shrink": 0.0259
+      }
+    },
+    {
+      "model": "glicko2",
+      "identity": "players",
+      "params": {
+        "tau": 2.0,
+        "start_rd": 99.49,
+        "shrink": 0.0
+      }
+    },
+    {
+      "model": "bradley_terry",
+      "identity": "name",
+      "params": {
+        "half_life": 259.2,
+        "l2": 2.117
+      }
+    },
+    {
+      "model": "bradley_terry",
+      "identity": "lineup",
+      "params": {
+        "half_life": 320.7,
+        "l2": 2.633
+      }
+    },
+    {
+      "model": "bradley_terry",
+      "identity": "players",
+      "params": {
+        "half_life": 732.8,
+        "l2": 0.7629
+      }
+    }
+  ],
+  "teams": [
+    {
+      "team": "All Gamers Global",
+      "roster": [
+        "Archie",
+        "Joyo",
+        "Oaly"
+      ],
+      "never_rated": {
+        "name": [
+          "All Gamers Global"
+        ],
+        "lineup": [
+          "All Gamers Global"
+        ],
+        "players": []
+      }
+    },
+    {
+      "team": "FURIA",
+      "roster": [
+        "Kv1",
+        "Swiftt",
+        "Yanxnz"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "FUT Esports",
+      "roster": [
+        "CHEESE",
+        "Jstn",
+        "Lj"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "FaZe Clan",
+      "roster": [
+        "Bemmz",
+        "Crn",
+        "Lostt"
+      ],
+      "never_rated": {
+        "name": [
+          "FaZe Clan"
+        ],
+        "lineup": [
+          "FaZe Clan"
+        ],
+        "players": []
+      }
+    },
+    {
+      "team": "Geekay Esports",
+      "roster": [
+        "Juicy_(French_Player)",
+        "Mtzr",
+        "Seikoo"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Gen.G Mobil1 Racing",
+      "roster": [
+        "BeastMode",
+        "Chronic",
+        "Tawk"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Gentle Mates",
+      "roster": [
+        "Atow",
+        "Vatira",
+        "Zen"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Karmine Corp",
+      "roster": [
+        "Bibbaba",
+        "M0nkey_M00n",
+        "Reyyn"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "M80",
+      "roster": [
+        "Drufinho",
+        "Joreuz",
+        "Motta"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Manchester City Esports",
+      "roster": [
+        "Accro",
+        "Rise",
+        "TempoH"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "NOT",
+      "roster": [
+        "Nush",
+        "Ops",
+        "Trook"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "NRG",
+      "roster": [
+        "2Piece",
+        "Frosty",
+        "Wahvey"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Ninjas in Pyjamas",
+      "roster": [
+        "Crr",
+        "Prozy",
+        "Stizzy"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "PCS Stride",
+      "roster": [
+        "Droppz",
+        "Suco",
+        "Wisty"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "PWR",
+      "roster": [
+        "Fever",
+        "Fiberr",
+        "Gus"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Pioneers",
+      "roster": [
+        "Gunz",
+        "Sweaty",
+        "TehQoz"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Shopify Rebellion",
+      "roster": [
+        "Atomic",
+        "Daniel",
+        "Firstkiller"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Spacestation Gaming",
+      "roster": [
+        "Reveal",
+        "Solar",
+        "Zach"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Team Falcons",
+      "roster": [
+        "Dralii",
+        "Kiileerrz",
+        "Rw9"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Team Heretics",
+      "roster": [
+        "Ajg",
+        "AtomiK",
+        "Dorito"
+      ],
+      "never_rated": {
+        "name": [
+          "Team Heretics"
+        ],
+        "lineup": [
+          "Team Heretics"
+        ],
+        "players": []
+      }
+    },
+    {
+      "team": "Team Vitality",
+      "roster": [
+        "Diaz_(Brazilian_Player)",
+        "Nass",
+        "Oski"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Twisted Minds",
+      "roster": [
+        "Ghaazi",
+        "Nwpo",
+        "Trk511"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Wildcard",
+      "roster": [
+        "Bananahead",
+        "Caleb",
+        "Hntr"
+      ],
+      "never_rated": {
+        "name": [],
+        "lineup": [],
+        "players": []
+      }
+    },
+    {
+      "team": "Wolves Esports",
+      "roster": [
+        "Catalysm",
+        "Kevin",
+        "Sphinx"
+      ],
+      "never_rated": {
+        "name": [
+          "Wolves Esports"
+        ],
+        "lineup": [
+          "Wolves Esports"
+        ],
+        "players": []
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "first": "All Gamers Global",
+      "second": "FURIA",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.12533078281136467,
+          "lineup": 0.10953669431690083,
+          "players": 0.47338208368577633
+        },
+        "glicko2": {
+          "name": 0.11029336138098038,
+          "lineup": 0.07377920519274564,
+          "players": 0.44580860774495595
+        },
+        "bradley_terry": {
+          "name": 0.10527180229189223,
+          "lineup": 0.09266710368166108,
+          "players": 0.47444054633765015
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "FUT Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.09428192928203867,
+          "lineup": 0.0803316262165214,
+          "players": 0.4234050475550445
+        },
+        "glicko2": {
+          "name": 0.1047746973333362,
+          "lineup": 0.07566947767418311,
+          "players": 0.44006014475316163
+        },
+        "bradley_terry": {
+          "name": 0.13013992207161398,
+          "lineup": 0.0966746170587552,
+          "players": 0.4584306167535806
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "FaZe Clan",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5541787404986322
+        },
+        "glicko2": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5638379530357365
+        },
+        "bradley_terry": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5657006568708468
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Geekay Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.08849290688139384,
+          "lineup": 0.123137739465219,
+          "players": 0.34093594603232935
+        },
+        "glicko2": {
+          "name": 0.12930506573594297,
+          "lineup": 0.09982485614209963,
+          "players": 0.42061851971531633
+        },
+        "bradley_terry": {
+          "name": 0.15449967607049744,
+          "lineup": 0.11464350282662517,
+          "players": 0.5375686034791715
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Gen.G Mobil1 Racing",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.17690270230522048,
+          "lineup": 0.18211428080946962,
+          "players": 0.4509746308815355
+        },
+        "glicko2": {
+          "name": 0.17443126541071605,
+          "lineup": 0.14310241718312855,
+          "players": 0.44179702787802644
+        },
+        "bradley_terry": {
+          "name": 0.1697748133153194,
+          "lineup": 0.1708935777058032,
+          "players": 0.6185890315594056
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Gentle Mates",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.10872230006944684,
+          "lineup": 0.0933966274025738,
+          "players": 0.328052955553521
+        },
+        "glicko2": {
+          "name": 0.09673352521988537,
+          "lineup": 0.06633312272088415,
+          "players": 0.30464148640123034
+        },
+        "bradley_terry": {
+          "name": 0.11788095399057141,
+          "lineup": 0.0745541208291646,
+          "players": 0.28590470237452503
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Karmine Corp",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.07807925122031636,
+          "lineup": 0.06442970491491513,
+          "players": 0.7103544726733021
+        },
+        "glicko2": {
+          "name": 0.08229745345069811,
+          "lineup": 0.05703180573402755,
+          "players": 0.7617823533802867
+        },
+        "bradley_terry": {
+          "name": 0.08981610297487568,
+          "lineup": 0.0749919155924289,
+          "players": 0.8508338542186662
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "M80",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.11192853755422805,
+          "lineup": 0.13926196440869215,
+          "players": 0.4370215895278955
+        },
+        "glicko2": {
+          "name": 0.1778060688698597,
+          "lineup": 0.12936521602097376,
+          "players": 0.48296224629408985
+        },
+        "bradley_terry": {
+          "name": 0.2044365986501141,
+          "lineup": 0.1438192716061951,
+          "players": 0.521216013283269
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Manchester City Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.15552489303236244,
+          "lineup": 0.1357505701602325,
+          "players": 0.6125172447427008
+        },
+        "glicko2": {
+          "name": 0.15849857685338095,
+          "lineup": 0.11157924876591678,
+          "players": 0.6175476911108202
+        },
+        "bradley_terry": {
+          "name": 0.15826902757967376,
+          "lineup": 0.11359412346508675,
+          "players": 0.6324650490718787
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "NOT",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.15823685235125307,
+          "lineup": 0.06798918174223112,
+          "players": 0.42761456251954627
+        },
+        "glicko2": {
+          "name": 0.16265894179927473,
+          "lineup": 0.07181751687359313,
+          "players": 0.47889639063560524
+        },
+        "bradley_terry": {
+          "name": 0.1405349964558855,
+          "lineup": 0.057621721051585695,
+          "players": 0.6151999570057082
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "NRG",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.11839888685606129,
+          "lineup": 0.10309001896763387,
+          "players": 0.48796384504680396
+        },
+        "glicko2": {
+          "name": 0.1191602269133651,
+          "lineup": 0.08452972767408637,
+          "players": 0.49490876229904474
+        },
+        "bradley_terry": {
+          "name": 0.11901363857956343,
+          "lineup": 0.09065205062863856,
+          "players": 0.6339838674852708
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.12283172470379448,
+          "lineup": 0.10807319580626083,
+          "players": 0.6212472833083386
+        },
+        "glicko2": {
+          "name": 0.1248236570054332,
+          "lineup": 0.09084214824169903,
+          "players": 0.6398808719088049
+        },
+        "bradley_terry": {
+          "name": 0.1330736230267664,
+          "lineup": 0.11386146158113448,
+          "players": 0.7161086546299198
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.10828384149404346,
+          "lineup": 0.09937604643853411,
+          "players": 0.4722474384813059
+        },
+        "glicko2": {
+          "name": 0.17341197963185864,
+          "lineup": 0.0916593282508161,
+          "players": 0.5326068816180602
+        },
+        "bradley_terry": {
+          "name": 0.21122166734137987,
+          "lineup": 0.09452754479970606,
+          "players": 0.5875344547026027
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.1577901763099758,
+          "lineup": 0.13813826752209368,
+          "players": 0.5236839930147553
+        },
+        "glicko2": {
+          "name": 0.11666616523174796,
+          "lineup": 0.09010661799625713,
+          "players": 0.49121341825846104
+        },
+        "bradley_terry": {
+          "name": 0.13113430385876326,
+          "lineup": 0.106584965080064,
+          "players": 0.5647034270510433
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.15942378399105078,
+          "lineup": 0.15449683632591224,
+          "players": 0.6499707119920114
+        },
+        "glicko2": {
+          "name": 0.16744962883851477,
+          "lineup": 0.12609593360651308,
+          "players": 0.6695050473350654
+        },
+        "bradley_terry": {
+          "name": 0.18235687553027377,
+          "lineup": 0.1499906515964134,
+          "players": 0.6806347891013638
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.09468927332179873,
+          "lineup": 0.08062803837325852,
+          "players": 0.4098219224372587
+        },
+        "glicko2": {
+          "name": 0.09597656692849324,
+          "lineup": 0.06591893698105779,
+          "players": 0.3769873178846941
+        },
+        "bradley_terry": {
+          "name": 0.12330007001677759,
+          "lineup": 0.0752586566668821,
+          "players": 0.45524339935494307
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.08068233041800908,
+          "lineup": 0.06730749072894937,
+          "players": 0.4895490969715451
+        },
+        "glicko2": {
+          "name": 0.08912404965928476,
+          "lineup": 0.0622739130511676,
+          "players": 0.48439302890246627
+        },
+        "bradley_terry": {
+          "name": 0.11257094161999974,
+          "lineup": 0.09045583394454496,
+          "players": 0.6320587061292186
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.04817879576431708,
+          "lineup": 0.03784593942354792,
+          "players": 0.24164858900656133
+        },
+        "glicko2": {
+          "name": 0.050342086292556786,
+          "lineup": 0.03247551033922473,
+          "players": 0.2197181256848541
+        },
+        "bradley_terry": {
+          "name": 0.0651141796701146,
+          "lineup": 0.054498985645253434,
+          "players": 0.30780821496857413
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.6172632969495473
+        },
+        "glicko2": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.6508034418778386
+        },
+        "bradley_terry": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.6737587537448285
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.09422012838745972,
+          "lineup": 0.08049724488573505,
+          "players": 0.44297833142712195
+        },
+        "glicko2": {
+          "name": 0.08176422725199406,
+          "lineup": 0.056624742362790144,
+          "players": 0.453001781097933
+        },
+        "bradley_terry": {
+          "name": 0.0958216672559593,
+          "lineup": 0.07163266970950032,
+          "players": 0.4798526302740743
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.10834412335444253,
+          "lineup": 0.0942306341425825,
+          "players": 0.46600342880902873
+        },
+        "glicko2": {
+          "name": 0.09766788744083278,
+          "lineup": 0.0667929453651047,
+          "players": 0.44883245134259253
+        },
+        "bradley_terry": {
+          "name": 0.10181188224474676,
+          "lineup": 0.07716284809876682,
+          "players": 0.3689916946659657
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.19235747118749508,
+          "lineup": 0.17593218299900334,
+          "players": 0.5158762980366457
+        },
+        "glicko2": {
+          "name": 0.14686980008576292,
+          "lineup": 0.10911612353923272,
+          "players": 0.4973099393169394
+        },
+        "bradley_terry": {
+          "name": 0.14353564356249005,
+          "lineup": 0.10611773010600746,
+          "players": 0.5924215698293351
+        }
+      }
+    },
+    {
+      "first": "All Gamers Global",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.601399685982421
+        },
+        "glicko2": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5819925598314875
+        },
+        "bradley_terry": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.585596559124827
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "FUT Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4207855997324412,
+          "lineup": 0.4152345092521627,
+          "players": 0.44961204037714797
+        },
+        "glicko2": {
+          "name": 0.4851517344990901,
+          "lineup": 0.5075728700801772,
+          "players": 0.49423629742189895
+        },
+        "bradley_terry": {
+          "name": 0.5597758015647305,
+          "lineup": 0.5116888509829048,
+          "players": 0.48392173840064573
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "FaZe Clan",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8746692171886353,
+          "lineup": 0.8904633056830991,
+          "players": 0.580333254376949
+        },
+        "glicko2": {
+          "name": 0.8897066386190196,
+          "lineup": 0.9262207948072544,
+          "players": 0.6165293209307807
+        },
+        "bradley_terry": {
+          "name": 0.8947281977081079,
+          "lineup": 0.907332896318339,
+          "players": 0.5906511981335417
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Geekay Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.40388878356688374,
+          "lineup": 0.5330606758764658,
+          "players": 0.3652721362093289
+        },
+        "glicko2": {
+          "name": 0.5460077000243868,
+          "lineup": 0.582078888194297,
+          "players": 0.47426616256981113
+        },
+        "bradley_terry": {
+          "name": 0.6083156998698639,
+          "lineup": 0.5590562614576542,
+          "players": 0.5628865143213808
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Gen.G Mobil1 Racing",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5999879098721653,
+          "lineup": 0.6441435261450424,
+          "players": 0.4774749707623044
+        },
+        "glicko2": {
+          "name": 0.6356069401170722,
+          "lineup": 0.6872078109496792,
+          "players": 0.4959706092080855
+        },
+        "bradley_terry": {
+          "name": 0.6347734556100337,
+          "lineup": 0.668672781239027,
+          "players": 0.6424217238751851
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Gentle Mates",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.45984420675356685,
+          "lineup": 0.4557740001028889,
+          "players": 0.35196064309424235
+        },
+        "glicko2": {
+          "name": 0.46198308017898543,
+          "lineup": 0.46996256796332836,
+          "players": 0.35249383082778984
+        },
+        "bradley_terry": {
+          "name": 0.5317877225803765,
+          "lineup": 0.44096305512148787,
+          "players": 0.3072450124002653
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Karmine Corp",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3714863468399056,
+          "lineup": 0.3589097664582458,
+          "players": 0.7317812331509763
+        },
+        "glicko2": {
+          "name": 0.41628674928516796,
+          "lineup": 0.42764735319834474,
+          "players": 0.7990760208890173
+        },
+        "bradley_terry": {
+          "name": 0.4561360507388782,
+          "lineup": 0.44252362081786684,
+          "players": 0.8633601299435708
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "M80",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4679683455243824,
+          "lineup": 0.5680866297003799,
+          "players": 0.4633940476951193
+        },
+        "glicko2": {
+          "name": 0.6416375752378842,
+          "lineup": 0.6573016920482024,
+          "players": 0.537286856782138
+        },
+        "bradley_terry": {
+          "name": 0.6859347490754227,
+          "lineup": 0.6218885350894825,
+          "players": 0.5466742268680422
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Manchester City Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5624176523452579,
+          "lineup": 0.5608075340841723,
+          "players": 0.6374880679689865
+        },
+        "glicko2": {
+          "name": 0.6075925202674074,
+          "lineup": 0.6188152131809279,
+          "players": 0.6676025200727547
+        },
+        "bradley_terry": {
+          "name": 0.6151021132477373,
+          "lineup": 0.5564958862492836,
+          "players": 0.6559129830069084
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "NOT",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5674570832902305,
+          "lineup": 0.3722646750307983,
+          "players": 0.4538770090314438
+        },
+        "glicko2": {
+          "name": 0.6126016212791392,
+          "lineup": 0.49186199946548453,
+          "players": 0.5332716118257688
+        },
+        "bradley_terry": {
+          "name": 0.5815454433793812,
+          "lineup": 0.3744878736892976,
+          "players": 0.6391208739721501
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "NRG",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4838078871411449,
+          "lineup": 0.4830388528743042,
+          "players": 0.5146004720040381
+        },
+        "glicko2": {
+          "name": 0.5230684307568488,
+          "lineup": 0.5396656115997427,
+          "players": 0.5492036101487449
+        },
+        "bradley_terry": {
+          "name": 0.5344877339942878,
+          "lineup": 0.49394945204241597,
+          "players": 0.6573873943394158
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.49425169067669666,
+          "lineup": 0.49622681157711646,
+          "players": 0.6459806766517866
+        },
+        "glicko2": {
+          "name": 0.5366804791395244,
+          "lineup": 0.5601463521287496,
+          "players": 0.6885338480593548
+        },
+        "bradley_terry": {
+          "name": 0.5660917003366919,
+          "lineup": 0.5571504042645501,
+          "players": 0.7364440018322086
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4587185209549826,
+          "lineup": 0.47285312008745206,
+          "players": 0.49886199213998556
+        },
+        "glicko2": {
+          "name": 0.6340753765292046,
+          "lineup": 0.5588684014958866,
+          "players": 0.5862664407655022
+        },
+        "bradley_terry": {
+          "name": 0.6947449594406596,
+          "lineup": 0.505482351744517,
+          "players": 0.6120907709141684
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5666328431958162,
+          "lineup": 0.5657771919419048,
+          "players": 0.5501753833604772
+        },
+        "glicko2": {
+          "name": 0.5163678437887729,
+          "lineup": 0.5574513157536249,
+          "players": 0.5454829807843634
+        },
+        "bradley_terry": {
+          "name": 0.5619322810928606,
+          "lineup": 0.5387687987117297,
+          "players": 0.589669703342644
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5696363459709217,
+          "lineup": 0.5976598738777431,
+          "players": 0.6738132425094874
+        },
+        "glicko2": {
+          "name": 0.6236693483567003,
+          "lineup": 0.652429773357798,
+          "players": 0.7158896346730221
+        },
+        "bradley_terry": {
+          "name": 0.6546436008958857,
+          "lineup": 0.6333978393614299,
+          "players": 0.7024553567396308
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.42194641792184767,
+          "lineup": 0.4162074137536845,
+          "players": 0.43582365534854967
+        },
+        "glicko2": {
+          "name": 0.46020486727072546,
+          "lineup": 0.46815034128714583,
+          "players": 0.4292108212624459
+        },
+        "bradley_terry": {
+          "name": 0.5444896717656098,
+          "lineup": 0.4434709033016133,
+          "players": 0.48071460658546256
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3798410686533502,
+          "lineup": 0.3697424772999031,
+          "players": 0.5161850227660172
+        },
+        "glicko2": {
+          "name": 0.4389442548607669,
+          "lineup": 0.4522468663766915,
+          "players": 0.5387933024947571
+        },
+        "bradley_terry": {
+          "name": 0.5187984887566917,
+          "lineup": 0.49335389725343554,
+          "players": 0.6555184440784352
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.26104023314890057,
+          "lineup": 0.24228940788083342,
+          "players": 0.26171188925006367
+        },
+        "glicko2": {
+          "name": 0.2914719567736608,
+          "lineup": 0.2849121401579396,
+          "players": 0.25911268968512063
+        },
+        "bradley_terry": {
+          "name": 0.37184550658498816,
+          "lineup": 0.36076693081992556,
+          "players": 0.33002784009217834
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8746692171886353,
+          "lineup": 0.8904633056830991,
+          "players": 0.6421069766104531
+        },
+        "glicko2": {
+          "name": 0.8897066386190196,
+          "lineup": 0.9262207948072544,
+          "players": 0.6987037835426623
+        },
+        "bradley_terry": {
+          "name": 0.8947281977081079,
+          "lineup": 0.907332896318339,
+          "players": 0.6958391801355007
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.420609168233939,
+          "lineup": 0.4157784363799784,
+          "players": 0.46941053321505105
+        },
+        "glicko2": {
+          "name": 0.41432144631373513,
+          "lineup": 0.42533114893524215,
+          "players": 0.5073494698492871
+        },
+        "bradley_terry": {
+          "name": 0.4738829423701345,
+          "lineup": 0.43036052775001693,
+          "players": 0.5054232548818451
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.45887349922006226,
+          "lineup": 0.4582084593284696,
+          "players": 0.4925945397896311
+        },
+        "glicko2": {
+          "name": 0.46510292264772957,
+          "lineup": 0.47213515654162813,
+          "players": 0.5031117784699208
+        },
+        "bradley_terry": {
+          "name": 0.490681496818874,
+          "lineup": 0.45015639544620817,
+          "players": 0.3931195918380386
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.624366874162342,
+          "lineup": 0.6344436567668085,
+          "players": 0.5424225043722818
+        },
+        "glicko2": {
+          "name": 0.5844565955186011,
+          "lineup": 0.6120576364318678,
+          "players": 0.5514921754682496
+        },
+        "bradley_terry": {
+          "name": 0.5875254539640273,
+          "lineup": 0.5375469169308039,
+          "players": 0.616876658363141
+        }
+      }
+    },
+    {
+      "first": "FURIA",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8746692171886353,
+          "lineup": 0.8904633056830991,
+          "players": 0.6266502615755916
+        },
+        "glicko2": {
+          "name": 0.8897066386190196,
+          "lineup": 0.9262207948072544,
+          "players": 0.633906291102372
+        },
+        "bradley_terry": {
+          "name": 0.8947281977081079,
+          "lineup": 0.907332896318339,
+          "players": 0.6101917025923568
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "FaZe Clan",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9057180707179613,
+          "lineup": 0.9196683737834785,
+          "players": 0.628638389303136
+        },
+        "glicko2": {
+          "name": 0.8952253026666638,
+          "lineup": 0.9243305223258169,
+          "players": 0.6221013873750312
+        },
+        "bradley_terry": {
+          "name": 0.869860077928386,
+          "lineup": 0.9033253829412448,
+          "players": 0.606110827801327
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Geekay Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.482572452815481,
+          "lineup": 0.6165200217309069,
+          "players": 0.4133059493472649
+        },
+        "glicko2": {
+          "name": 0.560675252772604,
+          "lineup": 0.5747955562269464,
+          "players": 0.4799785338116843
+        },
+        "bradley_terry": {
+          "name": 0.549830438449435,
+          "lineup": 0.5474985634777845,
+          "players": 0.5786466953923743
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Gen.G Mobil1 Racing",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6736991848530176,
+          "lineup": 0.7182427127023846,
+          "players": 0.5279900039128481
+        },
+        "glicko2": {
+          "name": 0.6492916384630385,
+          "lineup": 0.6807473433913088,
+          "players": 0.5017335409786985
+        },
+        "bradley_terry": {
+          "name": 0.5774949093141553,
+          "lineup": 0.6582318038607671,
+          "players": 0.6570613700857534
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Gentle Mates",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.539561980539479,
+          "lineup": 0.5411566493918187,
+          "players": 0.3993453078152371
+        },
+        "glicko2": {
+          "name": 0.47676964796314325,
+          "lineup": 0.46240419228327373,
+          "players": 0.3576078196129982
+        },
+        "bradley_terry": {
+          "name": 0.47179756711624055,
+          "lineup": 0.4294688908913677,
+          "players": 0.3211055806242805
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Karmine Corp",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.44860803934249727,
+          "lineup": 0.4408453998308643,
+          "players": 0.7695757117068536
+        },
+        "glicko2": {
+          "name": 0.4307644127412248,
+          "lineup": 0.42020835450186655,
+          "players": 0.8030008307606445
+        },
+        "bradley_terry": {
+          "name": 0.39743594213178823,
+          "lineup": 0.43102014156932983,
+          "players": 0.8707738526851659
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "M80",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5476665360216127,
+          "lineup": 0.6494030631377272,
+          "players": 0.5138844467240645
+        },
+        "glicko2": {
+          "name": 0.6552328083921084,
+          "lineup": 0.650553713960715,
+          "players": 0.5430543145221451
+        },
+        "bradley_terry": {
+          "name": 0.6320286224928499,
+          "lineup": 0.6108313059217438,
+          "players": 0.5625646841934778
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Manchester City Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.638885248555843,
+          "lineup": 0.642632300261816,
+          "players": 0.6828101796628806
+        },
+        "glicko2": {
+          "name": 0.621699728694949,
+          "lineup": 0.6117021939277026,
+          "players": 0.6728834834253724
+        },
+        "bradley_terry": {
+          "name": 0.5568920540791356,
+          "lineup": 0.5449257059788073,
+          "players": 0.6702837685762394
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "NOT",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6436020908820442,
+          "lineup": 0.45508488355008725,
+          "players": 0.504304988575554
+        },
+        "glicko2": {
+          "name": 0.6265640944691839,
+          "lineup": 0.48429410139897366,
+          "players": 0.5390456308295832
+        },
+        "bradley_terry": {
+          "name": 0.5222025420272158,
+          "lineup": 0.3635994714982029,
+          "players": 0.6538228384544537
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "NRG",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5633472966712473,
+          "lineup": 0.5681965336928471,
+          "players": 0.5647977479261882
+        },
+        "glicko2": {
+          "name": 0.5378807147764406,
+          "lineup": 0.5321455921050677,
+          "players": 0.5549645388965466
+        },
+        "bradley_terry": {
+          "name": 0.47450166994185794,
+          "lineup": 0.48226561804192675,
+          "players": 0.6717274202078851
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5736001459190078,
+          "lineup": 0.5810960521272764,
+          "players": 0.6907560822968369
+        },
+        "glicko2": {
+          "name": 0.5514327234404686,
+          "lineup": 0.5526977863754509,
+          "players": 0.6936626866528377
+        },
+        "bradley_terry": {
+          "name": 0.5064173098344594,
+          "lineup": 0.5455833561224753,
+          "players": 0.7487398177941239
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5384356732978612,
+          "lineup": 0.5581538867971225,
+          "players": 0.5492612506965204
+        },
+        "glicko2": {
+          "name": 0.6477905939367723,
+          "lineup": 0.5514633824601802,
+          "players": 0.5919493747380526
+        },
+        "bradley_terry": {
+          "name": 0.6415608161320846,
+          "lineup": 0.4937919094444275,
+          "players": 0.6272516879537801
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6428316218840276,
+          "lineup": 0.6472584447723589,
+          "players": 0.5995565336558665
+        },
+        "glicko2": {
+          "name": 0.5311861560218005,
+          "lineup": 0.5499968135303792,
+          "players": 0.5512422391517338
+        },
+        "bradley_terry": {
+          "name": 0.5021888931103661,
+          "lineup": 0.5271291233571673,
+          "players": 0.6051416203887665
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6456372878049093,
+          "lineup": 0.6765783694789824,
+          "players": 0.716612742530344
+        },
+        "glicko2": {
+          "name": 0.6375445436593188,
+          "lineup": 0.6456083473415603,
+          "players": 0.7207749076217507
+        },
+        "bradley_terry": {
+          "name": 0.5985102943829639,
+          "lineup": 0.6224728601636812,
+          "players": 0.7157247695011046
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5011902554329605,
+          "lineup": 0.501001353844202,
+          "players": 0.4860309269638266
+        },
+        "glicko2": {
+          "name": 0.4749985682506399,
+          "lineup": 0.46059531644294177,
+          "players": 0.4347815039860767
+        },
+        "bradley_terry": {
+          "name": 0.48454951375044725,
+          "lineup": 0.43196187984283874,
+          "players": 0.4967888854317064
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4574348754085258,
+          "lineup": 0.4524059595789208,
+          "players": 0.5663565193872174
+        },
+        "glicko2": {
+          "name": 0.453616796302442,
+          "lineup": 0.44472379347017904,
+          "players": 0.5445684505228625
+        },
+        "bradley_terry": {
+          "name": 0.45883767162548644,
+          "lineup": 0.48167074192651843,
+          "players": 0.669897414687582
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.32716848463977843,
+          "lineup": 0.31049607208017105,
+          "players": 0.3026202093718942
+        },
+        "glicko2": {
+          "name": 0.3038228162826954,
+          "lineup": 0.27868873875654987,
+          "players": 0.2633177875835191
+        },
+        "bradley_terry": {
+          "name": 0.3176570840517808,
+          "lineup": 0.35005421168299594,
+          "players": 0.344405228744737
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9057180707179613,
+          "lineup": 0.9196683737834785,
+          "players": 0.6871350292475935
+        },
+        "glicko2": {
+          "name": 0.8952253026666638,
+          "lineup": 0.9243305223258169,
+          "players": 0.7037514517615712
+        },
+        "bradley_terry": {
+          "name": 0.869860077928386,
+          "lineup": 0.9033253829412448,
+          "players": 0.7092815377783134
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.49981901573582316,
+          "lineup": 0.5005599162811784,
+          "players": 0.5199213149815601
+        },
+        "glicko2": {
+          "name": 0.42877515693110435,
+          "lineup": 0.417906276613021,
+          "players": 0.5131278967210927
+        },
+        "bradley_terry": {
+          "name": 0.4146401848714156,
+          "lineup": 0.41893562413036295,
+          "players": 0.5214940196671349
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5385907854434561,
+          "lineup": 0.5435916402099356,
+          "players": 0.5430467503084229
+        },
+        "glicko2": {
+          "name": 0.4799119806721055,
+          "lineup": 0.46457085541512366,
+          "players": 0.5088840592092979
+        },
+        "bradley_terry": {
+          "name": 0.43105930092189065,
+          "lineup": 0.4386106098503634,
+          "players": 0.4085693771973019
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6958629823075112,
+          "lineup": 0.709652208174404,
+          "players": 0.5920236312352186
+        },
+        "glicko2": {
+          "name": 0.5988231733120128,
+          "lineup": 0.6049010378379915,
+          "players": 0.557240406161313
+        },
+        "bradley_terry": {
+          "name": 0.5283427996456951,
+          "lineup": 0.5259035401635594,
+          "players": 0.6319629945196903
+        }
+      }
+    },
+    {
+      "first": "FUT Esports",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9057180707179613,
+          "lineup": 0.9196683737834785,
+          "players": 0.6726315264718383
+        },
+        "glicko2": {
+          "name": 0.8952253026666638,
+          "lineup": 0.9243305223258169,
+          "players": 0.6393915672914144
+        },
+        "bradley_terry": {
+          "name": 0.869860077928386,
+          "lineup": 0.9033253829412448,
+          "players": 0.6253814156786007
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Geekay Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.08849290688139384,
+          "lineup": 0.123137739465219,
+          "players": 0.29386306726332323
+        },
+        "glicko2": {
+          "name": 0.12930506573594297,
+          "lineup": 0.09982485614209963,
+          "players": 0.35957936353172953
+        },
+        "bradley_terry": {
+          "name": 0.15449967607049744,
+          "lineup": 0.11464350282662517,
+          "players": 0.4715874256331673
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Gen.G Mobil1 Racing",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.17690270230522048,
+          "lineup": 0.18211428080946962,
+          "players": 0.3978808583693898
+        },
+        "glicko2": {
+          "name": 0.17443126541071605,
+          "lineup": 0.14310241718312855,
+          "players": 0.3795901768944991
+        },
+        "bradley_terry": {
+          "name": 0.1697748133153194,
+          "lineup": 0.1708935777058032,
+          "players": 0.5545896901735851
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Gentle Mates",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.10872230006944684,
+          "lineup": 0.0933966274025738,
+          "players": 0.28199774160083885
+        },
+        "glicko2": {
+          "name": 0.09673352521988537,
+          "lineup": 0.06633312272088415,
+          "players": 0.2528769415504688
+        },
+        "bradley_terry": {
+          "name": 0.11788095399057141,
+          "lineup": 0.0745541208291646,
+          "players": 0.23510813509180553
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Karmine Corp",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.07807925122031636,
+          "lineup": 0.06442970491491513,
+          "players": 0.6636353715666242
+        },
+        "glicko2": {
+          "name": 0.08229745345069811,
+          "lineup": 0.05703180573402755,
+          "players": 0.7125293002287488
+        },
+        "bradley_terry": {
+          "name": 0.08981610297487568,
+          "lineup": 0.0749919155924289,
+          "players": 0.8140925487824099
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "M80",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.11192853755422805,
+          "lineup": 0.13926196440869215,
+          "players": 0.3844203225191006
+        },
+        "glicko2": {
+          "name": 0.1778060688698597,
+          "lineup": 0.12936521602097376,
+          "players": 0.4194440864014348
+        },
+        "bradley_terry": {
+          "name": 0.2044365986501141,
+          "lineup": 0.1438192716061951,
+          "players": 0.4552659360904799
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Manchester City Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.15552489303236244,
+          "lineup": 0.1357505701602325,
+          "players": 0.55979659459715
+        },
+        "glicko2": {
+          "name": 0.15849857685338095,
+          "lineup": 0.11157924876591678,
+          "players": 0.5554552270275093
+        },
+        "bradley_terry": {
+          "name": 0.15826902757967376,
+          "lineup": 0.11359412346508675,
+          "players": 0.5691724342536274
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "NOT",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.15823685235125307,
+          "lineup": 0.06798918174223112,
+          "players": 0.3753905710466087
+        },
+        "glicko2": {
+          "name": 0.16265894179927473,
+          "lineup": 0.07181751687359313,
+          "players": 0.41543289585309134
+        },
+        "bradley_terry": {
+          "name": 0.1405349964558855,
+          "lineup": 0.057621721051585695,
+          "players": 0.5510446699311286
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "NRG",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.11839888685606129,
+          "lineup": 0.10309001896763387,
+          "players": 0.43395737112294214
+        },
+        "glicko2": {
+          "name": 0.1191602269133651,
+          "lineup": 0.08452972767408637,
+          "players": 0.431092001531589
+        },
+        "bradley_terry": {
+          "name": 0.11901363857956343,
+          "lineup": 0.09065205062863856,
+          "players": 0.5707753018802313
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.12283172470379448,
+          "lineup": 0.10807319580626083,
+          "players": 0.5688783985243164
+        },
+        "glicko2": {
+          "name": 0.1248236570054332,
+          "lineup": 0.09084214824169903,
+          "players": 0.5789301381066604
+        },
+        "bradley_terry": {
+          "name": 0.1330736230267664,
+          "lineup": 0.11386146158113448,
+          "players": 0.6594646189295628
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.10828384149404346,
+          "lineup": 0.09937604643853411,
+          "players": 0.418558519242967
+        },
+        "glicko2": {
+          "name": 0.17341197963185864,
+          "lineup": 0.0916593282508161,
+          "players": 0.46848312575044865
+        },
+        "bradley_terry": {
+          "name": 0.21122166734137987,
+          "lineup": 0.09452754479970606,
+          "players": 0.522347895174601
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.1577901763099758,
+          "lineup": 0.13813826752209368,
+          "players": 0.469347925359112
+        },
+        "glicko2": {
+          "name": 0.11666616523174796,
+          "lineup": 0.09010661799625713,
+          "players": 0.42752940071592527
+        },
+        "bradley_terry": {
+          "name": 0.13113430385876326,
+          "lineup": 0.106584965080064,
+          "players": 0.4989855197236008
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.15942378399105078,
+          "lineup": 0.15449683632591224,
+          "players": 0.599009881467761
+        },
+        "glicko2": {
+          "name": 0.16744962883851477,
+          "lineup": 0.12609593360651308,
+          "players": 0.6106416792997528
+        },
+        "bradley_terry": {
+          "name": 0.18235687553027377,
+          "lineup": 0.1499906515964134,
+          "players": 0.6206621195682046
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.09468927332179873,
+          "lineup": 0.08062803837325852,
+          "players": 0.35841026151162186
+        },
+        "glicko2": {
+          "name": 0.09597656692849324,
+          "lineup": 0.06591893698105779,
+          "players": 0.3186910961611768
+        },
+        "bradley_terry": {
+          "name": 0.12330007001677759,
+          "lineup": 0.0752586566668821,
+          "players": 0.3908268536526896
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.08068233041800908,
+          "lineup": 0.06730749072894937,
+          "players": 0.4355164032466339
+        },
+        "glicko2": {
+          "name": 0.08912404965928476,
+          "lineup": 0.0622739130511676,
+          "players": 0.42074737563416725
+        },
+        "bradley_terry": {
+          "name": 0.11257094161999974,
+          "lineup": 0.09045583394454496,
+          "players": 0.5687438296417824
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.04817879576431708,
+          "lineup": 0.03784593942354792,
+          "players": 0.20404022667178504
+        },
+        "glicko2": {
+          "name": 0.050342086292556786,
+          "lineup": 0.03247551033922473,
+          "players": 0.17861784837274172
+        },
+        "bradley_terry": {
+          "name": 0.0651141796701146,
+          "lineup": 0.054498985645253434,
+          "players": 0.25450704072555186
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5647295087460822
+        },
+        "glicko2": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5905053869886167
+        },
+        "bradley_terry": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.6132285966131399
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.09422012838745972,
+          "lineup": 0.08049724488573505,
+          "players": 0.3901569705342987
+        },
+        "glicko2": {
+          "name": 0.08176422725199406,
+          "lineup": 0.056624742362790144,
+          "players": 0.3902887350925453
+        },
+        "bradley_terry": {
+          "name": 0.0958216672559593,
+          "lineup": 0.07163266970950032,
+          "players": 0.414604125914663
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.10834412335444253,
+          "lineup": 0.0942306341425825,
+          "players": 0.4124695744654587
+        },
+        "glicko2": {
+          "name": 0.09766788744083278,
+          "lineup": 0.0667929453651047,
+          "players": 0.3863120718868834
+        },
+        "bradley_terry": {
+          "name": 0.10181188224474676,
+          "lineup": 0.07716284809876682,
+          "players": 0.3098381812112368
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.19235747118749508,
+          "lineup": 0.17593218299900334,
+          "players": 0.46156531796702027
+        },
+        "glicko2": {
+          "name": 0.14686980008576292,
+          "lineup": 0.10911612353923272,
+          "players": 0.4335579124606492
+        },
+        "bradley_terry": {
+          "name": 0.14353564356249005,
+          "lineup": 0.10611773010600746,
+          "players": 0.5273860834444113
+        }
+      }
+    },
+    {
+      "first": "FaZe Clan",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.548281932703268
+        },
+        "glicko2": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5185933255902941
+        },
+        "bradley_terry": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5203537601004988
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Gen.G Mobil1 Racing",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.688840141738363,
+          "lineup": 0.6132414508310198,
+          "players": 0.613581601187732
+        },
+        "glicko2": {
+          "name": 0.591629857580087,
+          "lineup": 0.6104278643610884,
+          "players": 0.5217368784883178
+        },
+        "bradley_terry": {
+          "name": 0.5280984920083465,
+          "lineup": 0.6141654103578847,
+          "players": 0.5824904824898636
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Gentle Mates",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5568327900992656,
+          "lineup": 0.42316271215960916,
+          "players": 0.4855344432444339
+        },
+        "glicko2": {
+          "name": 0.41662469206015085,
+          "lineup": 0.3891774472814964,
+          "players": 0.37657421430922366
+        },
+        "bradley_terry": {
+          "name": 0.4224033273730286,
+          "lineup": 0.3835310699458348,
+          "players": 0.25618051427248323
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Karmine Corp",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.46591347005833567,
+          "lineup": 0.3290389089335429,
+          "players": 0.8258120558672823
+        },
+        "glicko2": {
+          "name": 0.3724055187377333,
+          "lineup": 0.3496715225059411,
+          "players": 0.8147480856530542
+        },
+        "bradley_terry": {
+          "name": 0.35065852840653094,
+          "lineup": 0.38502837059763145,
+          "players": 0.8307002130185984
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "M80",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5648785021150889,
+          "lineup": 0.535344191509943,
+          "players": 0.6000965529231669
+        },
+        "glicko2": {
+          "name": 0.5978747107889132,
+          "lineup": 0.5783612474540825,
+          "players": 0.5627080025930761
+        },
+        "bradley_terry": {
+          "name": 0.5844197901483779,
+          "lineup": 0.5646950461693303,
+          "players": 0.48359510733220346
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Manchester City Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6548139310889675,
+          "lineup": 0.5279717892305826,
+          "players": 0.7534377423458468
+        },
+        "glicko2": {
+          "name": 0.5626019389641365,
+          "lineup": 0.5371927221775233,
+          "players": 0.6898342406279405
+        },
+        "bradley_terry": {
+          "name": 0.5071426115879815,
+          "lineup": 0.49740499248745756,
+          "players": 0.5968238311960692
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "NOT",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6594336231806865,
+          "lineup": 0.34187505594118495,
+          "players": 0.5908633922148874
+        },
+        "glicko2": {
+          "name": 0.5680169157936975,
+          "lineup": 0.41014514070120095,
+          "players": 0.5587566215255835
+        },
+        "bradley_terry": {
+          "name": 0.47224929422758677,
+          "lineup": 0.3207463237990859,
+          "players": 0.5789989522643078
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "NRG",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5804197142571899,
+          "lineup": 0.45009012424775985,
+          "players": 0.6481625393574322
+        },
+        "glicko2": {
+          "name": 0.47689020632221224,
+          "lineup": 0.4566260081191534,
+          "players": 0.5744912489423593
+        },
+        "bradley_terry": {
+          "name": 0.4250521443653253,
+          "lineup": 0.4349861143443617,
+          "players": 0.5983964115149016
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5905630431038146,
+          "lineup": 0.46318450577218234,
+          "players": 0.7602356318228858
+        },
+        "glicko2": {
+          "name": 0.4905221339590118,
+          "lineup": 0.4770874662716527,
+          "players": 0.709957179087118
+        },
+        "bradley_terry": {
+          "name": 0.45653127012182004,
+          "lineup": 0.49806806094014316,
+          "players": 0.6845328669873348
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5557139428815877,
+          "lineup": 0.44000781476364925,
+          "players": 0.6336718349250087
+        },
+        "glicko2": {
+          "name": 0.5900182205848572,
+          "lineup": 0.4763410422970121,
+          "players": 0.610893225368297
+        },
+        "bradley_terry": {
+          "name": 0.5943938075281974,
+          "lineup": 0.4463566184174721,
+          "players": 0.550631872436708
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6586792286590623,
+          "lineup": 0.533003599648996,
+          "players": 0.6800350825218158
+        },
+        "glicko2": {
+          "name": 0.47025291088904947,
+          "lineup": 0.4744330724062558,
+          "players": 0.5707963912824587
+        },
+        "bradley_terry": {
+          "name": 0.45233765986725527,
+          "lineup": 0.4795250241233567,
+          "players": 0.5274012533449333
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6614259734810091,
+          "lineup": 0.5654443997106804,
+          "players": 0.7821153740397688
+        },
+        "glicko2": {
+          "name": 0.5792250359504908,
+          "lineup": 0.5728165138433905,
+          "players": 0.7360858209125306
+        },
+        "bradley_terry": {
+          "name": 0.5496548408819828,
+          "lineup": 0.5767604462320256,
+          "players": 0.6470580449382618
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5186162579719934,
+          "lineup": 0.3844273930963289,
+          "players": 0.5730789825928732
+        },
+        "glicko2": {
+          "name": 0.4148467606133052,
+          "lineup": 0.38746840506310476,
+          "players": 0.4547084021126536
+        },
+        "bradley_terry": {
+          "name": 0.43491949838629096,
+          "lineup": 0.38593778176491583,
+          "players": 0.41822479723913925
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4747876118182514,
+          "lineup": 0.33944741711169474,
+          "players": 0.6496079619026978
+        },
+        "glicko2": {
+          "name": 0.3942083152865875,
+          "lineup": 0.3724944663059654,
+          "players": 0.5642343371168985
+        },
+        "bradley_terry": {
+          "name": 0.40974771235539137,
+          "lineup": 0.4344006252349168,
+          "players": 0.5964032290362337
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.34270087345629796,
+          "lineup": 0.21881172552754916,
+          "players": 0.3811815386316518
+        },
+        "glicko2": {
+          "name": 0.25523309096779423,
+          "lineup": 0.22381857258425908,
+          "players": 0.27969210716453474
+        },
+        "bradley_terry": {
+          "name": 0.2759690309642217,
+          "lineup": 0.30802479865071813,
+          "players": 0.27668916512110847
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9115070931186061,
+          "lineup": 0.876862260534781,
+          "players": 0.7571421065154742
+        },
+        "glicko2": {
+          "name": 0.8706949342640571,
+          "lineup": 0.9001751438579004,
+          "players": 0.7197065218657147
+        },
+        "bradley_terry": {
+          "name": 0.8455003239295026,
+          "lineup": 0.8853564971733748,
+          "players": 0.639841624118093
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5172467805134381,
+          "lineup": 0.3840096250259101,
+          "players": 0.6058838944949585
+        },
+        "glicko2": {
+          "name": 0.3705348444696915,
+          "lineup": 0.3475827915424581,
+          "players": 0.5330831219793304
+        },
+        "bradley_terry": {
+          "name": 0.3670714026242249,
+          "lineup": 0.3733871225150778,
+          "players": 0.44245824218749097
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5558680380557008,
+          "lineup": 0.42555918999203074,
+          "players": 0.6278325689611686
+        },
+        "glicko2": {
+          "name": 0.41963881104171147,
+          "lineup": 0.39120683109713067,
+          "players": 0.5288559490356506
+        },
+        "bradley_terry": {
+          "name": 0.38283881890593696,
+          "lineup": 0.39236743295897897,
+          "players": 0.3346778213705937
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.7104175626917518,
+          "lineup": 0.6032181156524717,
+          "players": 0.6731908827795104
+        },
+        "glicko2": {
+          "name": 0.5389254540211675,
+          "lineup": 0.5302114301225539,
+          "players": 0.5767051683723026
+        },
+        "bradley_terry": {
+          "name": 0.47839028061909533,
+          "lineup": 0.4782981706162407,
+          "players": 0.5556255268893573
+        }
+      }
+    },
+    {
+      "first": "Geekay Esports",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9115070931186061,
+          "lineup": 0.876862260534781,
+          "players": 0.7446780469126416
+        },
+        "glicko2": {
+          "name": 0.8706949342640571,
+          "lineup": 0.9001751438579004,
+          "players": 0.6572813934488178
+        },
+        "bradley_terry": {
+          "name": 0.8455003239295026,
+          "lineup": 0.8853564971733748,
+          "players": 0.5486537879951016
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Gentle Mates",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3620714806724277,
+          "lineup": 0.3163143776611659,
+          "players": 0.3727888842452306
+        },
+        "glicko2": {
+          "name": 0.329864960320018,
+          "lineup": 0.2874420366832441,
+          "players": 0.35608808984076734
+        },
+        "bradley_terry": {
+          "name": 0.3952186749970001,
+          "lineup": 0.2810129028433769,
+          "players": 0.19798730021292663
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Karmine Corp",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.2826690823289506,
+          "lineup": 0.23622413646019733,
+          "players": 0.7491040930230757
+        },
+        "glicko2": {
+          "name": 0.2902158402990822,
+          "lineup": 0.25369245271280444,
+          "players": 0.8017906044552887
+        },
+        "bradley_terry": {
+          "name": 0.3254892140039637,
+          "lineup": 0.2822932468553063,
+          "players": 0.7786113810904715
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "M80",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3696503595889332,
+          "lineup": 0.42083533738020473,
+          "players": 0.4858724815431935
+        },
+        "glicko2": {
+          "name": 0.5064054034620544,
+          "lineup": 0.4670274481142055,
+          "players": 0.5413139182732423
+        },
+        "bradley_terry": {
+          "name": 0.5568608091450282,
+          "lineup": 0.4490236020599236,
+          "players": 0.4016370624441702
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Manchester City Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.46146782358781685,
+          "lineup": 0.4136360847956427,
+          "players": 0.6580551587387421
+        },
+        "glicko2": {
+          "name": 0.4701988913269938,
+          "lineup": 0.4248972707655804,
+          "players": 0.6712739268980794
+        },
+        "bradley_terry": {
+          "name": 0.47902728296640257,
+          "lineup": 0.38337778416573154,
+          "players": 0.5148063857569788
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "NOT",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.46656717000559267,
+          "lineup": 0.24677116884068542,
+          "players": 0.47630356329802503
+        },
+        "glicko2": {
+          "name": 0.47620918083752,
+          "lineup": 0.30595374526654295,
+          "players": 0.5373037794398039
+        },
+        "bradley_terry": {
+          "name": 0.44432445490900524,
+          "lineup": 0.22878232526033035,
+          "players": 0.4964150214037555
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "NRG",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3845675251427439,
+          "lineup": 0.34045556887272704,
+          "players": 0.5370767266508009
+        },
+        "glicko2": {
+          "name": 0.38595618001871,
+          "lineup": 0.34779593579931156,
+          "players": 0.5532245348030381
+        },
+        "bradley_terry": {
+          "name": 0.39781443158997976,
+          "lineup": 0.3259870354035359,
+          "players": 0.516439677172003
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3945063156100291,
+          "lineup": 0.35240438305252675,
+          "players": 0.6663181439589732
+        },
+        "glicko2": {
+          "name": 0.39902076647460716,
+          "lineup": 0.3668870857362799,
+          "players": 0.6920968480295759
+        },
+        "bradley_terry": {
+          "name": 0.428780728626331,
+          "lineup": 0.38400498630874275,
+          "players": 0.6086584706602588
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3610251682758181,
+          "lineup": 0.33134934568629365,
+          "players": 0.5213892145131184
+        },
+        "glicko2": {
+          "name": 0.49829403416998186,
+          "lineup": 0.36687364347866813,
+          "players": 0.5902281153933305
+        },
+        "bradley_terry": {
+          "name": 0.5670062040779955,
+          "lineup": 0.3362037053632395,
+          "players": 0.467600098057824
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4657316856635035,
+          "lineup": 0.4185444285879936,
+          "players": 0.5723732271405283
+        },
+        "glicko2": {
+          "name": 0.37973342742935656,
+          "lineup": 0.3644599868784554,
+          "players": 0.549503239619631
+        },
+        "bradley_terry": {
+          "name": 0.42464285304568616,
+          "lineup": 0.3666068577988058,
+          "players": 0.44440814429435455
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4687788916802808,
+          "lineup": 0.4507427636671827,
+          "players": 0.6933109081990723
+        },
+        "glicko2": {
+          "name": 0.48718969760406283,
+          "lineup": 0.4608968243500026,
+          "players": 0.7192800726953289
+        },
+        "bradley_terry": {
+          "name": 0.5216773279730104,
+          "lineup": 0.46123622800094793,
+          "players": 0.5678603898998658
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3273482901030979,
+          "lineup": 0.28256857286895687,
+          "players": 0.4581064436362141
+        },
+        "glicko2": {
+          "name": 0.32816628306477325,
+          "lineup": 0.28596376026026316,
+          "players": 0.43311472941329787
+        },
+        "bradley_terry": {
+          "name": 0.4074976293813658,
+          "lineup": 0.2830716980481722,
+          "players": 0.3400501930024883
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.28994779745291943,
+          "lineup": 0.24476769238198715,
+          "players": 0.5386536844008891
+        },
+        "glicko2": {
+          "name": 0.3095528824427405,
+          "lineup": 0.2730314209578084,
+          "players": 0.5428255207366811
+        },
+        "bradley_terry": {
+          "name": 0.38283769285007757,
+          "lineup": 0.32546374818097235,
+          "players": 0.5143698425514647
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.19062045371885025,
+          "lineup": 0.15013244125125874,
+          "players": 0.27950289263648304
+        },
+        "glicko2": {
+          "name": 0.19091224103722862,
+          "lineup": 0.15356709342924593,
+          "players": 0.2620807664122172
+        },
+        "bradley_terry": {
+          "name": 0.25406316202787876,
+          "lineup": 0.21853479814262852,
+          "players": 0.21518501134777995
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8230972976947796,
+          "lineup": 0.8178857191905303,
+          "players": 0.6625507298386694
+        },
+        "glicko2": {
+          "name": 0.8255687345892839,
+          "lineup": 0.8568975828168716,
+          "players": 0.7022090970401865
+        },
+        "bradley_terry": {
+          "name": 0.8302251866846806,
+          "lineup": 0.8291064222941967,
+          "players": 0.5601254761305233
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3261416930914197,
+          "lineup": 0.2822107502423945,
+          "players": 0.49191327451108785
+        },
+        "glicko2": {
+          "name": 0.28859241824305304,
+          "lineup": 0.25199207154299785,
+          "players": 0.5113881607648659
+        },
+        "bradley_terry": {
+          "name": 0.34134330080530334,
+          "lineup": 0.2723823903713993,
+          "players": 0.3625769546423242
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.36116916382434316,
+          "lineup": 0.3184397934220425,
+          "players": 0.5151296640358939
+        },
+        "glicko2": {
+          "name": 0.332554781468877,
+          "lineup": 0.2891730612827769,
+          "players": 0.5071467442293848
+        },
+        "bradley_terry": {
+          "name": 0.3566282758750433,
+          "lineup": 0.2885930272487119,
+          "players": 0.2650062536485735
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5256550661421892,
+          "lineup": 0.48948504574080176,
+          "players": 0.564700231686845
+        },
+        "glicko2": {
+          "name": 0.44649909239130964,
+          "lineup": 0.4180833976730024,
+          "players": 0.5555039547516397
+        },
+        "bradley_terry": {
+          "name": 0.45041222749719956,
+          "lineup": 0.3654660446317281,
+          "players": 0.47263273727946203
+        }
+      }
+    },
+    {
+      "first": "Gen.G Mobil1 Racing",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8230972976947796,
+          "lineup": 0.8178857191905303,
+          "players": 0.6474922270138909
+        },
+        "glicko2": {
+          "name": 0.8255687345892839,
+          "lineup": 0.8568975828168716,
+          "players": 0.6377241387633913
+        },
+        "bradley_terry": {
+          "name": 0.8302251866846806,
+          "lineup": 0.8291064222941967,
+          "players": 0.4656112317344929
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Karmine Corp",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.40977979008686094,
+          "lineup": 0.40065620212243697,
+          "players": 0.8339813261444922
+        },
+        "glicko2": {
+          "name": 0.4536981514887866,
+          "lineup": 0.45728997988904746,
+          "players": 0.8794429972130337
+        },
+        "bradley_terry": {
+          "name": 0.42476792304574607,
+          "lineup": 0.5015820385783617,
+          "players": 0.9344113436901726
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "M80",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5081661538444846,
+          "lineup": 0.6109759468335144,
+          "players": 0.6139024086298449
+        },
+        "glicko2": {
+          "name": 0.6759171369550108,
+          "lineup": 0.6838201951138158,
+          "players": 0.6807407831025872
+        },
+        "bradley_terry": {
+          "name": 0.6578795790140165,
+          "lineup": 0.6758634771846094,
+          "players": 0.731112233951909
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Manchester City Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6015552806442975,
+          "lineup": 0.6039157027920422,
+          "players": 0.7640314177206454
+        },
+        "glicko2": {
+          "name": 0.643293856955963,
+          "lineup": 0.6468250108268528,
+          "players": 0.7868006935220143
+        },
+        "bradley_terry": {
+          "name": 0.5845518351999224,
+          "lineup": 0.6140117571687651,
+          "players": 0.8112517668525867
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "NOT",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6064593710722596,
+          "lineup": 0.41455999657963305,
+          "players": 0.604778072155044
+        },
+        "glicko2": {
+          "name": 0.6479206030599998,
+          "lineup": 0.521895304918841,
+          "players": 0.6773186305982135
+        },
+        "bradley_terry": {
+          "name": 0.5502790428624224,
+          "lineup": 0.43149435157149213,
+          "players": 0.7997257844857741
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "NRG",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5240261683319964,
+          "lineup": 0.5273469070227527,
+          "players": 0.6612457340983651
+        },
+        "glicko2": {
+          "name": 0.5608979881173162,
+          "lineup": 0.5694187098520765,
+          "players": 0.6911968437545165
+        },
+        "bradley_terry": {
+          "name": 0.502711903506951,
+          "lineup": 0.5530622134566212,
+          "players": 0.8122510813665305
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.534439282114654,
+          "lineup": 0.5404798314428645,
+          "players": 0.7706261505542551
+        },
+        "glicko2": {
+          "name": 0.5743011365656194,
+          "lineup": 0.5895794404956747,
+          "players": 0.8025138637454685
+        },
+        "bradley_terry": {
+          "name": 0.5345946984052427,
+          "lineup": 0.6146401721361845,
+          "players": 0.8630194408540744
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.49886680022322777,
+          "lineup": 0.5171615364033941,
+          "players": 0.6470004096534295
+        },
+        "glicko2": {
+          "name": 0.6686859398057298,
+          "lineup": 0.5881327839664136,
+          "players": 0.7224929768156155
+        },
+        "bradley_terry": {
+          "name": 0.6670948384099238,
+          "lineup": 0.5644358750272983,
+          "players": 0.7805955102298896
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6056578043445096,
+          "lineup": 0.6087378907388222,
+          "players": 0.6924953705709691
+        },
+        "glicko2": {
+          "name": 0.554240559392314,
+          "lineup": 0.5869128394167443,
+          "players": 0.6878486162131273
+        },
+        "bradley_terry": {
+          "name": 0.5303838233638952,
+          "lineup": 0.5969184392168987,
+          "players": 0.7641613343681459
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6085776750290965,
+          "lineup": 0.6394762236361421,
+          "players": 0.7918173556936191
+        },
+        "glicko2": {
+          "name": 0.6587229930898846,
+          "lineup": 0.6792425091523753,
+          "players": 0.8223176641918746
+        },
+        "bradley_terry": {
+          "name": 0.6253200555323927,
+          "lineup": 0.6865579108906116,
+          "players": 0.8418487407382659
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4616210460083661,
+          "lineup": 0.4598380837815261,
+          "players": 0.5871759148868324
+        },
+        "glicko2": {
+          "name": 0.4982476084355458,
+          "lineup": 0.49817793123137527,
+          "players": 0.5799663402034467
+        },
+        "bradley_terry": {
+          "name": 0.5127742116406291,
+          "lineup": 0.502541778948182,
+          "players": 0.6760879199653654
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.418422388811415,
+          "lineup": 0.4119392874395164,
+          "players": 0.6626653814077322
+        },
+        "glicko2": {
+          "name": 0.47676410348971315,
+          "lineup": 0.4821778100751926,
+          "players": 0.6822553438969057
+        },
+        "bradley_terry": {
+          "name": 0.4869796443417459,
+          "lineup": 0.5524731968417147,
+          "players": 0.8109840153923934
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.2932608665750994,
+          "lineup": 0.27631772515469305,
+          "players": 0.394924692054962
+        },
+        "glicko2": {
+          "name": 0.32384436019305674,
+          "lineup": 0.3099143637447145,
+          "players": 0.3910378608724495
+        },
+        "bradley_terry": {
+          "name": 0.3426222478559277,
+          "lineup": 0.41707741595233583,
+          "players": 0.5262188597702255
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8912776999305531,
+          "lineup": 0.9066033725974263,
+          "players": 0.7676257098597321
+        },
+        "glicko2": {
+          "name": 0.9032664747801146,
+          "lineup": 0.9336668772791159,
+          "players": 0.8100322438606703
+        },
+        "bradley_terry": {
+          "name": 0.8821190460094286,
+          "lineup": 0.9254458791708353,
+          "players": 0.8376155924503728
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.46025817341750835,
+          "lineup": 0.4593995244547661,
+          "players": 0.6196165988728011
+        },
+        "glicko2": {
+          "name": 0.45167904858374436,
+          "lineup": 0.4549217517529866,
+          "players": 0.6543826813431362
+        },
+        "bradley_terry": {
+          "name": 0.442286873950251,
+          "lineup": 0.4892201965318972,
+          "players": 0.697353023108571
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.499022837458708,
+          "lineup": 0.5024525914566546,
+          "players": 0.6412533205119227
+        },
+        "glicko2": {
+          "name": 0.5031646181480088,
+          "lineup": 0.502191964174788,
+          "players": 0.6504741020932499
+        },
+        "bradley_terry": {
+          "name": 0.45894242155567494,
+          "lineup": 0.5093028389866965,
+          "players": 0.5935867782403592
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6613004961247975,
+          "lineup": 0.6745189638402045,
+          "players": 0.68579455326694
+        },
+        "glicko2": {
+          "name": 0.6209055425334756,
+          "lineup": 0.6402500566202969,
+          "players": 0.6929507203890458
+        },
+        "bradley_terry": {
+          "name": 0.5563650142109333,
+          "lineup": 0.5957350157028286,
+          "players": 0.7840359624035402
+        }
+      }
+    },
+    {
+      "first": "Gentle Mates",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8912776999305531,
+          "lineup": 0.9066033725974263,
+          "players": 0.7555259649994047
+        },
+        "glicko2": {
+          "name": 0.9032664747801146,
+          "lineup": 0.9336668772791159,
+          "players": 0.7608327756920503
+        },
+        "bradley_terry": {
+          "name": 0.8821190460094286,
+          "lineup": 0.9254458791708353,
+          "players": 0.7792238330391188
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "M80",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5980972702726071,
+          "lineup": 0.7014365754198384,
+          "players": 0.240422433547964
+        },
+        "glicko2": {
+          "name": 0.7151999806709775,
+          "lineup": 0.7194519668902686,
+          "players": 0.22606017274988827
+        },
+        "bradley_terry": {
+          "name": 0.7225387435573066,
+          "lineup": 0.6744756109821146,
+          "players": 0.1602672332825875
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "Manchester City Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6849955239365141,
+          "lineup": 0.6951990445701183,
+          "players": 0.39193149165288005
+        },
+        "glicko2": {
+          "name": 0.6846718056474532,
+          "lineup": 0.6848841974597023,
+          "players": 0.33503656295221496
+        },
+        "bradley_terry": {
+          "name": 0.6558192410448193,
+          "lineup": 0.612510893399019,
+          "players": 0.2317689481294994
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "NOT",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6894028837119056,
+          "lineup": 0.5143924429038433,
+          "players": 0.23349212561230298
+        },
+        "glicko2": {
+          "name": 0.6888016146788498,
+          "lineup": 0.5643115519609542,
+          "players": 0.22308370465281227
+        },
+        "bradley_terry": {
+          "name": 0.6236403927894247,
+          "lineup": 0.42994268384252704,
+          "players": 0.21892660255717403
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "NRG",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6132643105488272,
+          "lineup": 0.62532875947496,
+          "players": 0.27983903844616526
+        },
+        "glicko2": {
+          "name": 0.6060099439302863,
+          "lineup": 0.6108256291023372,
+          "players": 0.23434522665875931
+        },
+        "bradley_terry": {
+          "name": 0.5778804231409103,
+          "lineup": 0.5514974670002747,
+          "players": 0.23293537173853754
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.623129183793256,
+          "lineup": 0.6376100775420875,
+          "players": 0.40076933452373054
+        },
+        "glicko2": {
+          "name": 0.6189566752557367,
+          "lineup": 0.6302869729423515,
+          "players": 0.35646069632153765
+        },
+        "bradley_terry": {
+          "name": 0.6086952013516481,
+          "lineup": 0.613140212335439,
+          "players": 0.30663131205327365
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5891234571819294,
+          "lineup": 0.6157161996941433,
+          "players": 0.267326247355731
+        },
+        "glicko2": {
+          "name": 0.7084487633904704,
+          "lineup": 0.6286325021348501,
+          "players": 0.2624459774868974
+        },
+        "bradley_terry": {
+          "name": 0.7307252279151772,
+          "lineup": 0.5628794761942414,
+          "players": 0.19982732945531873
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6886835342759157,
+          "lineup": 0.6994629465260911,
+          "players": 0.3095338858202693
+        },
+        "glicko2": {
+          "name": 0.5995089973716091,
+          "lineup": 0.6276939758199707,
+          "players": 0.23191763302446494
+        },
+        "bradley_terry": {
+          "name": 0.6046589664900218,
+          "lineup": 0.5953949077510431,
+          "players": 0.18529408339003361
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6913019840361747,
+          "lineup": 0.7262786643291945,
+          "players": 0.43089616135299685
+        },
+        "glicko2": {
+          "name": 0.6991345767122642,
+          "lineup": 0.7153126725218455,
+          "players": 0.38739276627731845
+        },
+        "bradley_terry": {
+          "name": 0.6932637036192186,
+          "lineup": 0.6851945068816784,
+          "players": 0.27200662008500726
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5525693535134869,
+          "lineup": 0.5601417041134353,
+          "players": 0.2206628405048356
+        },
+        "glicko2": {
+          "name": 0.5446090273484184,
+          "lineup": 0.5408980433516392,
+          "players": 0.15921975958585072
+        },
+        "bradley_terry": {
+          "name": 0.5876692772070532,
+          "lineup": 0.5009597558072711,
+          "players": 0.12778765283839713
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5089047528388863,
+          "lineup": 0.5116922333034227,
+          "players": 0.28111936794234377
+        },
+        "glicko2": {
+          "name": 0.5231986648143423,
+          "lineup": 0.5249719356778195,
+          "players": 0.2267576387662073
+        },
+        "bradley_terry": {
+          "name": 0.5624564377102284,
+          "lineup": 0.5509080627176318,
+          "players": 0.23145791936093882
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3740869299771852,
+          "lineup": 0.36353140455179117,
+          "players": 0.1149884946190662
+        },
+        "glicko2": {
+          "name": 0.3657624023063877,
+          "lineup": 0.3476314405667751,
+          "players": 0.08109524716345695
+        },
+        "bradley_terry": {
+          "name": 0.4137705479173783,
+          "lineup": 0.41553969765647114,
+          "players": 0.07232294263345135
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9219207487796836,
+          "lineup": 0.9355702950850849,
+          "players": 0.39671828197569164
+        },
+        "glicko2": {
+          "name": 0.9177025465493018,
+          "lineup": 0.9429681942659726,
+          "players": 0.36733986532744867
+        },
+        "bradley_terry": {
+          "name": 0.9101838970251243,
+          "lineup": 0.9250080844075711,
+          "players": 0.26582267633050755
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5512128817452758,
+          "lineup": 0.5597066061313415,
+          "players": 0.24486499447500798
+        },
+        "glicko2": {
+          "name": 0.49794647007267806,
+          "lineup": 0.49758780934937336,
+          "players": 0.20535642778478794
+        },
+        "bradley_terry": {
+          "name": 0.5178285891650362,
+          "lineup": 0.48763900117464304,
+          "players": 0.1392193150622266
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5892745290737862,
+          "lineup": 0.6016972752714572,
+          "players": 0.2624443133360464
+        },
+        "glicko2": {
+          "name": 0.5494701205159729,
+          "lineup": 0.544900526323642,
+          "players": 0.20271352539955453
+        },
+        "bradley_terry": {
+          "name": 0.5346020198774064,
+          "lineup": 0.507721254957075,
+          "players": 0.09298666934495002
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.7376850007102739,
+          "lineup": 0.756102200456888,
+          "players": 0.30288869403374424
+        },
+        "glicko2": {
+          "name": 0.6634804317334211,
+          "lineup": 0.6786367789540925,
+          "players": 0.23641828061213638
+        },
+        "bradley_terry": {
+          "name": 0.6294021933735149,
+          "lineup": 0.5942100520189728,
+          "players": 0.20307729772616126
+        }
+      }
+    },
+    {
+      "first": "Karmine Corp",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9219207487796836,
+          "lineup": 0.9355702950850849,
+          "players": 0.38088213548916233
+        },
+        "glicko2": {
+          "name": 0.9177025465493018,
+          "lineup": 0.9429681942659726,
+          "players": 0.3029783246510187
+        },
+        "bradley_terry": {
+          "name": 0.9101838970251243,
+          "lineup": 0.9250080844075711,
+          "players": 0.1985526424318069
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "Manchester City Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5936999543020597,
+          "lineup": 0.49259832735390546,
+          "players": 0.6706584060275643
+        },
+        "glicko2": {
+          "name": 0.4637916770497601,
+          "lineup": 0.4578088269260305,
+          "players": 0.6335493528665775
+        },
+        "bradley_terry": {
+          "name": 0.42253598512339724,
+          "lineup": 0.43275510372198567,
+          "players": 0.6125138627351425
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "NOT",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5986362201865947,
+          "lineup": 0.31076133143201246,
+          "players": 0.49041825095553615
+        },
+        "glicko2": {
+          "name": 0.46983344981033076,
+          "lineup": 0.3355375718701735,
+          "players": 0.49594003008341003
+        },
+        "bradley_terry": {
+          "name": 0.38887087676023996,
+          "lineup": 0.2668657460743134,
+          "players": 0.5949118336293041
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "NRG",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5158724712910348,
+          "lineup": 0.41534327875996824,
+          "players": 0.5510971858464142
+        },
+        "glicko2": {
+          "name": 0.37979799441273915,
+          "lineup": 0.3790517596583679,
+          "players": 0.5119666223357263
+        },
+        "bradley_terry": {
+          "name": 0.344566125838702,
+          "lineup": 0.37243722328014517,
+          "players": 0.6140648184158418
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.526302717404382,
+          "lineup": 0.42821395027896436,
+          "players": 0.678765507869072
+        },
+        "glicko2": {
+          "name": 0.3928011230006673,
+          "lineup": 0.39869896515143244,
+          "players": 0.6554829868919387
+        },
+        "bradley_terry": {
+          "name": 0.373961533613079,
+          "lineup": 0.4334063081236918,
+          "players": 0.698533721275278
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4907009905865503,
+          "lineup": 0.40546541841484746,
+          "players": 0.5354738555046965
+        },
+        "glicko2": {
+          "name": 0.49188492737656325,
+          "lineup": 0.39847301951053404,
+          "players": 0.5495565638572617
+        },
+        "bradley_terry": {
+          "name": 0.5103024046923812,
+          "lineup": 0.3832818356205091,
+          "players": 0.5668147769014412
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5978292859303928,
+          "lineup": 0.4976484358768075,
+          "players": 0.5861484143985334
+        },
+        "glicko2": {
+          "name": 0.373614130082586,
+          "lineup": 0.39618564063045114,
+          "players": 0.5082541737806785
+        },
+        "bradley_terry": {
+          "name": 0.37001000398006306,
+          "lineup": 0.415278874366448,
+          "players": 0.5437275213721021
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6007689130478759,
+          "lineup": 0.5303813056896711,
+          "players": 0.7051968534191748
+        },
+        "glicko2": {
+          "name": 0.480778258004035,
+          "lineup": 0.49399639925665517,
+          "players": 0.6844400496134025
+        },
+        "bradley_terry": {
+          "name": 0.46464219204817336,
+          "lineup": 0.5123099254365427,
+          "players": 0.6619006151632209
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4535131696243354,
+          "lineup": 0.35150943078308106,
+          "players": 0.47216807256638843
+        },
+        "glicko2": {
+          "name": 0.32239240060011787,
+          "lineup": 0.3146245417660983,
+          "players": 0.3931139677965605
+        },
+        "bradley_terry": {
+          "name": 0.35371452596601394,
+          "lineup": 0.3263678432417336,
+          "players": 0.43427701685024567
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.41049473974964323,
+          "lineup": 0.30845108054295517,
+          "players": 0.5526661629698147
+        },
+        "glicko2": {
+          "name": 0.30394382978464873,
+          "lineup": 0.30101398706188665,
+          "players": 0.5014581272661899
+        },
+        "bradley_terry": {
+          "name": 0.33049384546101696,
+          "lineup": 0.37188051221305113,
+          "players": 0.6120989903848679
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.28653624505391506,
+          "lineup": 0.19556970054572118,
+          "players": 0.2910265374242618
+        },
+        "glicko2": {
+          "name": 0.1867884906872417,
+          "lineup": 0.17267186595162193,
+          "players": 0.23159851008371396
+        },
+        "bradley_terry": {
+          "name": 0.21324260668402673,
+          "lineup": 0.25547747923435427,
+          "players": 0.2900170599445397
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8880714624457721,
+          "lineup": 0.8607380355913078,
+          "players": 0.675070097492002
+        },
+        "glicko2": {
+          "name": 0.8221939311301403,
+          "lineup": 0.8706347839790262,
+          "players": 0.6661876143753455
+        },
+        "bradley_terry": {
+          "name": 0.7955634013498859,
+          "lineup": 0.8561807283938049,
+          "players": 0.65482578163693
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4521541307589781,
+          "lineup": 0.35110703164593793,
+          "players": 0.5060435547603385
+        },
+        "glicko2": {
+          "name": 0.28319531971698486,
+          "lineup": 0.27872659132804295,
+          "players": 0.4699728335887076
+        },
+        "bradley_terry": {
+          "name": 0.2919886625557596,
+          "lineup": 0.31476140121822727,
+          "players": 0.4587072188699599
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4908569754471195,
+          "lineup": 0.39135836488486875,
+          "players": 0.5292321896010815
+        },
+        "glicko2": {
+          "name": 0.3267466857510184,
+          "lineup": 0.31800884321505185,
+          "players": 0.4657718595440271
+        },
+        "bradley_terry": {
+          "name": 0.3060906431732142,
+          "lineup": 0.33234218922974873,
+          "players": 0.3494494863043048
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6539454529564241,
+          "lineup": 0.5688790515791033,
+          "players": 0.578540588874767
+        },
+        "glicko2": {
+          "name": 0.44013225874210926,
+          "lineup": 0.4508880965384538,
+          "players": 0.5143381608258749
+        },
+        "bradley_terry": {
+          "name": 0.3947385989038497,
+          "lineup": 0.41408561989902076,
+          "players": 0.5717684558519346
+        }
+      }
+    },
+    {
+      "first": "M80",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8880714624457721,
+          "lineup": 0.8607380355913078,
+          "players": 0.6602838124893162
+        },
+        "glicko2": {
+          "name": 0.8221939311301403,
+          "lineup": 0.8706347839790262,
+          "players": 0.5985059504424586
+        },
+        "bradley_terry": {
+          "name": 0.7955634013498859,
+          "lineup": 0.8561807283938049,
+          "players": 0.5648516327021839
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "NOT",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5051257592440468,
+          "lineup": 0.31713848022616115,
+          "players": 0.32093110308012535
+        },
+        "glicko2": {
+          "name": 0.5058660300406227,
+          "lineup": 0.3736136719199414,
+          "players": 0.3625932239211029
+        },
+        "bradley_terry": {
+          "name": 0.46513432589108317,
+          "lineup": 0.3230120171087989,
+          "players": 0.481612539714711
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "NRG",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.42170675049948575,
+          "lineup": 0.4225508323979047,
+          "players": 0.3761176831987948
+        },
+        "glicko2": {
+          "name": 0.41457264830511237,
+          "lineup": 0.4192397948959371,
+          "players": 0.3775381969594068
+        },
+        "bradley_terry": {
+          "name": 0.4180849369847798,
+          "lineup": 0.43753897027541805,
+          "players": 0.5016348832171194
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.43193172881777264,
+          "lineup": 0.43547849230887165,
+          "players": 0.5092339308575685
+        },
+        "glicko2": {
+          "name": 0.42792792690007697,
+          "lineup": 0.43957588154529975,
+          "players": 0.5238510607957861
+        },
+        "bradley_terry": {
+          "name": 0.4494514358579232,
+          "lineup": 0.5006630817498523,
+          "players": 0.5944599685162252
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3973587683847912,
+          "lineup": 0.41262253410695543,
+          "players": 0.3614606290374282
+        },
+        "glicko2": {
+          "name": 0.5281118417887932,
+          "lineup": 0.4390763243778115,
+          "players": 0.41365212690354863
+        },
+        "bradley_terry": {
+          "name": 0.5874871376583307,
+          "lineup": 0.4489231853425299,
+          "players": 0.4528841230413173
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5042865022270958,
+          "lineup": 0.5050504601461968,
+          "players": 0.4102096341023409
+        },
+        "glicko2": {
+          "name": 0.40816671699778195,
+          "lineup": 0.43695520167317475,
+          "players": 0.37418089942048954
+        },
+        "bradley_terry": {
+          "name": 0.4452695765758428,
+          "lineup": 0.4821162307829603,
+          "players": 0.4298327811473453
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5073464195704446,
+          "lineup": 0.5377490234697742,
+          "players": 0.5401644540396683
+        },
+        "glicko2": {
+          "name": 0.5170152149532333,
+          "lineup": 0.5363611848257667,
+          "players": 0.5566037862233353
+        },
+        "bradley_terry": {
+          "name": 0.5425726254159643,
+          "lineup": 0.5792922755831289,
+          "players": 0.553268092251415
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.36221389778921714,
+          "lineup": 0.35828809334214073,
+          "players": 0.3052104745808121
+        },
+        "glicko2": {
+          "name": 0.3549681261901788,
+          "lineup": 0.35152094569976244,
+          "players": 0.27247039088723407
+        },
+        "bradley_terry": {
+          "name": 0.4279109277040179,
+          "lineup": 0.3884006590891794,
+          "players": 0.3268837571795779
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3227412073176221,
+          "lineup": 0.3148024740194413,
+          "players": 0.37760754073608604
+        },
+        "glicko2": {
+          "name": 0.3355769320084922,
+          "lineup": 0.337038301275751,
+          "players": 0.3676155842458655
+        },
+        "bradley_terry": {
+          "name": 0.40285559229942,
+          "lineup": 0.436952702362063,
+          "players": 0.4995630849528106
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.2155907845909904,
+          "lineup": 0.20026985332254432,
+          "players": 0.1677625690834251
+        },
+        "glicko2": {
+          "name": 0.20992455264196572,
+          "lineup": 0.19708238563631722,
+          "players": 0.14830963192099944
+        },
+        "bradley_terry": {
+          "name": 0.270296673369315,
+          "lineup": 0.31024167315919543,
+          "players": 0.20534889540837886
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8444751069676375,
+          "lineup": 0.8642494298397675,
+          "players": 0.5050104886220088
+        },
+        "glicko2": {
+          "name": 0.8415014231466191,
+          "lineup": 0.8884207512340833,
+          "players": 0.5356988539333358
+        },
+        "bradley_terry": {
+          "name": 0.8417309724203262,
+          "lineup": 0.8864058765349133,
+          "players": 0.545481046742478
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.36094774807435737,
+          "lineup": 0.3578822166940769,
+          "players": 0.33470321126222596
+        },
+        "glicko2": {
+          "name": 0.31361659912792267,
+          "lineup": 0.31313746963396744,
+          "players": 0.3387347536300166
+        },
+        "bradley_terry": {
+          "name": 0.36045874491174346,
+          "lineup": 0.3758189256127706,
+          "players": 0.3489995546374952
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.39750824031007576,
+          "lineup": 0.3984333464320205,
+          "players": 0.3556941788749926
+        },
+        "glicko2": {
+          "name": 0.35951825018103034,
+          "lineup": 0.35512981751838224,
+          "players": 0.33501842192809084
+        },
+        "bradley_terry": {
+          "name": 0.3761109071309101,
+          "lineup": 0.3948449581798328,
+          "players": 0.2536287720358884
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5639344341568371,
+          "lineup": 0.5761254829917896,
+          "players": 0.4026635425238772
+        },
+        "glicko2": {
+          "name": 0.47610587393521003,
+          "lineup": 0.4929547077983707,
+          "players": 0.37998948041636393
+        },
+        "bradley_terry": {
+          "name": 0.4712654097478331,
+          "lineup": 0.48088887304851746,
+          "players": 0.45789459768470087
+        }
+      }
+    },
+    {
+      "first": "Manchester City Esports",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8444751069676375,
+          "lineup": 0.8642494298397675,
+          "players": 0.48835080881231036
+        },
+        "glicko2": {
+          "name": 0.8415014231466191,
+          "lineup": 0.8884207512340833,
+          "players": 0.46300473651002916
+        },
+        "bradley_terry": {
+          "name": 0.8417309724203262,
+          "lineup": 0.8864058765349133,
+          "players": 0.45090483777405344
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "NRG",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4167146849565663,
+          "lineup": 0.6117425556547473,
+          "players": 0.5605603334341599
+        },
+        "glicko2": {
+          "name": 0.40934613396171243,
+          "lineup": 0.5477210441400446,
+          "players": 0.516035539325166
+        },
+        "bradley_terry": {
+          "name": 0.4524069030053092,
+          "lineup": 0.619825568715651,
+          "players": 0.5200199361971541
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4269079772597499,
+          "lineup": 0.6242015820187025,
+          "players": 0.6870655687630223
+        },
+        "glicko2": {
+          "name": 0.4225824238947782,
+          "lineup": 0.5681121427666235,
+          "players": 0.6592518880763074
+        },
+        "bradley_terry": {
+          "name": 0.4842057663202283,
+          "lineup": 0.67756770903041,
+          "players": 0.6120688288559587
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3924593238658802,
+          "lineup": 0.6020032776544678,
+          "players": 0.5449944298377928
+        },
+        "glicko2": {
+          "name": 0.5221063254196762,
+          "lineup": 0.5667888002997122,
+          "players": 0.5536125832932315
+        },
+        "bradley_terry": {
+          "name": 0.6208779565955983,
+          "lineup": 0.6306349176589173,
+          "players": 0.4711716826770916
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4991606692173606,
+          "lineup": 0.6872203618289671,
+          "players": 0.5954151208476611
+        },
+        "glicko2": {
+          "name": 0.4030045677734862,
+          "lineup": 0.5654252151071769,
+          "players": 0.5123177135363428
+        },
+        "bradley_terry": {
+          "name": 0.4799824597540951,
+          "lineup": 0.6611444390782135,
+          "players": 0.4479516308440882
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5022209948613324,
+          "lineup": 0.714682854400332,
+          "players": 0.7131026399133716
+        },
+        "glicko2": {
+          "name": 0.5110618938098249,
+          "lineup": 0.6596708880044811,
+          "players": 0.6880580824528159
+        },
+        "bradley_terry": {
+          "name": 0.576981239341029,
+          "lineup": 0.7426585895159916,
+          "players": 0.5713759117269577
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3574907320082097,
+          "lineup": 0.545908211237141,
+          "players": 0.4817303330981706
+        },
+        "glicko2": {
+          "name": 0.35035746383789934,
+          "lineup": 0.4762900514554512,
+          "players": 0.39691981372380314
+        },
+        "bradley_terry": {
+          "name": 0.4623985669162246,
+          "lineup": 0.5709979769406984,
+          "players": 0.34327569831222277
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.31827589590475613,
+          "lineup": 0.4972979716123902,
+          "players": 0.562122515491106
+        },
+        "glicko2": {
+          "name": 0.3311949194881826,
+          "lineup": 0.46036259934146934,
+          "players": 0.5055251360543482
+        },
+        "bradley_terry": {
+          "name": 0.4368659246267399,
+          "lineup": 0.6192639675837893,
+          "players": 0.5179511220979882
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.21214358881036224,
+          "lineup": 0.35031495707929666,
+          "players": 0.2989983993028376
+        },
+        "glicko2": {
+          "name": 0.20725711140462283,
+          "lineup": 0.291719762979168,
+          "players": 0.23434508846232563
+        },
+        "bradley_terry": {
+          "name": 0.2987141460254611,
+          "lineup": 0.48524785641490137,
+          "players": 0.2176166735937726
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8417631476487468,
+          "lineup": 0.9320108182577689,
+          "players": 0.6834211072391773
+        },
+        "glicko2": {
+          "name": 0.8373410582007254,
+          "lineup": 0.9281824831264068,
+          "players": 0.6699077604410855
+        },
+        "bradley_terry": {
+          "name": 0.8594650035441146,
+          "lineup": 0.9423782789484142,
+          "players": 0.5636555712636954
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3562318708267502,
+          "lineup": 0.5454704586384942,
+          "players": 0.5156216853335172
+        },
+        "glicko2": {
+          "name": 0.3095095330282614,
+          "lineup": 0.433358471755138,
+          "players": 0.47400644673781483
+        },
+        "bradley_terry": {
+          "name": 0.39324691868803713,
+          "lineup": 0.5578968670780171,
+          "players": 0.36589766652621025
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3926081534695644,
+          "lineup": 0.5878189852065026,
+          "players": 0.5387705008734948
+        },
+        "glicko2": {
+          "name": 0.3548569445590034,
+          "lineup": 0.4802822353007185,
+          "players": 0.46979646867383185
+        },
+        "bradley_terry": {
+          "name": 0.4094113998354077,
+          "lineup": 0.5776106432893783,
+          "players": 0.26780879660222645
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5588858654534989,
+          "lineup": 0.7453267932815902,
+          "players": 0.5878578659878007
+        },
+        "glicko2": {
+          "name": 0.47039348289398325,
+          "lineup": 0.6196793582595409,
+          "players": 0.5184008005563898
+        },
+        "bradley_terry": {
+          "name": 0.5061557524402397,
+          "lineup": 0.6600421882144519,
+          "players": 0.47620837899192947
+        }
+      }
+    },
+    {
+      "first": "NOT",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8417631476487468,
+          "lineup": 0.9320108182577689,
+          "players": 0.6688284153077566
+        },
+        "glicko2": {
+          "name": 0.8373410582007254,
+          "lineup": 0.9281824831264068,
+          "players": 0.6024742296087718
+        },
+        "bradley_terry": {
+          "name": 0.8594650035441146,
+          "lineup": 0.9423782789484142,
+          "players": 0.4691810125020185
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "Ninjas in Pyjamas",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5104476933067733,
+          "lineup": 0.5131913355582879,
+          "players": 0.6325099242521984
+        },
+        "glicko2": {
+          "name": 0.5136726758371447,
+          "lineup": 0.5207144428023014,
+          "players": 0.6446979544589695
+        },
+        "bradley_terry": {
+          "name": 0.531894764044344,
+          "lineup": 0.5631136556196805,
+          "players": 0.5928824610308602
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.47484337159383133,
+          "lineup": 0.489795472832404,
+          "players": 0.48426256607425316
+        },
+        "glicko2": {
+          "name": 0.6124674275789873,
+          "lineup": 0.5196776954581646,
+          "players": 0.5377101761627137
+        },
+        "bradley_terry": {
+          "name": 0.6646814332267742,
+          "lineup": 0.5115313696631405,
+          "players": 0.4512642560781921
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5824690439014398,
+          "lineup": 0.5823707491778335,
+          "players": 0.5356794642148562
+        },
+        "glicko2": {
+          "name": 0.49330630604980247,
+          "lineup": 0.5180070735454801,
+          "players": 0.4962951843571728
+        },
+        "bradley_terry": {
+          "name": 0.5276810433070527,
+          "lineup": 0.5447773325502783,
+          "players": 0.42823082999142986
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5854430901328593,
+          "lineup": 0.613866575919525,
+          "players": 0.6608455168087365
+        },
+        "glicko2": {
+          "name": 0.6018326890166811,
+          "lineup": 0.6157101157275492,
+          "players": 0.6741492329608179
+        },
+        "bradley_terry": {
+          "name": 0.6227750553322134,
+          "lineup": 0.6389996242385485,
+          "players": 0.5516512016498207
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.43782420667574495,
+          "lineup": 0.4327864604070577,
+          "players": 0.42151733790764145
+        },
+        "glicko2": {
+          "name": 0.43731713054605204,
+          "lineup": 0.4287990085703972,
+          "players": 0.38166675534811817
+        },
+        "bradley_terry": {
+          "name": 0.5100637026581113,
+          "lineup": 0.4494522955272348,
+          "players": 0.3254464858840734
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3952177125312084,
+          "lineup": 0.38569346695585294,
+          "players": 0.5015860499533137
+        },
+        "glicko2": {
+          "name": 0.416294326345867,
+          "lineup": 0.41317114610390004,
+          "players": 0.489473981015051
+        },
+        "bradley_terry": {
+          "name": 0.48426996254202426,
+          "lineup": 0.4994043494004697,
+          "players": 0.4979282076552584
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.2737303585359664,
+          "lineup": 0.2549663202167284,
+          "players": 0.25058243075259157
+        },
+        "glicko2": {
+          "name": 0.27268603346592724,
+          "lineup": 0.25352801113352,
+          "players": 0.2230142841385517
+        },
+        "bradley_terry": {
+          "name": 0.34018317932804476,
+          "lineup": 0.36636717015725356,
+          "players": 0.20428382195287959
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8816011131439387,
+          "lineup": 0.8969099810323662,
+          "players": 0.6285735773196818
+        },
+        "glicko2": {
+          "name": 0.880839773086635,
+          "lineup": 0.9154702723259135,
+          "players": 0.6555658468755481
+        },
+        "bradley_terry": {
+          "name": 0.8809863614204366,
+          "lineup": 0.9093479493713615,
+          "players": 0.5438592083416306
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4364746323033491,
+          "lineup": 0.43235305036925276,
+          "players": 0.45489064828356734
+        },
+        "glicko2": {
+          "name": 0.3920660911570771,
+          "lineup": 0.3869464212544378,
+          "players": 0.4580176502596472
+        },
+        "bradley_terry": {
+          "name": 0.43961277584781394,
+          "lineup": 0.436303720222681,
+          "players": 0.3475152459027474
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4749990169661986,
+          "lineup": 0.4750990039159325,
+          "players": 0.4780035810796757
+        },
+        "glicko2": {
+          "name": 0.44217963262813076,
+          "lineup": 0.43270810421636435,
+          "players": 0.45383405495743107
+        },
+        "bradley_terry": {
+          "name": 0.4562500032806826,
+          "lineup": 0.45615405096216616,
+          "players": 0.2523928218031367
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6394358245040307,
+          "lineup": 0.6500362817709862,
+          "players": 0.5278911341690227
+        },
+        "glicko2": {
+          "name": 0.5619382022594609,
+          "lineup": 0.5738169229015931,
+          "players": 0.5023951507694403
+        },
+        "bradley_terry": {
+          "name": 0.5536859356765317,
+          "lineup": 0.5435578830696692,
+          "players": 0.4562717550250719
+        }
+      }
+    },
+    {
+      "first": "NRG",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8816011131439387,
+          "lineup": 0.8969099810323662,
+          "players": 0.6128847545720565
+        },
+        "glicko2": {
+          "name": 0.880839773086635,
+          "lineup": 0.9154702723259135,
+          "players": 0.5870216890514264
+        },
+        "bradley_terry": {
+          "name": 0.8809863614204366,
+          "lineup": 0.9093479493713615,
+          "players": 0.4492862366887268
+        }
+      }
+    },
+    {
+      "first": "Ninjas in Pyjamas",
+      "second": "PCS Stride",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.464433070332046,
+          "lineup": 0.4766167278886807,
+          "players": 0.3529790122033456
+        },
+        "glicko2": {
+          "name": 0.5993795659202303,
+          "lineup": 0.49909725300877783,
+          "players": 0.3906470194991491
+        },
+        "bradley_terry": {
+          "name": 0.6356363761282421,
+          "lineup": 0.4482671119719309,
+          "players": 0.36090044063184945
+        }
+      }
+    },
+    {
+      "first": "Ninjas in Pyjamas",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5722704266533437,
+          "lineup": 0.5694814020805626,
+          "players": 0.40130302899757825
+        },
+        "glicko2": {
+          "name": 0.47965532745047235,
+          "lineup": 0.49730225027475755,
+          "players": 0.35205082126727105
+        },
+        "bradley_terry": {
+          "name": 0.49577134567957115,
+          "lineup": 0.4814540287353637,
+          "players": 0.3396246788372669
+        }
+      }
+    },
+    {
+      "first": "Ninjas in Pyjamas",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5752641449774893,
+          "lineup": 0.6012837744308616,
+          "players": 0.5309764768836324
+        },
+        "glicko2": {
+          "name": 0.5886336102564313,
+          "lineup": 0.5958917062049117,
+          "players": 0.5329858914843716
+        },
+        "bradley_terry": {
+          "name": 0.5923264489927405,
+          "lineup": 0.5786457337423053,
+          "players": 0.4579620336035153
+        }
+      }
+    },
+    {
+      "first": "Ninjas in Pyjamas",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.42756472733285145,
+          "lineup": 0.41987927663321917,
+          "players": 0.2974339441127044
+        },
+        "glicko2": {
+          "name": 0.42391485382957855,
+          "lineup": 0.4086639267346874,
+          "players": 0.25385205467042465
+        },
+        "bradley_terry": {
+          "name": 0.47814087329437255,
+          "lineup": 0.3877707969527996,
+          "players": 0.2488514691637852
+        }
+      }
+    },
+    {
+      "first": "Ninjas in Pyjamas",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3852724036606964,
+          "lineup": 0.373266514698211,
+          "players": 0.36896596939641985
+        },
+        "glicko2": {
+          "name": 0.40308531190252966,
+          "lineup": 0.3932671337791924,
+          "players": 0.345618313616856
+        },
+        "bradley_terry": {
+          "name": 0.4524705816434196,
+          "lineup": 0.4363002726111942,
+          "players": 0.40511877980095823
+        }
+      }
+    },
+    {
+      "first": "Ninjas in Pyjamas",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.2655000924330413,
+          "lineup": 0.24507103416043166,
+          "players": 0.16266818197085997
+        },
+        "glicko2": {
+          "name": 0.26203918725789116,
+          "lineup": 0.2382777860448409,
+          "players": 0.13652154431431482
+        },
+        "bradley_terry": {
+          "name": 0.3121191699726708,
+          "lineup": 0.30967438250838786,
+          "players": 0.14986930497935885
+        }
+      }
+    },
+    {
+      "first": "Ninjas in Pyjamas",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8771682752962054,
+          "lineup": 0.891926804193739,
+          "players": 0.49577577600410927
+        },
+        "glicko2": {
+          "name": 0.8751763429945668,
+          "lineup": 0.909157851758301,
+          "players": 0.5118855592399908
+        },
+        "bradley_terry": {
+          "name": 0.8669263769732335,
+          "lineup": 0.8861385384188655,
+          "players": 0.45016468053902353
+        }
+      }
+    },
+    {
+      "first": "Ninjas in Pyjamas",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.426222800804174,
+          "lineup": 0.41944923387937694,
+          "players": 0.3265283864433207
+        },
+        "glicko2": {
+          "name": 0.3791481347311333,
+          "lineup": 0.36754194426651376,
+          "players": 0.3175688155408429
+        },
+        "bradley_terry": {
+          "name": 0.40842353021103645,
+          "lineup": 0.37519695009575,
+          "players": 0.26778819589841396
+        }
+      }
+    },
+    {
+      "first": "Ninjas in Pyjamas",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.46458832214916507,
+          "lineup": 0.4619576525624007,
+          "players": 0.3472742821868876
+        },
+        "glicko2": {
+          "name": 0.42874384171489616,
+          "lineup": 0.4125116900600145,
+          "players": 0.313981622840058
+        },
+        "bradley_terry": {
+          "name": 0.4247751132073932,
+          "lineup": 0.39421138146350937,
+          "players": 0.18819443261557794
+        }
+      }
+    },
+    {
+      "first": "Ninjas in Pyjamas",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6297441674472842,
+          "lineup": 0.6379369538685913,
+          "players": 0.3938113801929594
+        },
+        "glicko2": {
+          "name": 0.5484316401407978,
+          "lineup": 0.5534223739425183,
+          "players": 0.3577304665956435
+        },
+        "bradley_terry": {
+          "name": 0.5219414530544689,
+          "lineup": 0.48022679358189474,
+          "players": 0.3655732379561755
+        }
+      }
+    },
+    {
+      "first": "Ninjas in Pyjamas",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8771682752962054,
+          "lineup": 0.891926804193739,
+          "players": 0.4791258594983931
+        },
+        "glicko2": {
+          "name": 0.8751763429945668,
+          "lineup": 0.909157851758301,
+          "players": 0.4393481780720953
+        },
+        "bradley_terry": {
+          "name": 0.8669263769732335,
+          "lineup": 0.8861385384188655,
+          "players": 0.35905933410140883
+        }
+      }
+    },
+    {
+      "first": "PCS Stride",
+      "second": "PWR",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6067398836583299,
+          "lineup": 0.5922650610786586,
+          "players": 0.5513016739221399
+        },
+        "glicko2": {
+          "name": 0.3812963718585412,
+          "lineup": 0.4982220153705929,
+          "players": 0.45864624740274473
+        },
+        "bradley_terry": {
+          "name": 0.36045511863597307,
+          "lineup": 0.5333147704109475,
+          "players": 0.47663974299716116
+        }
+      }
+    },
+    {
+      "first": "PCS Stride",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6096569059765675,
+          "lineup": 0.6234971109585394,
+          "players": 0.6748129377884439
+        },
+        "glicko2": {
+          "name": 0.4888898759886029,
+          "lineup": 0.5961522486390475,
+          "players": 0.6401485901022251
+        },
+        "bradley_terry": {
+          "name": 0.4544062212204169,
+          "lineup": 0.6282907811946643,
+          "players": 0.599386221833152
+        }
+      }
+    },
+    {
+      "first": "PCS Stride",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.46274776523407707,
+          "lineup": 0.4428341513789551,
+          "players": 0.4369432422652422
+        },
+        "glicko2": {
+          "name": 0.32961226405339916,
+          "lineup": 0.4101200466341453,
+          "players": 0.34671694802459213
+        },
+        "bradley_terry": {
+          "name": 0.3443504342310797,
+          "lineup": 0.4380653288454127,
+          "players": 0.3697500882229715
+        }
+      }
+    },
+    {
+      "first": "PCS Stride",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.419525831258625,
+          "lineup": 0.39541000056324616,
+          "players": 0.5173217544504063
+        },
+        "glicko2": {
+          "name": 0.3109471052824297,
+          "lineup": 0.39480555745870666,
+          "players": 0.45181478539147457
+        },
+        "bradley_terry": {
+          "name": 0.32143874186943916,
+          "lineup": 0.48787331291404296,
+          "players": 0.5466828058924178
+        }
+      }
+    },
+    {
+      "first": "PCS Stride",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.2942012108743482,
+          "lineup": 0.2627984017420525,
+          "players": 0.2625923822608196
+        },
+        "glicko2": {
+          "name": 0.19188010601371466,
+          "lineup": 0.2403131492268163,
+          "players": 0.19793624422998177
+        },
+        "bradley_terry": {
+          "name": 0.20640960747364254,
+          "lineup": 0.3557250934511951,
+          "players": 0.23791069628542236
+        }
+      }
+    },
+    {
+      "first": "PCS Stride",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8917161585059564,
+          "lineup": 0.9006239535614659,
+          "players": 0.6431523827120063
+        },
+        "glicko2": {
+          "name": 0.8265880203681413,
+          "lineup": 0.9083406717491838,
+          "players": 0.6206503220395325
+        },
+        "bradley_terry": {
+          "name": 0.7887783326586202,
+          "lineup": 0.905472455200294,
+          "players": 0.591809972901744
+        }
+      }
+    },
+    {
+      "first": "PCS Stride",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4613844169168778,
+          "lineup": 0.4423985271668558,
+          "players": 0.47054443955868813
+        },
+        "glicko2": {
+          "name": 0.28992230859543444,
+          "lineup": 0.3692051104794773,
+          "players": 0.4207642190818884
+        },
+        "bradley_terry": {
+          "name": 0.28354175266051107,
+          "lineup": 0.4249927235424122,
+          "players": 0.3930724803708207
+        }
+      }
+    },
+    {
+      "first": "PCS Stride",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5001560379266161,
+          "lineup": 0.4852885782243104,
+          "players": 0.4937323363674084
+        },
+        "glicko2": {
+          "name": 0.33401187610438376,
+          "lineup": 0.4139475780575745,
+          "players": 0.41667612455768344
+        },
+        "bradley_terry": {
+          "name": 0.2974071439479194,
+          "lineup": 0.44473445119526306,
+          "players": 0.2910423293891719
+        }
+      }
+    },
+    {
+      "first": "PCS Stride",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.662315020451993,
+          "lineup": 0.6592654359928452,
+          "players": 0.5435521019480087
+        },
+        "glicko2": {
+          "name": 0.44816416685325156,
+          "lineup": 0.5539690668852582,
+          "players": 0.4647351917118168
+        },
+        "bradley_terry": {
+          "name": 0.38493531973455997,
+          "lineup": 0.5320909883163032,
+          "players": 0.5050505524529679
+        }
+      }
+    },
+    {
+      "first": "PCS Stride",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8917161585059564,
+          "lineup": 0.9006239535614659,
+          "players": 0.6277146399057677
+        },
+        "glicko2": {
+          "name": 0.8265880203681413,
+          "lineup": 0.9083406717491838,
+          "players": 0.5499751626120625
+        },
+        "bradley_terry": {
+          "name": 0.7887783326586202,
+          "lineup": 0.905472455200294,
+          "players": 0.49800223007383937
+        }
+      }
+    },
+    {
+      "first": "PWR",
+      "second": "Pioneers",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5030603028245257,
+          "lineup": 0.5327235182705724,
+          "players": 0.6281068120333244
+        },
+        "glicko2": {
+          "name": 0.6081384225802505,
+          "lineup": 0.5984292956796159,
+          "players": 0.6772325581094808
+        },
+        "bradley_terry": {
+          "name": 0.596404551549776,
+          "lineup": 0.5966279537473185,
+          "players": 0.6216170515923315
+        }
+      }
+    },
+    {
+      "first": "PWR",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3582622484115448,
+          "lineup": 0.3536565911576779,
+          "players": 0.3871024255752728
+        },
+        "glicko2": {
+          "name": 0.4439770579871381,
+          "lineup": 0.4113279581354429,
+          "players": 0.3852837202484565
+        },
+        "bradley_terry": {
+          "name": 0.4823630065346661,
+          "lineup": 0.4055302510361494,
+          "players": 0.3917933966709148
+        }
+      }
+    },
+    {
+      "first": "PWR",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.31900480033272127,
+          "lineup": 0.3104611414607951,
+          "players": 0.465898866686051
+        },
+        "glicko2": {
+          "name": 0.42289138376484253,
+          "lineup": 0.3959078181322809,
+          "players": 0.49319095627634163
+        },
+        "bradley_terry": {
+          "name": 0.4566643966556427,
+          "lineup": 0.45463185702220277,
+          "players": 0.5697388557735984
+        }
+      }
+    },
+    {
+      "first": "PWR",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.21270527021274968,
+          "lineup": 0.1970537631296017,
+          "players": 0.22470254848350277
+        },
+        "glicko2": {
+          "name": 0.27820044419663165,
+          "lineup": 0.24036632962514837,
+          "players": 0.22581319406973752
+        },
+        "bradley_terry": {
+          "name": 0.3157623294426054,
+          "lineup": 0.3257602463595879,
+          "players": 0.2552777308650809
+        }
+      }
+    },
+    {
+      "first": "PWR",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8422098236900243,
+          "lineup": 0.8618617324779063,
+          "players": 0.5946305597842877
+        },
+        "glicko2": {
+          "name": 0.883333834768252,
+          "lineup": 0.9098933820037428,
+          "players": 0.6587606761552469
+        },
+        "bradley_terry": {
+          "name": 0.8688656961412367,
+          "lineup": 0.8934150349199361,
+          "players": 0.614190609420549
+        }
+      }
+    },
+    {
+      "first": "PWR",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3570021799842478,
+          "lineup": 0.35325307296306063,
+          "players": 0.4197279681851555
+        },
+        "glicko2": {
+          "name": 0.39855556895623473,
+          "lineup": 0.37012836505776053,
+          "players": 0.46174570756954686
+        },
+        "bradley_terry": {
+          "name": 0.4125166745278732,
+          "lineup": 0.3927499602620314,
+          "players": 0.4155893553940403
+        }
+      }
+    },
+    {
+      "first": "PWR",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.39340905297894796,
+          "lineup": 0.39360119889370687,
+          "players": 0.44250461109090217
+        },
+        "glicko2": {
+          "name": 0.4488484346452356,
+          "lineup": 0.41518204068636555,
+          "players": 0.4575593480734218
+        },
+        "bradley_terry": {
+          "name": 0.42891331682004796,
+          "lineup": 0.412067273333347,
+          "players": 0.31070659102182646
+        }
+      }
+    },
+    {
+      "first": "PWR",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5597133909657338,
+          "lineup": 0.5711844956927833,
+          "players": 0.49218054411823237
+        },
+        "glicko2": {
+          "name": 0.5684537086005806,
+          "lineup": 0.5560538835875242,
+          "players": 0.5060911310993375
+        },
+        "bradley_terry": {
+          "name": 0.5261603984327156,
+          "lineup": 0.4987709620281605,
+          "players": 0.5283974079007973
+        }
+      }
+    },
+    {
+      "first": "PWR",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8422098236900243,
+          "lineup": 0.8618617324779063,
+          "players": 0.5784694863764769
+        },
+        "glicko2": {
+          "name": 0.883333834768252,
+          "lineup": 0.9098933820037428,
+          "players": 0.5905226107721909
+        },
+        "bradley_terry": {
+          "name": 0.8688656961412367,
+          "lineup": 0.8934150349199361,
+          "players": 0.5213664756352203
+        }
+      }
+    },
+    {
+      "first": "Pioneers",
+      "second": "Shopify Rebellion",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3554527411183558,
+          "lineup": 0.3242987161680462,
+          "players": 0.27217566017708994
+        },
+        "glicko2": {
+          "name": 0.339560237438144,
+          "lineup": 0.31918378335769176,
+          "players": 0.22995123608296536
+        },
+        "bradley_terry": {
+          "name": 0.3867288287336664,
+          "lineup": 0.31563417108712644,
+          "players": 0.28166908204099467
+        }
+      }
+    },
+    {
+      "first": "Pioneers",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3163513894584265,
+          "lineup": 0.28311835131641516,
+          "players": 0.34057785303103716
+        },
+        "glicko2": {
+          "name": 0.32060285408070915,
+          "lineup": 0.30541117863318407,
+          "players": 0.3165696841364608
+        },
+        "bradley_terry": {
+          "name": 0.36255666042720563,
+          "lineup": 0.36045094113618453,
+          "players": 0.446299991878099
+        }
+      }
+    },
+    {
+      "first": "Pioneers",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.21066251970812572,
+          "lineup": 0.17713316341342228,
+          "players": 0.14646840822763044
+        },
+        "glicko2": {
+          "name": 0.19892350205511183,
+          "lineup": 0.17524758020622697,
+          "players": 0.12197840299031605
+        },
+        "bradley_terry": {
+          "name": 0.2379735517298399,
+          "lineup": 0.24622308269611748,
+          "players": 0.17263352791613817
+        }
+      }
+    },
+    {
+      "first": "Pioneers",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8405762160089492,
+          "lineup": 0.8455031636740877,
+          "players": 0.4648177137510238
+        },
+        "glicko2": {
+          "name": 0.8325503711614853,
+          "lineup": 0.8739040663934868,
+          "players": 0.4788350841705481
+        },
+        "bradley_terry": {
+          "name": 0.8176431244697262,
+          "lineup": 0.8500093484035866,
+          "players": 0.49213675370261045
+        }
+      }
+    },
+    {
+      "first": "Pioneers",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3541971002556986,
+          "lineup": 0.3239119081147343,
+          "players": 0.2998538817893952
+        },
+        "glicko2": {
+          "name": 0.299203538733691,
+          "lineup": 0.2828403069383255,
+          "players": 0.28985684505596676
+        },
+        "bradley_terry": {
+          "name": 0.3221131643805481,
+          "lineup": 0.3042370479430214,
+          "players": 0.3020987419383537
+        }
+      }
+    },
+    {
+      "first": "Pioneers",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.3904916369189816,
+          "lineup": 0.3627886197356115,
+          "players": 0.31970955297255566
+        },
+        "glicko2": {
+          "name": 0.3440207417526821,
+          "lineup": 0.3226092478847122,
+          "players": 0.2864682936613561
+        },
+        "bradley_terry": {
+          "name": 0.33697758768204406,
+          "lineup": 0.32150580841896154,
+          "players": 0.21530567998504718
+        }
+      }
+    },
+    {
+      "first": "Pioneers",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5566945298148874,
+          "lineup": 0.5388227130428719,
+          "players": 0.364616201732073
+        },
+        "glicko2": {
+          "name": 0.4591823189580527,
+          "lineup": 0.45667250281588756,
+          "players": 0.3282250200190274
+        },
+        "bradley_terry": {
+          "name": 0.4290400077379233,
+          "lineup": 0.40218947196883853,
+          "players": 0.40547454038805864
+        }
+      }
+    },
+    {
+      "first": "Pioneers",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8405762160089492,
+          "lineup": 0.8455031636740877,
+          "players": 0.4482831446060374
+        },
+        "glicko2": {
+          "name": 0.8325503711614853,
+          "lineup": 0.8739040663934868,
+          "players": 0.40721628405318844
+        },
+        "bradley_terry": {
+          "name": 0.8176431244697262,
+          "lineup": 0.8500093484035866,
+          "players": 0.3986964638353282
+        }
+      }
+    },
+    {
+      "first": "Shopify Rebellion",
+      "second": "Spacestation Gaming",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4562534853591351,
+          "lineup": 0.45141386789863264,
+          "players": 0.5800288648983445
+        },
+        "glicko2": {
+          "name": 0.4784914854968973,
+          "lineup": 0.4839992510399242,
+          "players": 0.6084322772782842
+        },
+        "bradley_terry": {
+          "name": 0.4742225823942436,
+          "lineup": 0.5499580705775562,
+          "players": 0.6727315874326988
+        }
+      }
+    },
+    {
+      "first": "Shopify Rebellion",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.32612130609004414,
+          "lineup": 0.30963921006056966,
+          "players": 0.3145439149073585
+        },
+        "glicko2": {
+          "name": 0.3252227920647114,
+          "lineup": 0.31148402456279684,
+          "players": 0.3175488532181054
+        },
+        "bradley_terry": {
+          "name": 0.33120539915485553,
+          "lineup": 0.4146076299035903,
+          "players": 0.3473111900621983
+        }
+      }
+    },
+    {
+      "first": "Shopify Rebellion",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9053107266782012,
+          "lineup": 0.9193719616267415,
+          "players": 0.6990230355135723
+        },
+        "glicko2": {
+          "name": 0.9040234330715067,
+          "lineup": 0.9340810630189422,
+          "players": 0.755124249838915
+        },
+        "bradley_terry": {
+          "name": 0.8766999299832223,
+          "lineup": 0.9247413433331179,
+          "players": 0.7119229804917417
+        }
+      }
+    },
+    {
+      "first": "Shopify Rebellion",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.4986287614844178,
+          "lineup": 0.49955856144696326,
+          "players": 0.5338527055821157
+        },
+        "glicko2": {
+          "name": 0.4533680364173426,
+          "lineup": 0.4567313053900054,
+          "players": 0.578070503944564
+        },
+        "bradley_terry": {
+          "name": 0.4297199153798607,
+          "lineup": 0.4866798774626196,
+          "players": 0.5246983155482136
+        }
+      }
+    },
+    {
+      "first": "Shopify Rebellion",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5374074029312965,
+          "lineup": 0.5425977240402126,
+          "players": 0.5568790126651827
+        },
+        "glicko2": {
+          "name": 0.5049212493463167,
+          "lineup": 0.5040144910182566,
+          "players": 0.5739004716792501
+        },
+        "bradley_terry": {
+          "name": 0.44628090788524566,
+          "lineup": 0.5067616995806244,
+          "players": 0.41167676700814837
+        }
+      }
+    },
+    {
+      "first": "Shopify Rebellion",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6948544301730046,
+          "lineup": 0.7088262149284862,
+          "players": 0.6054504842817313
+        },
+        "glicko2": {
+          "name": 0.6226646485117636,
+          "lineup": 0.6419169658663995,
+          "players": 0.6203999021683375
+        },
+        "bradley_terry": {
+          "name": 0.5437167099510989,
+          "lineup": 0.5932840346755878,
+          "players": 0.6349453775937337
+        }
+      }
+    },
+    {
+      "first": "Shopify Rebellion",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9053107266782012,
+          "lineup": 0.9193719616267415,
+          "players": 0.6848178448015984
+        },
+        "glicko2": {
+          "name": 0.9040234330715067,
+          "lineup": 0.9340810630189422,
+          "players": 0.6971579881028686
+        },
+        "bradley_terry": {
+          "name": 0.8766999299832223,
+          "lineup": 0.9247413433331179,
+          "players": 0.628385770565907
+        }
+      }
+    },
+    {
+      "first": "Spacestation Gaming",
+      "second": "Team Falcons",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.36578412180571973,
+          "lineup": 0.35277880911915577,
+          "players": 0.24939293012333005
+        },
+        "glicko2": {
+          "name": 0.3444143004228851,
+          "lineup": 0.32531818235445603,
+          "players": 0.23024187826722978
+        },
+        "bradley_terry": {
+          "name": 0.35444960593552166,
+          "lineup": 0.36692044903943005,
+          "players": 0.2056342267991666
+        }
+      }
+    },
+    {
+      "first": "Spacestation Gaming",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9193176695819909,
+          "lineup": 0.9326925092710507,
+          "players": 0.6270911952050576
+        },
+        "glicko2": {
+          "name": 0.9108759503407152,
+          "lineup": 0.9377260869488325,
+          "players": 0.6651186779324186
+        },
+        "bradley_terry": {
+          "name": 0.8874290583800003,
+          "lineup": 0.9095441660554551,
+          "players": 0.5459143122715142
+        }
+      }
+    },
+    {
+      "first": "Spacestation Gaming",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5423854464124074,
+          "lineup": 0.548148824292176,
+          "players": 0.45331795792499774
+        },
+        "glicko2": {
+          "name": 0.474759244987424,
+          "lineup": 0.4726369113453958,
+          "players": 0.4684721083999173
+        },
+        "bradley_terry": {
+          "name": 0.45517248789254056,
+          "lineup": 0.43688979303361775,
+          "players": 0.34939672586214104
+        }
+      }
+    },
+    {
+      "first": "Spacestation Gaming",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5806261569701429,
+          "lineup": 0.5904351763624166,
+          "players": 0.4764208215930881
+        },
+        "glicko2": {
+          "name": 0.5264114821905276,
+          "lineup": 0.5200178779648735,
+          "players": 0.4642671828368491
+        },
+        "bradley_terry": {
+          "name": 0.4719026957058806,
+          "lineup": 0.4567451828406713,
+          "players": 0.253959748748023
+        }
+      }
+    },
+    {
+      "first": "Spacestation Gaming",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.7307336632311949,
+          "lineup": 0.7473729074974008,
+          "players": 0.5263097396433203
+        },
+        "glicko2": {
+          "name": 0.6425867574155657,
+          "lineup": 0.656513878962314,
+          "players": 0.5129038385179733
+        },
+        "bradley_terry": {
+          "name": 0.5691822804334407,
+          "lineup": 0.5441489518416782,
+          "players": 0.45832844629163294
+        }
+      }
+    },
+    {
+      "first": "Spacestation Gaming",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9193176695819909,
+          "lineup": 0.9326925092710507,
+          "players": 0.6113784698066963
+        },
+        "glicko2": {
+          "name": 0.9108759503407152,
+          "lineup": 0.9377260869488325,
+          "players": 0.5972470557758812
+        },
+        "bradley_terry": {
+          "name": 0.8874290583800003,
+          "lineup": 0.9095441660554551,
+          "players": 0.4513375775045895
+        }
+      }
+    },
+    {
+      "first": "Team Falcons",
+      "second": "Team Heretics",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.951821204235683,
+          "lineup": 0.9621540605764521,
+          "players": 0.8350171450725705
+        },
+        "glicko2": {
+          "name": 0.9496579137074433,
+          "lineup": 0.9675244896607752,
+          "players": 0.8690735365846759
+        },
+        "bradley_terry": {
+          "name": 0.9348858203298853,
+          "lineup": 0.9455010143547465,
+          "players": 0.8228272660588112
+        }
+      }
+    },
+    {
+      "first": "Team Falcons",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6726721356849109,
+          "lineup": 0.689983210512603,
+          "players": 0.7139362604981553
+        },
+        "glicko2": {
+          "name": 0.632285549688357,
+          "lineup": 0.6500943252934186,
+          "players": 0.7467695301576434
+        },
+        "bradley_terry": {
+          "name": 0.6034220578621821,
+          "lineup": 0.5724016568040338,
+          "players": 0.6747510710008101
+        }
+      }
+    },
+    {
+      "first": "Team Falcons",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.7059283756213186,
+          "lineup": 0.7256397213815368,
+          "players": 0.7325239282420103
+        },
+        "glicko2": {
+          "name": 0.679034857090721,
+          "lineup": 0.6920170215102102,
+          "players": 0.7434593683051036
+        },
+        "bradley_terry": {
+          "name": 0.6194063744504255,
+          "lineup": 0.5919417219758588,
+          "players": 0.5680356856262184
+        }
+      }
+    },
+    {
+      "first": "Team Falcons",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8247250433745054,
+          "lineup": 0.8444208836815332,
+          "players": 0.7698011739811298
+        },
+        "glicko2": {
+          "name": 0.7735303790128455,
+          "lineup": 0.798248323656224,
+          "players": 0.7782798181576681
+        },
+        "bradley_terry": {
+          "name": 0.7064185417209894,
+          "lineup": 0.6731590418152692,
+          "players": 0.7657328583193804
+        }
+      }
+    },
+    {
+      "first": "Team Falcons",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.951821204235683,
+          "lineup": 0.9621540605764521,
+          "players": 0.8256293696782736
+        },
+        "glicko2": {
+          "name": 0.9496579137074433,
+          "lineup": 0.9675244896607752,
+          "players": 0.831938619163194
+        },
+        "bradley_terry": {
+          "name": 0.9348858203298853,
+          "lineup": 0.9455010143547465,
+          "players": 0.7606374066520265
+        }
+      }
+    },
+    {
+      "first": "Team Heretics",
+      "second": "Team Vitality",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.09422012838745972,
+          "lineup": 0.08049724488573505,
+          "players": 0.33025506566252605
+        },
+        "glicko2": {
+          "name": 0.08176422725199406,
+          "lineup": 0.056624742362790144,
+          "players": 0.3072767378764144
+        },
+        "bradley_terry": {
+          "name": 0.0958216672559593,
+          "lineup": 0.07163266970950032,
+          "players": 0.30877167118382937
+        }
+      }
+    },
+    {
+      "first": "Team Heretics",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.10834412335444253,
+          "lineup": 0.0942306341425825,
+          "players": 0.35111429313193904
+        },
+        "glicko2": {
+          "name": 0.09766788744083278,
+          "lineup": 0.0667929453651047,
+          "players": 0.3037571892249414
+        },
+        "bradley_terry": {
+          "name": 0.10181188224474676,
+          "lineup": 0.07716284809876682,
+          "players": 0.2206676485878489
+        }
+      }
+    },
+    {
+      "first": "Team Heretics",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.19235747118749508,
+          "lineup": 0.17593218299900334,
+          "players": 0.3978523248991308
+        },
+        "glicko2": {
+          "name": 0.14686980008576292,
+          "lineup": 0.10911612353923272,
+          "players": 0.3468475480211767
+        },
+        "bradley_terry": {
+          "name": 0.14353564356249005,
+          "lineup": 0.10611773010600746,
+          "players": 0.4130793622523208
+        }
+      }
+    },
+    {
+      "first": "Team Heretics",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.4833442088604912
+        },
+        "glicko2": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.4276546998067586
+        },
+        "bradley_terry": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.4062610297810216
+        }
+      }
+    },
+    {
+      "first": "Team Vitality",
+      "second": "Twisted Minds",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.5387706865593457,
+          "lineup": 0.5430359255552747,
+          "players": 0.5232050330336374
+        },
+        "glicko2": {
+          "name": 0.551487012749195,
+          "lineup": 0.5472664107729919,
+          "players": 0.4957593127161919
+        },
+        "bradley_terry": {
+          "name": 0.5168149235672918,
+          "lineup": 0.5200745899123876,
+          "players": 0.38795611728436047
+        }
+      }
+    },
+    {
+      "first": "Team Vitality",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6960161729541826,
+          "lineup": 0.7091905174552817,
+          "players": 0.5726349429863624
+        },
+        "glicko2": {
+          "name": 0.6652565659969352,
+          "lineup": 0.680638297766985,
+          "players": 0.5442923964723136
+        },
+        "bradley_terry": {
+          "name": 0.6126128216977451,
+          "lineup": 0.6060769316223422,
+          "players": 0.6117367015672426
+        }
+      }
+    },
+    {
+      "first": "Team Vitality",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.9057798716125403,
+          "lineup": 0.9195027551142649,
+          "players": 0.6548402227129173
+        },
+        "glicko2": {
+          "name": 0.9182357727480059,
+          "lineup": 0.9433752576372098,
+          "players": 0.6272376287050432
+        },
+        "bradley_terry": {
+          "name": 0.9041783327440408,
+          "lineup": 0.9283673302904996,
+          "players": 0.6050194853174239
+        }
+      }
+    },
+    {
+      "first": "Twisted Minds",
+      "second": "Wildcard",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.6621754123861788,
+          "lineup": 0.6723614715763649,
+          "players": 0.549765427720211
+        },
+        "glicko2": {
+          "name": 0.6180084703835268,
+          "lineup": 0.638278300239636,
+          "players": 0.5484644394456363
+        },
+        "bradley_terry": {
+          "name": 0.5965290384081473,
+          "lineup": 0.5867411860976802,
+          "players": 0.7131086049702056
+        }
+      }
+    },
+    {
+      "first": "Twisted Minds",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8916558766455575,
+          "lineup": 0.9057693658574175,
+          "players": 0.6335546762075027
+        },
+        "glicko2": {
+          "name": 0.9023321125591672,
+          "lineup": 0.9332070546348952,
+          "players": 0.6311341632909376
+        },
+        "bradley_terry": {
+          "name": 0.8981881177552533,
+          "lineup": 0.9228371519012333,
+          "players": 0.7073060598044882
+        }
+      }
+    },
+    {
+      "first": "Wildcard",
+      "second": "Wolves Esports",
+      "game_probability": {
+        "uniform": {
+          "name": 0.5,
+          "lineup": 0.5,
+          "players": 0.5
+        },
+        "elo": {
+          "name": 0.8076425288125049,
+          "lineup": 0.8240678170009967,
+          "players": 0.5860776771028242
+        },
+        "glicko2": {
+          "name": 0.8531301999142371,
+          "lineup": 0.8908838764607673,
+          "players": 0.5845546564569193
+        },
+        "bradley_terry": {
+          "name": 0.8564643564375098,
+          "lineup": 0.8938822698939924,
+          "players": 0.4929519620752221
+        }
+      }
+    }
+  ]
+}
