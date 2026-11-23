@@ -55,6 +55,7 @@ uv run python -m edh.predictions.evaluate   # tune and score the rating baseline
 uv run python -m edh.predictions.predict "Team Vitality" "Team Falcons"   # forecast (after a --tune run)
 uv run python -m _scripts.freeze_kickoff_2027   # freeze the RLCS 2027 Kick-Off's forecasts, once
 uv run marimo run _notebooks/rating_models.py   # compare the rating models (after `uv sync --group notebooks`)
+uv run marimo run _notebooks/kickoff_2027.py    # the Kick-Off's frozen forecasts: power ranking, head to head
 ```
 
 - **[Running it](edh/predictions/README.md)**: history scope, cache, updates, reading the matches and lineups from
@@ -89,7 +90,7 @@ esports-data-hub/
 ├── .github          # Workflows (tests & coverage, license year, release), Dependabot, PR template, CODEOWNERS, banner
 ├── _data            # One folder per league (league.json, results.csv, event.json), predictions/ reports, frozen files
 ├── _docs            # How each project works: models and math, independent of the code
-├── _notebooks       # Marimo notebooks (Plotly charts with their context), e.g. the rating evaluation
+├── _notebooks       # Marimo notebooks (Plotly charts with their context): rating models, Kick-Off forecasts
 ├── _scripts         # One-off scripts for given events (e.g. freezing the RLCS 2027 Kick-Off's forecasts)
 ├── _tests           # Pytest test suite, CSV / recorded Liquipedia / placeholder visual fixtures, shared configuration
 └── edh              # Main application package: exceptions, paths, brand, lpdb (shared Liquipedia access)

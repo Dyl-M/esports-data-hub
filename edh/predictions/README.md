@@ -219,6 +219,10 @@ uv run python -m _scripts.freeze_kickoff_2027         # RLCS 2027 Kick-Off → _
 
 Commit the file right away: the commit date shows it came before the event.
 
+The Kick-Off's file is explored in the [Kick-Off notebook](/_notebooks/kickoff_2027.py): a power ranking (each team's
+mean chance to win a best of 5 or 7 against the rest of the field), how the models and identities agree, a
+head-to-head grid and the cold starts (`uv run marimo run _notebooks/kickoff_2027.py`).
+
 ## Module map
 
 | Module          | Role                                                                                  |
